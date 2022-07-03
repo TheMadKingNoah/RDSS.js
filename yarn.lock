@@ -146,6 +146,11 @@
   "resolved" "https://registry.npmjs.org/discord-api-types/-/discord-api-types-0.33.5.tgz"
   "version" "0.33.5"
 
+"discord-buttons@^4.0.0-deprecated":
+  "integrity" "sha512-9pH8YHRumOz9+VJr/MNJEdYDSMJiL0tCJ+wKPtjQQusohJHL1KTTxRtT1PH8snXYQKoevZ1c0YJ3ZWW4uTsIMA=="
+  "resolved" "https://registry.npmjs.org/discord-buttons/-/discord-buttons-4.0.0-deprecated.tgz"
+  "version" "4.0.0-deprecated"
+
 "discord.js@^13.8.1":
   "integrity" "sha512-jOsD+4tEZWWx0RHVyH+FBcqoTrsL+d5Mm5p+ULQOdU0qSaxhLNkWYig+yDHNZoND7nlkXX3qi+BW+gO5erWylg=="
   "resolved" "https://registry.npmjs.org/discord.js/-/discord.js-13.8.1.tgz"

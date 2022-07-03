@@ -3,6 +3,7 @@
         "start": "ts-node src/Bot.ts"
     },
     "dependencies": {
+        "discord-buttons": "^4.0.0-deprecated",
         "discord.js": "^13.8.1",
         "dotenv": "^16.0.1"
     },
