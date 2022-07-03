@@ -81,7 +81,7 @@ export default class ModAlert {
                         + `\n(Access the jump URL to take action. Once finished, react to this message with one of the buttons)`
                     , components: [row]
                 });
-                this.existingModAlerts.set(message.id, message.id);
+                this.existingModAlerts.set(message.id, message.content);
             }
         }
     }
