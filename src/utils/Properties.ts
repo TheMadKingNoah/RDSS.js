@@ -3,5 +3,5 @@ export default class Properties {
 
     public static COMMANDS_CHANNEL_ID: string = "864250679485136907";
 
-    public static existingModAlerts = new Map();
+    public static ALERT_MODS_COOLDOWN: number = 5;
 }
