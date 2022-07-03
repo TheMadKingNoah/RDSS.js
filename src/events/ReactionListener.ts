@@ -11,7 +11,7 @@ module.exports = {
         if(reaction.emoji.id == "864251741711892501") {
             reaction.message.fetch().then( message => {
                 if(!existingModAlerts.has(message.id)) {
-                    ModAlert.createModAlert(reaction, user);
+                    ModAlert.createModAlert(message, user);
                 }
             })
         }
