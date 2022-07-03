@@ -8,7 +8,6 @@ export default class ModAlert {
 
     public static createModAlert(message: Message, user: { id: any; }) {
 
-        console.log((new Date().getTime() - this.lastModAlert.getTime()) / 1000);
         if (((new Date().getTime() - this.lastModAlert.getTime()) / 1000) > Properties.ALERT_MODS_COOLDOWN) {
             this.lastModAlert = new Date();
 
@@ -74,7 +73,7 @@ export default class ModAlert {
                     content:
                         `\n**Reported by:** <@${user.id}> (ID: \`${user.id}\`)`
                         + `\n**Against:** <@${message.author.id}> (ID: \`${message.author.id}\`)`
-                        + `\n ${message.url}/`
+                        + `\n <${message.url}>/`
                         + hasContent
                         + potentialWallPost
                         + hasFile
