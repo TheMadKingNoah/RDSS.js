@@ -1,5 +1,6 @@
 import { Message, MessageActionRow, MessageButton, TextChannel } from "discord.js";
 import Properties from "./Properties";
+import RoleUtils from "./RoleUtils";
 
 export default class ModAlert {
 
@@ -69,9 +70,11 @@ export default class ModAlert {
 
             const channel = message.client.channels.cache.get(Properties.ALERT_CHANNEL_ID);
             if (channel != null) {
+                const alertEmoji = channel.client.emojis.cache.get(Properties.ALERT_EMOJI_ID);
                 const newAlert = (channel as TextChannel).send({
                     content:
-                        `\n**Reported by:** <@${user.id}> (ID: \`${user.id}\`)`
+                        `${alertEmoji} <@&${RoleUtils.ROLE_MODERATOR_ID}> <@&${RoleUtils.ROLE_TRIAL_MODERATOR_ID}>`
+                        +`\n**Reported by:** <@${user.id}> (ID: \`${user.id}\`)`
                         + `\n**Against:** <@${message.author.id}> (ID: \`${message.author.id}\`)`
                         + `\n <${message.url}>/`
                         + hasContent

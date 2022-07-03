@@ -1,7 +1,7 @@
 import { Collection } from "discord.js";
 
 export default class Properties {   
-    public static ALERT_EMOJI_ID: string = "864251741711892501";
+    public static ALERT_EMOJI_ID: string = "993282855595679854";
 
     public static ALERT_CHANNEL_ID: string = "864250737689362433";
 

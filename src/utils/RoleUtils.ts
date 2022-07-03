@@ -4,9 +4,9 @@ export default class RoleUtils {
 
     public static ROLE_BOT_ID: string = "";
 
-    public static ROLE_TRIAL_MODERATOR_ID: string = "";
+    public static ROLE_TRIAL_MODERATOR_ID: string = "864249745358979073";
 
-    public static ROLE_MODERATOR_ID: string = "";
+    public static ROLE_MODERATOR_ID: string = "864249787503083570";
 
     public static ROLE_SENIOR_MODERATOR_ID: string = "";
 
