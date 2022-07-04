@@ -1,25 +1,31 @@
-import { VoiceChannel, VoiceState } from "discord.js";
+import { TextChannel, VoiceChannel, VoiceState } from "discord.js";
+import Properties from "../utils/Properties";
+import EmbedBuilds from "../utils/EmbedBuilds";
 
 module.exports = {
     name: "voiceStateUpdate",
     once: false,
     async execute(oldState: VoiceState, newState: VoiceState) {
-        let newUserChannel = (newState.channel as VoiceChannel)
-        let oldUserChannel = (oldState.channel as VoiceChannel)
+        let newVoiceChannel = (newState.channel as VoiceChannel)
+        let oldVoiceChannel = (oldState.channel as VoiceChannel)
 
-        if (newUserChannel !== null && oldUserChannel === null) {
+        const voiceLogsChannel = oldState.client.channels.cache.get(Properties.VOICE_LOGS_CHANNEL_ID);
 
-            // User Joins a voice channel
-            console.log("member joined!");
+        if (voiceLogsChannel != null) {
 
-        } else if (newUserChannel !== null && oldUserChannel !== null) {
+            if (newVoiceChannel !== null && oldVoiceChannel === null) {
 
-            // User switches from voice channel
-            console.log("member switched!");
-        } else if (newUserChannel === null && oldUserChannel !== null) {
+                (voiceLogsChannel as TextChannel).send({ embeds: [EmbedBuilds.getOnVoiceChannelJoinEmbed(newState)] })
 
-            // User leaves a voice channel
-            console.log("member left!");
+            } else if (newVoiceChannel !== null && oldVoiceChannel !== null) {
+
+                (voiceLogsChannel as TextChannel).send({ embeds: [EmbedBuilds.getOnVoiceChannelChangeEmbed(oldState, newState)] })
+
+            } else if (newVoiceChannel === null && oldVoiceChannel !== null) {
+
+                (voiceLogsChannel as TextChannel).send({ embeds: [EmbedBuilds.getOnVoiceChannelLeaveEmbed(oldState)] })
+                
+            }
         }
     }
 }
