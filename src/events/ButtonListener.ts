@@ -2,6 +2,9 @@ import { ButtonInteraction, Message, TextChannel, User, MessageAttachment, Colle
 import RoleUtils from "../utils/RoleUtils";
 import ModAlert from "../utils/ModAlert";
 import Properties from "../utils/Properties";
+import QuickMute from "../utils/QuickMute";
+import { channel } from "diagnostics_channel";
+import { deflate } from "zlib";
 const fs = require("fs");
 
 module.exports = {
@@ -61,65 +64,36 @@ module.exports = {
     }
 }
 
-function quickMuteUser(moderator: User, authorId: string, duration: string, messageEvidence: string, commandsChannel: TextChannel) {
-    const member = commandsChannel.guild.members.cache.get(authorId);
-
-    if (member != null) {
-        if (RoleUtils.hasAnyRole(member, [RoleUtils.ROLE_TRIAL_MODERATOR_ID, RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID, RoleUtils.ROLE_BOT_ID])) {
-            commandsChannel.send(`<@${moderator.id}> You cannot quick mute another moderator!`)
-        } else {
-            if (messageEvidence.replace(/\r?\n|\r/g, " ").length < 120) {
-                const evidence = messageEvidence.replace(/\r?\n|\r/g, " ");
-                commandsChannel.send(`;mute ${authorId} ${duration} (By ${moderator.tag} (${moderator.id})) Message Evidence: ${evidence}`)
-            } else {
-                let memberTitle = authorId;
-        
-                if (member != null && member.nickname != null) {
-                    memberTitle = `${member.nickname}_${authorId}`
-                }
-        
-                const currentTime = new Date().toISOString();
-        
-                const evidenceFile = new MessageAttachment(Buffer.from(messageEvidence), `Evidence_against_${memberTitle}_on_${currentTime}}.txt`)
-        
-                commandsChannel.send({ files: [evidenceFile] }).then(message => {
-                    const attachment = message.attachments.first();
-                    if (attachment?.url != null) {
-                        commandsChannel.send(`;mute ${authorId} ${duration} (By ${moderator.tag} (${moderator.id})) Message Evidence: ${attachment.url}`)
-                    }
-                })
-            }
-        }
-    }
-}
-
 function quickMuteFromButton(interaction: { isButton: () => any; customId: string; message: Message<boolean>; }, duration: string) {
     const button = (interaction as ButtonInteraction)
 
     const modAlertMessage = (interaction.message as Message);
     const authorId = modAlertMessage.content.split("`")[3];
     const channelId = modAlertMessage.content.split("/")[5];
-    const messageId: string = modAlertMessage.content.split("/")[6];
+    const messageId: string = modAlertMessage.content.split("/")[6].replace(/\D/g,'');;
     const commandsChannel = interaction.message.client.channels.cache.get(Properties.COMMANDS_CHANNEL_ID);
 
-    const channel = interaction.message.client.channels.cache.get(channelId);
+    interaction.message.client.channels.fetch(channelId).then(channel => {
 
-    if (channel != null) {
-        (channel as TextChannel).messages.fetch(messageId, { force: true }).then(message => {
+        (channel as TextChannel).messages.fetch(messageId).then(message => {
+
+            const messageEvidence = ModAlert.existingModAlerts.get(messageId);
+    
+            if (messageEvidence != null) {
+                console.log(ModAlert.existingModAlerts)
+                QuickMute.quickMuteUser(button.user, authorId, duration, messageEvidence, (commandsChannel as TextChannel));
+            } else {
+                console.log("message not cached!")
+                QuickMute.quickMuteUser(button.user, authorId, duration, message.content, (commandsChannel as TextChannel));
+                (commandsChannel as TextChannel).send(`<@${button.user.id}> Message was not cached. Therefore it could have been edited. Please verify this Quick-Mute! ^`)
+            }
+
+            ModAlert.deleteModAlert(messageId, modAlertMessage);
+
             (message as Message).delete();
-            const messageEvidence = ModAlert.existingModAlerts.get(messageId);
-            quickMuteUser(button.user, authorId, duration, messageEvidence, (commandsChannel as TextChannel));
-
-            ModAlert.deleteModAlert(messageId, modAlertMessage);
         }).catch(error => {
-            const messageEvidence = ModAlert.existingModAlerts.get(messageId);
-            quickMuteUser(button.user, authorId, duration, messageEvidence, (commandsChannel as TextChannel));
-
-            ModAlert.deleteModAlert(messageId, modAlertMessage);
-        }).catch(error => {
-            (commandsChannel as TextChannel).send("Something went wrong!")
-            console.log(error)
+            (commandsChannel as TextChannel).send(`<@${button.user.id}> The message was deleted and not cached! Please mute manually`)
             ModAlert.deleteModAlert(messageId, modAlertMessage);
         })
-    }
+    })
 }
