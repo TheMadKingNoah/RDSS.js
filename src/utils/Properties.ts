@@ -7,7 +7,7 @@ export default class Properties {
 
     public static QUICK_MUTE_60_MINUTES_EMOJI_ID = "";
 
-    public static SWEEP_EMOJI_ID = "783030737552670801";
+    public static SWEEP_EMOJI_ID = "";
 
     public static ALERT_CHANNEL_ID: string = "785821764839669791";
 

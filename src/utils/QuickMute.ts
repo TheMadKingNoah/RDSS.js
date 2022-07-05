@@ -4,7 +4,8 @@ import Properties from "./Properties";
 
 export default class QuickMute {
 
-    public static quickMuteUser(moderator: User, authorId: string, duration: string, messageEvidence: string, commandsChannel: TextChannel) {
+    public static quickMuteUser(moderator: User, authorId:string, duration: string, messageEvidence:string, commandsChannel: TextChannel) {
+
         const member = commandsChannel.guild.members.fetch(authorId).then(member => {
 
             if (member != null) {
@@ -36,6 +37,7 @@ export default class QuickMute {
                                     const attachment = message.attachments.first();
                                     if (attachment?.url != null) {
                                         commandsChannel.send(`;mute ${authorId} ${duration} (By ${moderator.tag} (${moderator.id})) Message Evidence: ${attachment.url}`)
+
                                     }
                                 })
                             }
