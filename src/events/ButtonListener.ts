@@ -88,7 +88,7 @@ function quickMuteFromButton(interaction: { isButton: () => any; customId: strin
                     QuickMute.quickMuteUser(button.user, authorId, duration, messageEvidence, (commandsChannel as TextChannel));
                 } else {
                     QuickMute.quickMuteUser(button.user, authorId, duration, message.content, (commandsChannel as TextChannel));
-                    (commandsChannel as TextChannel).send(`<@${button.user.id}> Message was not cached. Therefore it could have been edited. Please verify this Quick-Mute!`)
+                    (commandsChannel as TextChannel).send(`<@${button.user.id}> Please verify the following Quick Mute. The message was not cached; it could have been edited.`)
                 }
 
                 (message as Message).delete();

@@ -1,18 +1,18 @@
-import { TextChannel, User, MessageAttachment, ChannelLogsQueryOptions, Collection, Message } from "discord.js";
+import { TextChannel, User, MessageAttachment, ChannelLogsQueryOptions, Collection, Message, Role, GuildMember } from "discord.js";
 import RoleUtils from "../utils/RoleUtils";
 import Properties from "./Properties";
 
 export default class QuickMute {
 
-    public static quickMuteUser(moderator: User, authorId:string, duration: string, messageEvidence:string, commandsChannel: TextChannel) {
+    public static quickMuteUser(moderator: User, authorId: string, duration: string, messageEvidence: string, commandsChannel: TextChannel) {
 
         const member = commandsChannel.guild.members.fetch(authorId).then(member => {
 
             if (member != null) {
                 //Check if the Author is a moderator.
-                if (RoleUtils.hasAnyRole(member, [RoleUtils.ROLE_TRIAL_MODERATOR_ID, RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID])) {
+                if (RoleUtils.hasAnyRole(member, [RoleUtils.ROLE_TRIAL_MODERATOR_ID, RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID, RoleUtils.ROLE_BOT_ID])) {
 
-                    commandsChannel.send(`<@${moderator.id}> You cannot Quick mute another moderator`)
+                    commandsChannel.send(`<@${moderator.id}> Oops! You can't Quick Mute another moderator. (Nice try though)`)
                 } else {
 
                     if (messageEvidence.replace(/\r?\n|\r/g, " ").length < 120) {
@@ -58,24 +58,51 @@ export default class QuickMute {
         })
     }
 
-    public static purgeMessagesFromUserInChannel(channel: TextChannel, user: User, moderator: User) {
-        const messagesToBePurged: Message[] = [];
-        let evidenceString: string = "";
+    public static purgeMessagesFromUserInChannel(channel: TextChannel, member: GuildMember, moderator: User) {
+        if (!RoleUtils.hasAnyRole(member, [RoleUtils.ROLE_BOT_ID, RoleUtils.ROLE_MODERATOR_ID, RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID])) {
+            let messagesToBePurged: Message[] = [];
+            let evidenceString: string = "";
+            let messageAmount:number = 0;
 
-        channel.messages.fetch({
-            limit: 100,
-        }).then((messages) => {
-            messages.forEach(message => {
-                if (message.author.id == user.id) {
-                    messagesToBePurged.push(message);
-                    evidenceString += message.content;
-                }
+            channel.messages.fetch({
+                limit: 100,
+            }).then((messages) => {
+                messages.forEach(message => {
+                    if (message.author.id == member.id) {
+                        messagesToBePurged.push(message);
+                        messageAmount++;
+                        evidenceString += `[${message.createdAt.getFullYear()}-${message.createdAt.getMonth() + 1}-${message.createdAt.getDay()}`
+                            + `-${String(message.createdAt.getHours()).padStart(2, '0')}:${String(message.createdAt.getMinutes()).padStart(2, '0')}:${String(message.createdAt.getSeconds()).padStart(2, '0')}]`
+                            + `(${member.id})`
+                            + `-${message.content} \n`;
+                    }
+                })
+            }).then(e => {
+
+                channel.bulkDelete(messagesToBePurged)
+
+                const currentTime = new Date().toISOString();
+
+                const evidenceFile = new MessageAttachment(Buffer.from(evidenceString), `Evidence_against_${member.id}_on_${currentTime}}.txt`);
+
+                channel.guild.channels.fetch(Properties.MESSAGE_LOGS_CHANNEL_ID).then(messageLogsChannel => {
+
+                    (messageLogsChannel as TextChannel).send({ files: [evidenceFile] }).then(message => {
+
+                        channel.guild.channels.fetch(Properties.COMMANDS_CHANNEL_ID).then(commandsChannel => {
+                            const attachment = message.attachments.first();
+                            if (attachment?.url != null) {
+                                const sweepEmoji = channel.client.emojis.cache.get(Properties.SWEEP_EMOJI_ID);
+                                (commandsChannel as TextChannel).send(`<@${moderator.id}> - You swept messages by <@${member.id}>`
+                                +`\n> ${sweepEmoji} ${messageAmount} messages deleted in <#${channel.id}>`
+                                +`\n\n**Message Evidence:** ${attachment.url}`)
+                            }
+                        })
+                    })
+                })
             })
-        })
-
-        console.log(messagesToBePurged)
-        console.log(evidenceString);
-
-        channel.bulkDelete(messagesToBePurged)
+        } else {
+            //todo : throw exception
+        }
     }
 }
