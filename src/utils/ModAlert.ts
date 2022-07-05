@@ -1,5 +1,6 @@
-import { Message, MessageActionRow, MessageButton, TextChannel } from "discord.js";
+import { Message, MessageActionRow, MessageButton, TextChannel, User } from "discord.js";
 import Properties from "./Properties";
+import QuickMute from "./QuickMute";
 import RoleUtils from "./RoleUtils";
 
 export default class ModAlert {
@@ -7,8 +8,7 @@ export default class ModAlert {
     public static existingModAlerts = new Map();
     public static lastModAlert = new Date();
 
-    public static createModAlert(message: Message, user: { id: any; }) {
-
+    public static createModAlert(message: Message, user: User) {
         if (((new Date().getTime() - this.lastModAlert.getTime()) / 1000) > Properties.ALERT_MODS_COOLDOWN) {
             this.lastModAlert = new Date();
 
@@ -69,6 +69,7 @@ export default class ModAlert {
             );
 
             const channel = message.client.channels.cache.get(Properties.ALERT_CHANNEL_ID);
+
             if (channel != null) {
                 const alertEmoji = channel.client.emojis.cache.get(Properties.ALERT_EMOJI_ID);
                 const newAlert = (channel as TextChannel).send({
@@ -83,12 +84,13 @@ export default class ModAlert {
                         + `\n(Access the jump URL to take action. Once finished, react to this message with one of the buttons)`
                     , components: [row]
                 });
+
                 this.existingModAlerts.set(message.id, message.content);
             }
         }
     }
 
-    public static deleteModAlert(messageId: string | null, modAlertMessage: Message) {
+    public static deleteModAlert(messageId: string, modAlertMessage: Message) {
         if (this.existingModAlerts.has(messageId)) {
             this.existingModAlerts.delete(messageId);
         }

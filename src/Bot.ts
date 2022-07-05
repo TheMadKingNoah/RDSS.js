@@ -1,16 +1,11 @@
-import { BaseGuildTextChannel, Client, ClientOptions, Collection, Message, MessageActionRow, MessageButton, TextChannel, User } from "discord.js";
+import { Client }  from "discord.js";
 const fs = require("fs");
-import { ContextMenuCommandBuilder } from '@discordjs/builders';
-import Properties from "./utils/Properties";
-const { Routes } = require('discord-api-types/v9');
-const { REST } = require('@discordjs/rest');
-const { SlashCommandBuilder } = require('@discordjs/builders');
 require("dotenv").config();
 
 console.log("Bot is starting...");
 
 const client = new Client({
-    intents: ["GUILDS", 'GUILD_MESSAGE_REACTIONS', "GUILD_MEMBERS"],
+    intents: ["GUILDS", 'GUILD_MESSAGE_REACTIONS', "GUILD_MEMBERS", "GUILD_MESSAGES"],
     partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 

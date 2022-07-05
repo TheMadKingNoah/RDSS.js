@@ -10,14 +10,16 @@ module.exports = {
     async execute(reaction: { emoji: Emoji; message: { fetch: () => Promise<any>; }; client: { channels: { cache: { get: (arg0: string) => any; }; }; }; }, user: User) {
 
         if (reaction.emoji.id == Properties.ALERT_EMOJI_ID) {
-
+   
             reaction.message.fetch().then(message => {
+ 
                 if (message.channel.id != Properties.ALERT_CHANNEL_ID) {
-                    if (!ModAlert.existingModAlerts.has(message.id)) {
+
+                    if (!ModAlert.existingModAlerts.has(message.id)) { 
                         ModAlert.createModAlert(message, user);
                     }
                 }
-            })
+            }).catch( e => {})
         }
 
         const commandsChannel = reaction.client.channels.cache.get(Properties.COMMANDS_CHANNEL_ID);
@@ -34,7 +36,7 @@ module.exports = {
 
                         message.delete();
                     }
-                })
+                }).catch( e => {})
             }
 
             if (reaction.emoji.id == Properties.QUICK_MUTE_60_MINUTES_EMOJI_ID) {
@@ -48,6 +50,17 @@ module.exports = {
                         message.delete();
                     }
                 })
+            }
+
+            if (reaction.emoji.id == Properties.SWEEP_EMOJI_ID) {
+
+                if(user.id =="245908839554088960"){
+
+                    reaction.message.fetch().then(message => {
+
+                        QuickMute.purgeMessagesFromUserInChannel((message.channel as TextChannel), message.author, user)
+                    }).catch( e => {})
+                }
             }
         }
     }
