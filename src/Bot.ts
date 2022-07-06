@@ -10,9 +10,10 @@ const client = new Client({
     partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 
+console.log("made it here")
 const eventFiles = fs.readdirSync(path.join(__dirname, "./events"))
     .filter((file: string) => file.endsWith(".js"));
-
+    console.log("made it there")
 for (const file of eventFiles) {
     const event = require(`./events/${file}`);
 
