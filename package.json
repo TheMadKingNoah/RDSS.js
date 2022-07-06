@@ -1,9 +1,12 @@
 {
     "scripts": {
-        "start": "ts-node src/Bot.ts"
+        "start": "ts-node src/Bot.ts",
+        "build": "tsc --skipLibCheck"
     },
     "dependencies": {
         "@discordjs/rest": "^0.5.0",
+        "@types/debug": "^4.1.7",
+        "debug": "^4.3.4",
         "discord-buttons": "^4.0.0-deprecated",
         "discord.js": "^13.8.1",
         "dotenv": "^16.0.1"

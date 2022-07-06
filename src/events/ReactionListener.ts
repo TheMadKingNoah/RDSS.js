@@ -3,12 +3,12 @@ import RoleUtils from "../utils/RoleUtils";
 import ModAlert from "../utils/ModAlert";
 import Properties from "../utils/Properties";
 import QuickMute from "../utils/QuickMute";
-
+console.log("made it 2")
 module.exports = {
     name: "messageReactionAdd",
     once: false,
     async execute(reaction: { emoji: Emoji; message: Message; client: Client }, user: User) {
-
+        console.log("made it 1")
         if (reaction.emoji.id == Properties.ALERT_EMOJI_ID) {
 
             reaction.message.fetch().then(message => {

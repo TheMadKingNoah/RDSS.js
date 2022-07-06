@@ -10,6 +10,7 @@ module.exports = {
     name: "interactionCreate",
     once: false,
     async execute(interaction: { isButton: () => any; customId: string; message: Message<boolean>; }) {
+        console.log("made it 1")
         if (!interaction.isButton()) return;
 
         const button = interaction as ButtonInteraction;
