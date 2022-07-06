@@ -1,4 +1,11 @@
 .env
 
 # dependencies
-/node_modules
+node_modules/
+coverage/
+dist/
+docs/
+site/
+.idea
+.vscode
+.vs
