@@ -15,7 +15,7 @@ const eventFiles = fs.readdirSync(path.join(__dirname, "./events"))
     .filter((file: string) => file.endsWith(".js"));
     console.log("made it there")
 for (const file of eventFiles) {
-    const event = require(`./events/${file}`);
+    const event = require(path.join(__dirname, `./events/${file}`));
 
     if (event.once) {
         console.log("made it 1")
