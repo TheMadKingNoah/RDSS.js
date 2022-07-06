@@ -1,5 +1,6 @@
-import { Message, MessageActionRow, MessageButton, TextChannel } from "discord.js";
+import { GuildMember, Message, MessageActionRow, MessageButton, TextChannel, User } from "discord.js";
 import Properties from "./Properties";
+import QuickMute from "./QuickMute";
 import RoleUtils from "./RoleUtils";
 
 export default class ModAlert {
@@ -7,8 +8,7 @@ export default class ModAlert {
     public static existingModAlerts = new Map();
     public static lastModAlert = new Date();
 
-    public static createModAlert(message: Message, user: { id: any; }) {
-
+    public static createModAlert(message: Message, user: User) {
         if (((new Date().getTime() - this.lastModAlert.getTime()) / 1000) > Properties.ALERT_MODS_COOLDOWN) {
             this.lastModAlert = new Date();
 
@@ -69,12 +69,13 @@ export default class ModAlert {
             );
 
             const channel = message.client.channels.cache.get(Properties.ALERT_CHANNEL_ID);
+
             if (channel != null) {
                 const alertEmoji = channel.client.emojis.cache.get(Properties.ALERT_EMOJI_ID);
                 const newAlert = (channel as TextChannel).send({
                     content:
                         `${alertEmoji} <@&${RoleUtils.ROLE_MODERATOR_ID}> <@&${RoleUtils.ROLE_TRIAL_MODERATOR_ID}>`
-                        +`\n**Reported by:** <@${user.id}> (ID: \`${user.id}\`)`
+                        + `\n**Reported by:** <@${user.id}> (ID: \`${user.id}\`)`
                         + `\n**Against:** <@${message.author.id}> (ID: \`${message.author.id}\`)`
                         + `\n <${message.url}>/`
                         + hasContent
@@ -83,16 +84,67 @@ export default class ModAlert {
                         + `\n(Access the jump URL to take action. Once finished, react to this message with one of the buttons)`
                     , components: [row]
                 });
+
                 this.existingModAlerts.set(message.id, message.content);
             }
         }
     }
 
-    public static deleteModAlert(messageId: string | null, modAlertMessage: Message) {
+    public static deleteModAlert(messageId: string, modAlertMessage: Message) {
         if (this.existingModAlerts.has(messageId)) {
             this.existingModAlerts.delete(messageId);
         }
 
-        modAlertMessage.delete();
+        modAlertMessage.delete().catch(e => { });
+    }
+
+    public static approveBanRequest(message: Message, commandChannel: TextChannel, moderator: GuildMember) {
+        try {
+
+            let banRequestMessageContent: string[] = message.content.replaceAll("(?i)(?!_(\\w|\\d|-)+\\.(png|jpe?g|gifv?|webm|wav|mp[34]|ogg|mov|txt)+)[\\*\\|\\~\\`\\_\\>]", "").replaceAll("\\s+", " ").split(" ");
+
+            let banRequestString = `(approved by ${moderator.user.tag} (${moderator.id})) `;
+
+            for (let i = 2; i < banRequestMessageContent.length; i++) {
+                banRequestString += banRequestMessageContent[i] + " ";
+            }
+
+            const evidence = banRequestString.toString();
+            const userToBan: string = banRequestMessageContent[1];
+
+            if (banRequestMessageContent[0].toLowerCase() === ";ban"
+                || banRequestMessageContent[0].toLowerCase() === ";forceban") {
+
+                commandChannel.send(`;ban ${userToBan} ${evidence}`)
+
+            } else {
+                commandChannel.send(`${moderator.id} the ban you tried to invoke was not correctly formatted. Please run the command manually`)
+            }
+        } catch (e) {
+            commandChannel.send(`${moderator.id} the ban you tried to invoke was not correctly formatted. Please run the command manually`)
+        }
+    }
+
+    public static rejectBanRequest(message: Message, commandChannel: TextChannel, moderator: GuildMember) {
+        try {
+
+            let banRequestMessageContent: string[] = message.content.replaceAll("(?i)(?!_(\\w|\\d|-)+\\.(png|jpe?g|gifv?|webm|wav|mp[34]|ogg|mov|txt)+)[\\*\\|\\~\\`\\_\\>]", "").replaceAll("\\s+", " ").split(" ");
+            let reportedUserId: string = banRequestMessageContent[1];
+
+
+
+            let rejectionNoticeString = `<@${message.author.id}> your ban request against <@${reportedUserId}> (${reportedUserId}) has been rejected by <@${moderator.id}> and the user has been unmuted. \n\n Your ban request evidence: `;
+
+            for (let i = 2; i < banRequestMessageContent.length; i++) {
+                rejectionNoticeString += banRequestMessageContent[i] + " ";
+            }
+
+            commandChannel.send(`;unmute ${reportedUserId}`);
+            commandChannel.send(rejectionNoticeString);
+
+        } catch (e) {
+            commandChannel.send(`${moderator.id} the ban you tried to invoke was not correctly formatted. Please run the command manually`)
+        }
     }
 }
+

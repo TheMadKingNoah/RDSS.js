@@ -1,29 +1,36 @@
-import { BaseGuildTextChannel, Client, ClientOptions, Collection, Message, MessageActionRow, MessageButton, TextChannel, User } from "discord.js";
+import { Client, TextChannel } from "discord.js";
+import path from "path";
 const fs = require("fs");
-import { ContextMenuCommandBuilder } from '@discordjs/builders';
-import Properties from "./utils/Properties";
-const { Routes } = require('discord-api-types/v9');
-const { REST } = require('@discordjs/rest');
-const { SlashCommandBuilder } = require('@discordjs/builders');
 require("dotenv").config();
 
 console.log("Bot is starting...");
 
 const client = new Client({
+<<<<<<< HEAD
     intents: ["GUILDS", 'GUILD_MESSAGE_REACTIONS', "GUILD_MEMBERS", "GUILD_VOICE_STATES"],
+=======
+    intents: ["GUILDS", 'GUILD_MESSAGE_REACTIONS', "GUILD_MEMBERS", "GUILD_MESSAGES"],
+>>>>>>> 5d790091a01290699d7425cafdd913d66d371aed
     partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 
-const eventFiles = fs
-    .readdirSync("./src/events")
-    .filter((file: string) => file.endsWith(".ts"));
+let eventFiles;
+if (process.env.BOT_TOKEN == "Production") {
+    eventFiles = fs.readdirSync(path.join(__dirname, "./dist/events")).filter((file: string) => file.endsWith(".js"));
+} else {
+    eventFiles = fs.readdirSync(path.join(__dirname, "./events")).filter((file: string) => file.endsWith(".ts"));
+}
+
+console.log(eventFiles);
 
 for (const file of eventFiles) {
-    const event = require(`./events/${file}`);
+    const event = require(path.join(__dirname, `./events/${file}`));
 
     if (event.once) {
+        console.log("made it 1")
         client.once(event.name, (...args) => event.execute(...args));
     } else {
+        console.log("made it 1")
         client.on(event.name, (...args) => event.execute(...args));
     }
 }
