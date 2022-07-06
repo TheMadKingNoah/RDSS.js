@@ -13,7 +13,7 @@ const client = new Client({
 console.log("made it here")
 const eventFiles = fs.readdirSync(path.join(__dirname, "./events"))
     .filter((file: string) => file.endsWith(".js"));
-    console.log("made it there")
+    console.log(eventFiles);
 for (const file of eventFiles) {
     const event = require(path.join(__dirname, `./events/${file}`));
 
