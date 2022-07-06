@@ -11,6 +11,7 @@ const client = new Client({
 });
 
 console.log("made it here")
+console.log(path.join(__dirname, "./events"))
 const eventFiles = fs.readdirSync(path.join(__dirname, "./events"))
     .filter((file: string) => file.endsWith(".js"));
     console.log(eventFiles);
