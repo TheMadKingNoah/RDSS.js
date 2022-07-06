@@ -1,4 +1,4 @@
-import { Client, TextChannel }  from "discord.js";
+import { Client, TextChannel } from "discord.js";
 import path from "path";
 const fs = require("fs");
 require("dotenv").config();
@@ -10,11 +10,15 @@ const client = new Client({
     partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 
-console.log("made it here")
-console.log(path.join(__dirname, "./events"))
-const eventFiles = fs.readdirSync(path.join(__dirname, "./events"))
-    .filter((file: string) => file.endsWith(".js"));
-    console.log(eventFiles);
+let eventFiles;
+if (process.env.BOT_TOKEN == "Production") {
+    eventFiles = fs.readdirSync(path.join(__dirname, "./dist/events")).filter((file: string) => file.endsWith(".js"));
+} else {
+    eventFiles = fs.readdirSync(path.join(__dirname, "./events")).filter((file: string) => file.endsWith(".ts"));
+}
+
+console.log(eventFiles);
+
 for (const file of eventFiles) {
     const event = require(path.join(__dirname, `./events/${file}`));
 
