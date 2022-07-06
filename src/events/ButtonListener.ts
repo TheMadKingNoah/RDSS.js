@@ -81,23 +81,21 @@ function quickMuteFromButton(interaction: { isButton: () => any; customId: strin
         interaction.message.client.channels.fetch(channelId).then(channel => {
 
             (channel as TextChannel).messages.fetch(messageId).then(message => {
-
                 const messageEvidence = ModAlert.existingModAlerts.get(messageId);
 
                 if (messageEvidence != null) {
-                    QuickMute.quickMuteUser(button.user, authorId, duration, messageEvidence, (commandsChannel as TextChannel));
+                    QuickMute.quickMuteUser(button.user, authorId, duration, messageEvidence, (commandsChannel as TextChannel), message);
                 } else {
-                    QuickMute.quickMuteUser(button.user, authorId, duration, message.content, (commandsChannel as TextChannel));
+                    QuickMute.quickMuteUser(button.user, authorId, duration, message.content, (commandsChannel as TextChannel), message);
                     (commandsChannel as TextChannel).send(`<@${button.user.id}> Please verify the following Quick Mute. The message was not cached; it could have been edited.`)
                 }
 
-                (message as Message).delete();
+                ModAlert.deleteModAlert(messageId, modAlertMessage);
 
             }).catch(error => {
                 (commandsChannel as TextChannel).send(`<@${button.user.id}> The message was deleted and not cached! Please mute manually`)
+                ModAlert.deleteModAlert(messageId, modAlertMessage);
             })
-
-            ModAlert.deleteModAlert(messageId, modAlertMessage);
         })
     })
 }

@@ -21,6 +21,8 @@ module.exports = {
                     }
                 }
             }).catch(e => { })
+
+            console.log(ModAlert.existingModAlerts)
         }
 
         if (reaction.emoji.id == Properties.QUICK_MUTE_30_MINUTES_EMOJI_ID) {
@@ -37,9 +39,11 @@ module.exports = {
 
                             reaction.message.fetch().then(message => {
 
-                                QuickMute.quickMuteUser(user, message.author.id, "30m", message.content, (commandsChannel as TextChannel))
+                                QuickMute.quickMuteUser(user, message.author.id, "30m", message.content, (commandsChannel as TextChannel), message)
 
-                                message.delete().catch(e =>{});
+                                guild.members.fetch(message.author.id).then( member => {
+                                    QuickMute.purgeMessagesFromUserInChannel((message.channel as TextChannel), member, user)
+                                })
 
                             }).catch(e => { })
                         }).catch(e => { })
@@ -62,11 +66,13 @@ module.exports = {
 
                             reaction.message.fetch().then(message => {
 
-                                QuickMute.quickMuteUser(user, message.author.id, "60m", message.content, (commandsChannel as TextChannel))
+                                QuickMute.quickMuteUser(user, message.author.id, "60m", message.content, (commandsChannel as TextChannel), message)
 
-                                message.delete().catch(e =>{});
+                                guild.members.fetch(message.author.id).then( member => {
+                                    QuickMute.purgeMessagesFromUserInChannel((message.channel as TextChannel), member, user)
+                                })
 
-                            }).catch(e => { })
+                            }).catch(e => { console.log(e)})
                         }).catch(e => { })
                     }
                 }).catch(e => { })
@@ -94,6 +100,32 @@ module.exports = {
                         }).catch(e => { })
                     }
                 })
+            }
+        }
+
+        if (reaction.emoji.id == Properties.APPROVE_EMOJI_ID) {
+
+            if (reaction.message.channel.id == Properties.BAN_REQUESTS_QUEUE_CHANNEL_ID) {
+
+                const guild = reaction.message.guild;
+
+                if (guild != null) {
+
+                    guild.members.fetch(user.id).then(member => {
+
+                        if (RoleUtils.hasAnyRole(member, [RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID])) {
+
+                            reaction.client.channels.fetch(Properties.COMMANDS_CHANNEL_ID).then(commandsChannel => {
+
+                                reaction.message.fetch().then(message => {
+
+                                    ModAlert.approveBanRequest(message, (commandsChannel as TextChannel), member)
+
+                                }).catch(e => { })
+                            }).catch(e => { })
+                        }
+                    }).catch(e => { })
+                }
             }
         }
 

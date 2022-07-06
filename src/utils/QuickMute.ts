@@ -4,7 +4,7 @@ import Properties from "./Properties";
 
 export default class QuickMute {
 
-    public static quickMuteUser(moderator: User, authorId: string, duration: string, messageEvidence: string, commandsChannel: TextChannel) {
+    public static quickMuteUser(moderator: User, authorId: string, duration: string, messageEvidence: string, commandsChannel: TextChannel, message:Message) {
 
         const member = commandsChannel.guild.members.fetch(authorId).then(member => {
 
@@ -14,7 +14,7 @@ export default class QuickMute {
 
                     commandsChannel.send(`<@${moderator.id}> Oops! You can't Quick Mute another moderator. (Nice try though)`)
                 } else {
-
+                    message.delete().catch(e =>{ console.log(e)});
                     if (messageEvidence.replace(/\r?\n|\r/g, " ").length < 120) {
                         const evidence = messageEvidence.replace(/\r?\n|\r/g, " ");
                         commandsChannel.send(`;mute ${authorId} ${duration} (By ${moderator.tag} (${moderator.id})) Message Evidence: ${evidence}`)
@@ -54,15 +54,18 @@ export default class QuickMute {
                 }
             }
         }).catch(e => {
+            message.delete().catch(e =>{ console.log(e)});
             commandsChannel.send(`<@${moderator.id}> user has left the server!`)
         })
     }
 
     public static purgeMessagesFromUserInChannel(channel: TextChannel, member: GuildMember, moderator: User) {
-        if (!RoleUtils.hasAnyRole(member, [RoleUtils.ROLE_BOT_ID, RoleUtils.ROLE_MODERATOR_ID, RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID])) {
+
+        let theMember = (member as GuildMember)
+        if (RoleUtils.hasAnyRole(theMember, [RoleUtils.ROLE_BOT_ID, RoleUtils.ROLE_MODERATOR_ID, RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID]) == false) {
             let messagesToBePurged: Message[] = [];
             let evidenceString: string = "";
-            let messageAmount:number = 0;
+            let messageAmount: number = 0;
 
             channel.messages.fetch({
                 limit: 100,
@@ -94,15 +97,18 @@ export default class QuickMute {
                             if (attachment?.url != null) {
                                 const sweepEmoji = channel.client.emojis.cache.get(Properties.SWEEP_EMOJI_ID);
                                 (commandsChannel as TextChannel).send(`<@${moderator.id}> - You swept messages by <@${member.id}>`
-                                +`\n> ${sweepEmoji} ${messageAmount} messages deleted in <#${channel.id}>`
-                                +`\n\n**Message Evidence:** ${attachment.url}`)
+                                    + `\n> ${sweepEmoji} ${messageAmount} messages deleted in <#${channel.id}>`
+                                    + `\n\n**Message Evidence:** ${attachment.url}`)
                             }
                         })
                     })
                 })
             })
         } else {
-            //todo : throw exception
+            channel.guild.channels.fetch(Properties.COMMANDS_CHANNEL_ID).then(commandsChannel => {
+                (commandsChannel as TextChannel).send(`<@${moderator.id}> Oops! You can't Sweep another moderator. (Nice try though)`)
+            }).catch(e => { console.log("channel not found") })
         }
+
     }
 }
