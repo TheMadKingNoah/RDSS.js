@@ -21,8 +21,6 @@ module.exports = {
                     }
                 }
             }).catch(e => { })
-
-            console.log(ModAlert.existingModAlerts)
         }
 
         if (reaction.emoji.id == Properties.QUICK_MUTE_30_MINUTES_EMOJI_ID) {
