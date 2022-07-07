@@ -74,7 +74,7 @@ export default class QuickMute {
                     if (message.author.id == member.id) {
                         messagesToBePurged.push(message);
                         messageAmount++;
-                        evidenceString += `[${message.createdAt.getFullYear()}-${message.createdAt.getMonth() + 1}-${message.createdAt.getDay()}`
+                        evidenceString += `[${message.createdAt.getFullYear()}-${message.createdAt.getMonth() + 1}-${message.createdAt.getDate()}`
                             + `-${String(message.createdAt.getHours()).padStart(2, '0')}:${String(message.createdAt.getMinutes()).padStart(2, '0')}:${String(message.createdAt.getSeconds()).padStart(2, '0')}]`
                             + `(${member.id})`
                             + `-${message.content} \n`;
