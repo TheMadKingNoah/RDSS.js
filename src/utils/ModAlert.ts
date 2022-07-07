@@ -101,7 +101,7 @@ export default class ModAlert {
     public static approveBanRequest(message: Message, commandChannel: TextChannel, moderator: GuildMember) {
         try {
 
-            let banRequestMessageContent: string[] = message.content.replaceAll("(?i)(?!_(\\w|\\d|-)+\\.(png|jpe?g|gifv?|webm|wav|mp[34]|ogg|mov|txt)+)[\\*\\|\\~\\`\\_\\>]", "").replaceAll("\\s+", " ").split(" ");
+            let banRequestMessageContent: string[] = message.content.replaceAll("(?i)(?!_(\\w|\\d|-)+\\.(png|jpe?g|gifv?|webm|wav|mp[34]|ogg|mov|txt)+)[\\*\\|\\~\\`\\_\\>]", "").replaceAll("\\s+", " ").replace(`|`,"").split(" ");
 
             let banRequestString = `(approved by ${moderator.user.tag} (${moderator.id})) `;
 
