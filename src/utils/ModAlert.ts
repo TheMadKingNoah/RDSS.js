@@ -114,8 +114,8 @@ export default class ModAlert {
 
             if (banRequestMessageContent[0].toLowerCase() === ";ban"
                 || banRequestMessageContent[0].toLowerCase() === ";forceban") {
-                    console.log(banRequestString)
-                //commandChannel.send(`;ban ${userToBan} ${evidence}`)
+    
+                commandChannel.send(`;ban ${userToBan} ${evidence}`)
 
             } else {
                 commandChannel.send(`${moderator.id} the ban you tried to invoke was not correctly formatted. Please run the command manually`)
