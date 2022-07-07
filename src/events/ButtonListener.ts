@@ -20,7 +20,7 @@ module.exports = {
             const modAlertMessage = (interaction.message as Message);
             const messageId: string = modAlertMessage.content.split("/")[6].replace(/\D/g, '');
 
-            ModAlert.deleteModAlert(messageId, modAlertMessage);
+            ModAlert.deleteModAlert(messageId, modAlertMessage, null);
         }
 
         if (interaction.customId == "Infractions") {
@@ -91,13 +91,13 @@ function quickMuteFromButton(interaction: { isButton: () => any; customId: strin
                     (commandsChannel as TextChannel).send(`<@${button.user.id}> Please verify the following Quick Mute. The message was not cached; it could have been edited.`)
                 }
 
-                ModAlert.deleteModAlert(messageId, modAlertMessage);
+                ModAlert.deleteModAlert(messageId, modAlertMessage, null);
 
             }).catch(error => {
                 console.log(ModAlert.existingModAlerts)
                 console.log(error);
                 (commandsChannel as TextChannel).send(`<@${button.user.id}> The message was deleted and not cached! Please mute manually`)
-                ModAlert.deleteModAlert(messageId, modAlertMessage);
+                ModAlert.deleteModAlert(messageId, modAlertMessage, null);
             })
         })
     })

@@ -45,6 +45,12 @@ module.exports = {
                                     QuickMute.purgeMessagesFromUserInChannel((message.channel as TextChannel), member, user)
                                 })
 
+                                guild.channels.fetch(Properties.ALERT_CHANNEL_ID).then( modAlertChannel => {
+                                    if(modAlertChannel != null){
+                                        ModAlert.deleteModAlert(message.id, null, (modAlertChannel as TextChannel));
+                                    }
+                                })
+
                             }).catch(e => { })
                         }).catch(e => { })
                     }
@@ -70,6 +76,12 @@ module.exports = {
 
                                 guild.members.fetch(message.author.id).then( member => {
                                     QuickMute.purgeMessagesFromUserInChannel((message.channel as TextChannel), member, user)
+                                })
+
+                                guild.channels.fetch(Properties.ALERT_CHANNEL_ID).then( modAlertChannel => {
+                                    if(modAlertChannel != null){
+                                        ModAlert.deleteModAlert(message.id, null, (modAlertChannel as TextChannel));
+                                    }
                                 })
 
                             }).catch(e => { console.log(e)})

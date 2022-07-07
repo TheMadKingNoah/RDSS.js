@@ -17,16 +17,12 @@ if (process.env.BOT_TOKEN == "Production") {
     eventFiles = fs.readdirSync(path.join(__dirname, "./events")).filter((file: string) => file.endsWith(".ts"));
 }
 
-console.log(eventFiles);
-
 for (const file of eventFiles) {
     const event = require(path.join(__dirname, `./events/${file}`));
 
     if (event.once) {
-        console.log("made it 1")
         client.once(event.name, (...args) => event.execute(...args));
     } else {
-        console.log("made it 1")
         client.on(event.name, (...args) => event.execute(...args));
     }
 }

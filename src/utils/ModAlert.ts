@@ -90,18 +90,31 @@ export default class ModAlert {
         }
     }
 
-    public static deleteModAlert(messageId: string, modAlertMessage: Message) {
+    public static deleteModAlert(messageId: string, modAlertMessage: Message | null, modAlertChannel: TextChannel | null) {
         if (this.existingModAlerts.has(messageId)) {
             this.existingModAlerts.delete(messageId);
         }
 
-        modAlertMessage.delete().catch(e => { });
+        if (modAlertMessage == null && modAlertChannel != null) {
+            modAlertChannel.messages.fetch({
+                limit: 100,
+            }).then((messages) => {
+                messages.forEach(element => {
+                    const fetchedMessageId: string = element.content.split("/")[6].replace(/\D/g, '');
+                    if(fetchedMessageId == messageId){
+                        element.delete();
+                    }
+                });
+            }).then(e => {})
+        } else if(modAlertMessage != null){
+            modAlertMessage.delete().catch(e => { });
+        }
     }
 
     public static approveBanRequest(message: Message, commandChannel: TextChannel, moderator: GuildMember) {
         try {
 
-            let banRequestMessageContent: string[] = message.content.replaceAll("(?i)(?!_(\\w|\\d|-)+\\.(png|jpe?g|gifv?|webm|wav|mp[34]|ogg|mov|txt)+)[\\*\\|\\~\\`\\_\\>]", "").replaceAll("\\s+", " ").replaceAll("|","").split(" ");
+            let banRequestMessageContent: string[] = message.content.replaceAll("(?i)(?!_(\\w|\\d|-)+\\.(png|jpe?g|gifv?|webm|wav|mp[34]|ogg|mov|txt)+)[\\*\\|\\~\\`\\_\\>]", "").replaceAll("\\s+", " ").replaceAll("|", "").split(" ");
 
             let banRequestString = `(approved by ${moderator.user.tag} (${moderator.id})) `;
 
@@ -114,7 +127,7 @@ export default class ModAlert {
 
             if (banRequestMessageContent[0].toLowerCase() === ";ban"
                 || banRequestMessageContent[0].toLowerCase() === ";forceban") {
-    
+
                 commandChannel.send(`;ban ${userToBan} ${evidence}`)
 
             } else {
