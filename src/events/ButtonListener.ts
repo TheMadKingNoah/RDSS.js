@@ -43,7 +43,7 @@ module.exports = {
 
         if (interaction.customId == "qm30") {
 
-            if (RoleUtils.hasAnyRole((button.member as GuildMember), [RoleUtils.ROLE_TRIAL_MODERATOR_ID, RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID]) == true) {
+            if (RoleUtils.hasAnyRole((button.member as GuildMember), [RoleUtils.ROLE_MODERATOR_ID, RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID]) == true) {
 
                 quickMuteFromButton(interaction, "30m")
                 
@@ -56,7 +56,7 @@ module.exports = {
 
         if (interaction.customId == "qm60") {
 
-            if (RoleUtils.hasAnyRole((button.member as GuildMember), [RoleUtils.ROLE_TRIAL_MODERATOR_ID, RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID])) {
+            if (RoleUtils.hasAnyRole((button.member as GuildMember), [RoleUtils.ROLE_MODERATOR_ID, RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID])) {
 
                 quickMuteFromButton(interaction, "60m")
 
