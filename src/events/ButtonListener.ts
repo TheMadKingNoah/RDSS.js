@@ -94,6 +94,8 @@ function quickMuteFromButton(interaction: { isButton: () => any; customId: strin
                 ModAlert.deleteModAlert(messageId, modAlertMessage);
 
             }).catch(error => {
+                console.log(ModAlert.existingModAlerts)
+                console.log(error);
                 (commandsChannel as TextChannel).send(`<@${button.user.id}> The message was deleted and not cached! Please mute manually`)
                 ModAlert.deleteModAlert(messageId, modAlertMessage);
             })
