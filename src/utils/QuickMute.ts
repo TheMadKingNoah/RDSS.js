@@ -55,7 +55,7 @@ export default class QuickMute {
             }
         }).catch(e => {
             message.delete().catch(e =>{ console.log(e)});
-            commandsChannel.send(`<@${moderator.id}> user has left the server!`)
+            commandsChannel.send(`<@${moderator.id}> user <@${authorId}> (${authorId}) has left the server!`)
         })
     }
 
