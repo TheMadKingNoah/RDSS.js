@@ -3,7 +3,7 @@ import RoleUtils from "../utils/RoleUtils";
 import ModAlert from "../utils/ModAlert";
 import Properties from "../utils/Properties";
 import QuickMute from "../utils/QuickMute";
-console.log("made it 2")
+
 module.exports = {
     name: "messageReactionAdd",
     once: false,
