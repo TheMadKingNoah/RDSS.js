@@ -1,5 +1,3 @@
-import { Collection } from "discord.js";
-
 export default class Properties {   
     public static ALERT_EMOJI_ID: string = "625429388229345280";
 
@@ -20,6 +18,8 @@ export default class Properties {
     public static BAN_REQUESTS_QUEUE_CHANNEL_ID: string = "592580861543841802";
 
     public static MESSAGE_LOGS_CHANNEL_ID = "366624514651717663";
+
+    public static VOICE_LOGS_CHANNEL_ID: string = "983022264696078366";
 
     public static ALERT_MODS_COOLDOWN: number = 5;
 }

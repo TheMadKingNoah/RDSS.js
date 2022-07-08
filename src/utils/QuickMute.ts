@@ -115,6 +115,5 @@ export default class QuickMute {
                 (commandsChannel as TextChannel).send(`<@${moderator.id}> Oops! You can't Sweep another moderator. (Nice try though)`)
             }).catch(e => { console.log("channel not found") })
         }
-
     }
 }

@@ -6,7 +6,8 @@ require("dotenv").config();
 console.log("Bot is starting...");
 
 const client = new Client({
-    intents: ["GUILDS", 'GUILD_MESSAGE_REACTIONS', "GUILD_MEMBERS", "GUILD_MESSAGES"],
+
+    intents: ["GUILDS", 'GUILD_MESSAGE_REACTIONS', "GUILD_MEMBERS", "GUILD_VOICE_STATES", "GUILD_MESSAGES"],
     partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 
