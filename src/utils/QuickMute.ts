@@ -4,7 +4,7 @@ import Properties from "./Properties";
 
 export default class QuickMute {
 
-    public static quickMuteUser(moderator: User, authorId: string, duration: string, messageEvidence: string, commandsChannel: TextChannel, message: Message) {
+    public static quickMuteUser(moderator: User, authorId: string, duration: string, messageEvidence: string, commandsChannel: TextChannel, message: Message | null) {
 
         const member = commandsChannel.guild.members.fetch(authorId).then(member => {
 
@@ -14,7 +14,9 @@ export default class QuickMute {
 
                     commandsChannel.send(`<@${moderator.id}> Oops! You can't Quick Mute another moderator. (Nice try though)`)
                 } else {
-                    message.delete().catch(e => { console.log(e) });
+                    if(message != null){
+                        message.delete().catch(e => { console.log(e) });
+                    }
                     if (messageEvidence.replace(/\r?\n|\r/g, " ").length < 120) {
                         const evidence = messageEvidence.replace(/\r?\n|\r/g, " ");
                         commandsChannel.send(`;mute ${authorId} ${duration} (By ${moderator.tag} (${moderator.id})) Message Evidence: ${evidence}`)
@@ -29,7 +31,7 @@ export default class QuickMute {
 
                         const evidenceFile = new MessageAttachment(Buffer.from(messageEvidence), `Evidence_against_${memberTitle}_on_${currentTime}}.txt`)
 
-                        const messagePreview = message.content.substring(0, 25) + "...";
+                        const messagePreview = messageEvidence.substring(0, 25) + "...";
 
                         commandsChannel.guild.channels.fetch(Properties.MESSAGE_LOGS_CHANNEL_ID).then(messageLogsChannel => {
 
