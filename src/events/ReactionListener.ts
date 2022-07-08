@@ -21,8 +21,6 @@ module.exports = {
                     }
                 }
             }).catch(e => { })
-
-            console.log(ModAlert.existingModAlerts)
         }
 
         if (reaction.emoji.id == Properties.QUICK_MUTE_30_MINUTES_EMOJI_ID) {
@@ -43,6 +41,12 @@ module.exports = {
 
                                 guild.members.fetch(message.author.id).then( member => {
                                     QuickMute.purgeMessagesFromUserInChannel((message.channel as TextChannel), member, user)
+                                })
+
+                                guild.channels.fetch(Properties.ALERT_CHANNEL_ID).then( modAlertChannel => {
+                                    if(modAlertChannel != null){
+                                        ModAlert.deleteModAlert(message.id, null, (modAlertChannel as TextChannel));
+                                    }
                                 })
 
                             }).catch(e => { })
@@ -70,6 +74,12 @@ module.exports = {
 
                                 guild.members.fetch(message.author.id).then( member => {
                                     QuickMute.purgeMessagesFromUserInChannel((message.channel as TextChannel), member, user)
+                                })
+
+                                guild.channels.fetch(Properties.ALERT_CHANNEL_ID).then( modAlertChannel => {
+                                    if(modAlertChannel != null){
+                                        ModAlert.deleteModAlert(message.id, null, (modAlertChannel as TextChannel));
+                                    }
                                 })
 
                             }).catch(e => { console.log(e)})

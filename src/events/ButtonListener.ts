@@ -20,7 +20,7 @@ module.exports = {
             const modAlertMessage = (interaction.message as Message);
             const messageId: string = modAlertMessage.content.split("/")[6].replace(/\D/g, '');
 
-            ModAlert.deleteModAlert(messageId, modAlertMessage);
+            ModAlert.deleteModAlert(messageId, modAlertMessage, null);
         }
 
         if (interaction.customId == "Infractions") {
@@ -35,15 +35,18 @@ module.exports = {
 
                 ).then(message => {
 
-                    button.reply({ content: `view infractions here ${message.url}`, ephemeral: true })
-
+                    button.reply({ content: `view infractions here ${message.url}`, ephemeral: true, fetchReply:true }).then( message => {
+                        // setTimeout(function() {
+                        //     (message as Message).delete();
+                        // }, 3000);
+                    })
                 });
             })
         }
 
         if (interaction.customId == "qm30") {
 
-            if (RoleUtils.hasAnyRole((button.member as GuildMember), [RoleUtils.ROLE_TRIAL_MODERATOR_ID, RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID]) == true) {
+            if (RoleUtils.hasAnyRole((button.member as GuildMember), [RoleUtils.ROLE_MODERATOR_ID, RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID]) == true) {
 
                 quickMuteFromButton(interaction, "30m")
                 
@@ -56,7 +59,7 @@ module.exports = {
 
         if (interaction.customId == "qm60") {
 
-            if (RoleUtils.hasAnyRole((button.member as GuildMember), [RoleUtils.ROLE_TRIAL_MODERATOR_ID, RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID])) {
+            if (RoleUtils.hasAnyRole((button.member as GuildMember), [RoleUtils.ROLE_MODERATOR_ID, RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID])) {
 
                 quickMuteFromButton(interaction, "60m")
 
@@ -91,11 +94,13 @@ function quickMuteFromButton(interaction: { isButton: () => any; customId: strin
                     (commandsChannel as TextChannel).send(`<@${button.user.id}> Please verify the following Quick Mute. The message was not cached; it could have been edited.`)
                 }
 
-                ModAlert.deleteModAlert(messageId, modAlertMessage);
+                ModAlert.deleteModAlert(messageId, modAlertMessage, null);
 
             }).catch(error => {
+                console.log(ModAlert.existingModAlerts)
+                console.log(error);
                 (commandsChannel as TextChannel).send(`<@${button.user.id}> The message was deleted and not cached! Please mute manually`)
-                ModAlert.deleteModAlert(messageId, modAlertMessage);
+                ModAlert.deleteModAlert(messageId, modAlertMessage, null);
             })
         })
     })

@@ -4,7 +4,7 @@ import Properties from "./Properties";
 
 export default class QuickMute {
 
-    public static quickMuteUser(moderator: User, authorId: string, duration: string, messageEvidence: string, commandsChannel: TextChannel, message:Message) {
+    public static quickMuteUser(moderator: User, authorId: string, duration: string, messageEvidence: string, commandsChannel: TextChannel, message: Message | null) {
 
         const member = commandsChannel.guild.members.fetch(authorId).then(member => {
 
@@ -14,7 +14,9 @@ export default class QuickMute {
 
                     commandsChannel.send(`<@${moderator.id}> Oops! You can't Quick Mute another moderator. (Nice try though)`)
                 } else {
-                    message.delete().catch(e =>{ console.log(e)});
+                    if(message != null){
+                        message.delete().catch(e => { console.log(e) });
+                    }
                     if (messageEvidence.replace(/\r?\n|\r/g, " ").length < 120) {
                         const evidence = messageEvidence.replace(/\r?\n|\r/g, " ");
                         commandsChannel.send(`;mute ${authorId} ${duration} (By ${moderator.tag} (${moderator.id})) Message Evidence: ${evidence}`)
@@ -29,6 +31,8 @@ export default class QuickMute {
 
                         const evidenceFile = new MessageAttachment(Buffer.from(messageEvidence), `Evidence_against_${memberTitle}_on_${currentTime}}.txt`)
 
+                        const messagePreview = messageEvidence.substring(0, 25) + "...";
+
                         commandsChannel.guild.channels.fetch(Properties.MESSAGE_LOGS_CHANNEL_ID).then(messageLogsChannel => {
 
                             if (messageLogsChannel! != null) {
@@ -36,8 +40,7 @@ export default class QuickMute {
                                 (messageLogsChannel as TextChannel).send({ files: [evidenceFile] }).then(message => {
                                     const attachment = message.attachments.first();
                                     if (attachment?.url != null) {
-                                        commandsChannel.send(`;mute ${authorId} ${duration} (By ${moderator.tag} (${moderator.id})) Message Evidence: ${attachment.url}`)
-
+                                        commandsChannel.send(`;mute ${authorId} ${duration} (By ${moderator.tag} (${moderator.id})) Message Evidence: ${messagePreview} Full Evidence: ${attachment.url}`)
                                     }
                                 })
                             }
@@ -46,7 +49,7 @@ export default class QuickMute {
                             (commandsChannel as TextChannel).send({ files: [evidenceFile] }).then(message => {
                                 const attachment = message.attachments.first();
                                 if (attachment?.url != null) {
-                                    commandsChannel.send(`;mute ${authorId} ${duration} (By ${moderator.tag} (${moderator.id})) Message Evidence: ${attachment.url}`)
+                                    commandsChannel.send(`;mute ${authorId} ${duration} (By ${moderator.tag} (${moderator.id})) Message Evidence: ${messagePreview} Full Evidence: ${attachment.url}`)
                                 }
                             })
                         })
@@ -54,8 +57,8 @@ export default class QuickMute {
                 }
             }
         }).catch(e => {
-            message.delete().catch(e =>{ console.log(e)});
-            commandsChannel.send(`<@${moderator.id}> user has left the server!`)
+            message.delete().catch(e => { console.log(e) });
+            commandsChannel.send(`<@${moderator.id}> user <@${authorId}> (${authorId}) has left the server!`)
         })
     }
 
@@ -74,35 +77,36 @@ export default class QuickMute {
                     if (message.author.id == member.id) {
                         messagesToBePurged.push(message);
                         messageAmount++;
-                        evidenceString += `[${message.createdAt.getFullYear()}-${message.createdAt.getMonth() + 1}-${message.createdAt.getDay()}`
+                        evidenceString += `[${message.createdAt.getFullYear()}-${message.createdAt.getMonth() + 1}-${message.createdAt.getDate()}`
                             + `-${String(message.createdAt.getHours()).padStart(2, '0')}:${String(message.createdAt.getMinutes()).padStart(2, '0')}:${String(message.createdAt.getSeconds()).padStart(2, '0')}]`
                             + `(${member.id})`
                             + `-${message.content} \n`;
                     }
                 })
             }).then(e => {
+                if (messageAmount != null) {
+                    channel.bulkDelete(messagesToBePurged)
 
-                channel.bulkDelete(messagesToBePurged)
+                    const currentTime = new Date().toISOString();
 
-                const currentTime = new Date().toISOString();
+                    const evidenceFile = new MessageAttachment(Buffer.from(evidenceString), `Evidence_against_${member.id}_on_${currentTime}}.txt`);
 
-                const evidenceFile = new MessageAttachment(Buffer.from(evidenceString), `Evidence_against_${member.id}_on_${currentTime}}.txt`);
+                    channel.guild.channels.fetch(Properties.MESSAGE_LOGS_CHANNEL_ID).then(messageLogsChannel => {
 
-                channel.guild.channels.fetch(Properties.MESSAGE_LOGS_CHANNEL_ID).then(messageLogsChannel => {
+                        (messageLogsChannel as TextChannel).send({ files: [evidenceFile] }).then(message => {
 
-                    (messageLogsChannel as TextChannel).send({ files: [evidenceFile] }).then(message => {
-
-                        channel.guild.channels.fetch(Properties.COMMANDS_CHANNEL_ID).then(commandsChannel => {
-                            const attachment = message.attachments.first();
-                            if (attachment?.url != null) {
-                                const sweepEmoji = channel.client.emojis.cache.get(Properties.SWEEP_EMOJI_ID);
-                                (commandsChannel as TextChannel).send(`<@${moderator.id}> - You swept messages by <@${member.id}>`
-                                    + `\n> ${sweepEmoji} ${messageAmount} messages deleted in <#${channel.id}>`
-                                    + `\n\n**Message Evidence:** ${attachment.url}`)
-                            }
+                            channel.guild.channels.fetch(Properties.COMMANDS_CHANNEL_ID).then(commandsChannel => {
+                                const attachment = message.attachments.first();
+                                if (attachment?.url != null) {
+                                    const sweepEmoji = channel.client.emojis.cache.get(Properties.SWEEP_EMOJI_ID);
+                                    (commandsChannel as TextChannel).send(`<@${moderator.id}> - You swept messages by <@${member.id}>`
+                                        + `\n> ${sweepEmoji} ${messageAmount} messages deleted in <#${channel.id}>`
+                                        + `\n\n**Message Evidence:** ${attachment.url}`)
+                                }
+                            })
                         })
                     })
-                })
+                }
             })
         } else {
             channel.guild.channels.fetch(Properties.COMMANDS_CHANNEL_ID).then(commandsChannel => {
