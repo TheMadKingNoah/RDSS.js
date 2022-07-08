@@ -61,7 +61,19 @@ module.exports = {
             }
         }
 
-        console.log(Properties.membersOnStage)
+        if(Properties.membersOnStage.size > 0){
+            oldState.client.channels.fetch(Properties.MOD_CAST_TEXT_CHANNEL_ID).then(textChannel => {
+                if(textChannel != null){
+                    (textChannel as TextChannel).permissionOverwrites.create((textChannel as TextChannel).guild.roles.everyone, { SEND_MESSAGES: true });
+                }
+            })
+        } else {
+            oldState.client.channels.fetch(Properties.MOD_CAST_TEXT_CHANNEL_ID).then(textChannel => {
+                if(textChannel != null){
+                    (textChannel as TextChannel).permissionOverwrites.create((textChannel as TextChannel).guild.roles.everyone, { SEND_MESSAGES: false });
+                }
+            })
+        }
     }
 
 }
