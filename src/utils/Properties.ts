@@ -21,5 +21,10 @@ export default class Properties {
 
     public static VOICE_LOGS_CHANNEL_ID: string = "366624876544655360";
 
+    public static MOD_CAST_TEXT_CHANNEL_ID: string = "933975893599211570";
+
     public static ALERT_MODS_COOLDOWN: number = 5;
+
+    public static membersOnStage = new Map();
 }
+
