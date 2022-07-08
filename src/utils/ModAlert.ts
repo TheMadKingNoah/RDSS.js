@@ -72,7 +72,7 @@ export default class ModAlert {
 
             if (channel != null) {
                 const alertEmoji = channel.client.emojis.cache.get(Properties.ALERT_EMOJI_ID);
-                const newAlert = (channel as TextChannel).send({
+                (channel as TextChannel).send({
                     content:
                         `${alertEmoji} <@&${RoleUtils.ROLE_MODERATOR_ID}> <@&${RoleUtils.ROLE_TRIAL_MODERATOR_ID}>`
                         + `\n**Reported by:** <@${user.id}> (ID: \`${user.id}\`)`
@@ -83,9 +83,11 @@ export default class ModAlert {
                         + hasFile
                         + `\n(Access the jump URL to take action. Once finished, react to this message with one of the buttons)`
                     , components: [row]
+                }).then( alertMessage => {
+                    console.log(`new mod alert! ${message.id}`)
+                    this.existingModAlerts.set(message.id, message.content);
+                    console.log(this.existingModAlerts);
                 });
-
-                this.existingModAlerts.set(message.id, message.content);
             }
         }
     }
@@ -114,7 +116,7 @@ export default class ModAlert {
     public static approveBanRequest(message: Message, commandChannel: TextChannel, moderator: GuildMember) {
         try {
 
-            let banRequestMessageContent: string[] = message.content.replaceAll("(?i)(?!_(\\w|\\d|-)+\\.(png|jpe?g|gifv?|webm|wav|mp[34]|ogg|mov|txt)+)[\\*\\|\\~\\`\\_\\>]", "").replaceAll("\\s+", " ").replaceAll("|", "").split(" ");
+            let banRequestMessageContent: string[] = message.content.replaceAll("(?i)(?!_(\\w|\\d|-)+\\.(png|jpe?g|gifv?|webm|wav|mp[34]|ogg|mov|txt)+)[\\*\\|\\~\\`\\_\\>]", "").replaceAll("\\s+", " ").split(" ");
 
             let banRequestString = `(approved by ${moderator.user.tag} (${moderator.id})) `;
 
