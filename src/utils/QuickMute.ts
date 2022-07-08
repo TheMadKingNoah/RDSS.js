@@ -57,7 +57,9 @@ export default class QuickMute {
                 }
             }
         }).catch(e => {
-            message.delete().catch(e => { console.log(e) });
+            if(message != null){
+                message.delete().catch(e => { console.log(e) });
+            }
             commandsChannel.send(`<@${moderator.id}> user <@${authorId}> (${authorId}) has left the server!`)
         })
     }
