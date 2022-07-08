@@ -19,7 +19,7 @@ export default class Properties {
 
     public static MESSAGE_LOGS_CHANNEL_ID = "366624514651717663";
 
-    public static VOICE_LOGS_CHANNEL_ID: string = "983022264696078366";
+    public static VOICE_LOGS_CHANNEL_ID: string = "366624876544655360";
 
     public static ALERT_MODS_COOLDOWN: number = 5;
 }
