@@ -146,9 +146,9 @@ export default class ModAlert {
             let banRequestMessageContent: string[] = message.content.replaceAll("(?i)(?!_(\\w|\\d|-)+\\.(png|jpe?g|gifv?|webm|wav|mp[34]|ogg|mov|txt)+)[\\*\\|\\~\\`\\_\\>]", "").replaceAll("\\s+", " ").split(" ");
             let reportedUserId: string = banRequestMessageContent[1];
 
+            const denyEmoji = commandChannel.client.emojis.cache.get(Properties.REJECT_EMOJI_ID);
 
-
-            let rejectionNoticeString = `<@${message.author.id}> your ban request against <@${reportedUserId}> (${reportedUserId}) has been rejected by <@${moderator.id}> and the user has been unmuted. \n\n Your ban request evidence: `;
+            let rejectionNoticeString = `<@${message.author.id}> ${denyEmoji} your ban request against <@${reportedUserId}> (${reportedUserId}) has been rejected by <@${moderator.id}> and the user has been unmuted. \n\n Your ban request evidence: `;
 
             for (let i = 2; i < banRequestMessageContent.length; i++) {
                 rejectionNoticeString += banRequestMessageContent[i] + " ";
