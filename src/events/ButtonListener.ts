@@ -89,18 +89,26 @@ function quickMuteFromButton(interaction: { isButton: () => any; customId: strin
 
                 if (messageEvidence != null) {
                     QuickMute.quickMuteUser(button.user, authorId, duration, messageEvidence, (commandsChannel as TextChannel), message);
+                    ModAlert.deleteModAlert(messageId, modAlertMessage, null);
                 } else {
                     QuickMute.quickMuteUser(button.user, authorId, duration, message.content, (commandsChannel as TextChannel), message);
                     (commandsChannel as TextChannel).send(`<@${button.user.id}> Please verify the following Quick Mute. The message was not cached; it could have been edited.`)
+                    ModAlert.deleteModAlert(messageId, modAlertMessage, null);
                 }
 
-                ModAlert.deleteModAlert(messageId, modAlertMessage, null);
-
             }).catch(error => {
-                console.log(ModAlert.existingModAlerts)
-                console.log(error);
-                (commandsChannel as TextChannel).send(`<@${button.user.id}> The message was deleted and not cached! Please mute manually`)
-                ModAlert.deleteModAlert(messageId, modAlertMessage, null);
+                const messageEvidence = ModAlert.existingModAlerts.get(messageId);
+
+                if(messageEvidence != null){
+                    QuickMute.quickMuteUser(button.user, authorId, duration, messageEvidence, (commandsChannel as TextChannel), null);
+                    (commandsChannel as TextChannel).send(`<@${button.user.id}> Please verify the following Quick Mute. The message was not cached; it could have been edited.`)
+                    ModAlert.deleteModAlert(messageId, modAlertMessage, null);
+                } else {
+                    console.log(ModAlert.existingModAlerts)
+                    console.log(error);
+                    (commandsChannel as TextChannel).send(`<@${button.user.id}> The message was deleted and not cached! Please mute manually`)
+                    ModAlert.deleteModAlert(messageId, modAlertMessage, null);
+                }
             })
         })
     })
