@@ -64,16 +64,17 @@ module.exports = {
         if(Properties.membersOnStage.size > 0){
             oldState.client.channels.fetch(Properties.MOD_CAST_TEXT_CHANNEL_ID).then(textChannel => {
                 if(textChannel != null){
-                    (textChannel as TextChannel).permissionOverwrites.create((textChannel as TextChannel).guild.roles.everyone, { SEND_MESSAGES: true });
+                    (textChannel as TextChannel).permissionOverwrites.create((textChannel as TextChannel).guild.roles.everyone, { SEND_MESSAGES: true })
+                    .catch( e=> {});
                 }
             })
         } else {
             oldState.client.channels.fetch(Properties.MOD_CAST_TEXT_CHANNEL_ID).then(textChannel => {
                 if(textChannel != null){
-                    (textChannel as TextChannel).permissionOverwrites.create((textChannel as TextChannel).guild.roles.everyone, { SEND_MESSAGES: false });
+                    (textChannel as TextChannel).permissionOverwrites.create((textChannel as TextChannel).guild.roles.everyone, { SEND_MESSAGES: false })
+                    .catch( e=> {});;
                 }
             })
         }
     }
-
 }
