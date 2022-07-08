@@ -16,14 +16,14 @@ module.exports = {
     
                     if (newState.member != null) {
     
-                        (voiceLogsChannel as TextChannel).send({ embeds: [EmbedBuilds.getOnVoiceChannelJoinEmbed(newState)] })
+                        (voiceLogsChannel as TextChannel).send({ embeds: [EmbedBuilds.getOnVoiceChannelJoinEmbed(newState)] }).catch( e=> {})
                     }
     
                 } else if (newVoiceChannel !== null && oldVoiceChannel !== null) {
     
                     if (newState.member != null && newState.member != null) {
     
-                        (voiceLogsChannel as TextChannel).send({ embeds: [EmbedBuilds.getOnVoiceChannelChangeEmbed(oldState, newState)] })
+                        (voiceLogsChannel as TextChannel).send({ embeds: [EmbedBuilds.getOnVoiceChannelChangeEmbed(oldState, newState)] }).catch( e=> {})
     
                     }
     
@@ -31,7 +31,7 @@ module.exports = {
     
                     if (oldState.member != null) {
     
-                        (voiceLogsChannel as TextChannel).send({ embeds: [EmbedBuilds.getOnVoiceChannelLeaveEmbed(oldState)] })
+                        (voiceLogsChannel as TextChannel).send({ embeds: [EmbedBuilds.getOnVoiceChannelLeaveEmbed(oldState)] }).catch( e=> {})
     
                     }
                 }
