@@ -97,6 +97,9 @@ export default class ModAlert {
             this.existingModAlerts.delete(messageId);
         }
 
+        console.log(`a mod alert is about to be removed! ${messageId}`)
+        console.log(this.existingModAlerts)
+
         if (modAlertMessage == null && modAlertChannel != null) {
             modAlertChannel.messages.fetch({
                 limit: 100,
