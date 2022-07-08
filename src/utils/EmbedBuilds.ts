@@ -29,6 +29,9 @@ export default class EmbedBuilds {
             iconURL: newState.member?.displayAvatarURL().toString(),
             url: newState.member?.displayAvatarURL().toString()
         })
+        .addFields(
+            {name:`Member changed voice channel`, value:`**Before** #${oldState.channel?.name} (<#${oldState.channelId}>) \n**+After** #${newState.channel?.name} (<#${newState.channelId}>)`}
+        )
         .setFooter({
             text:`ID: ${newState.member?.user.tag} • ${(currentDate.getMonth() + 1)}/${currentDate.getDate()}/${currentDate.getFullYear()}`
         })
@@ -44,6 +47,9 @@ export default class EmbedBuilds {
             iconURL: oldState.member?.displayAvatarURL().toString(),
             url: oldState.member?.displayAvatarURL().toString()
         })
+        .addFields(
+            {name: 'Member left voice channel', value: `**${oldState.member?.user.tag}** left #${oldState.channel?.name} (<#${oldState.channelId}>)`}
+        )
         .setFooter({
             text:`ID: ${oldState.member?.user.tag} • ${(currentDate.getMonth() + 1)}/${currentDate.getDate()}/${currentDate.getFullYear()}`
         })
