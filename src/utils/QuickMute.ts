@@ -29,6 +29,8 @@ export default class QuickMute {
 
                         const evidenceFile = new MessageAttachment(Buffer.from(messageEvidence), `Evidence_against_${memberTitle}_on_${currentTime}}.txt`)
 
+                        const messagePreview = message.content.substring(0, 25) + "...";
+
                         commandsChannel.guild.channels.fetch(Properties.MESSAGE_LOGS_CHANNEL_ID).then(messageLogsChannel => {
 
                             if (messageLogsChannel! != null) {
@@ -36,8 +38,7 @@ export default class QuickMute {
                                 (messageLogsChannel as TextChannel).send({ files: [evidenceFile] }).then(message => {
                                     const attachment = message.attachments.first();
                                     if (attachment?.url != null) {
-                                        commandsChannel.send(`;mute ${authorId} ${duration} (By ${moderator.tag} (${moderator.id})) Message Evidence: ${attachment.url}`)
-
+                                        commandsChannel.send(`;mute ${authorId} ${duration} (By ${moderator.tag} (${moderator.id})) Message Evidence: ${messagePreview} Full Evidence: ${attachment.url}`)
                                     }
                                 })
                             }
@@ -46,7 +47,7 @@ export default class QuickMute {
                             (commandsChannel as TextChannel).send({ files: [evidenceFile] }).then(message => {
                                 const attachment = message.attachments.first();
                                 if (attachment?.url != null) {
-                                    commandsChannel.send(`;mute ${authorId} ${duration} (By ${moderator.tag} (${moderator.id})) Message Evidence: ${attachment.url}`)
+                                    commandsChannel.send(`;mute ${authorId} ${duration} (By ${moderator.tag} (${moderator.id})) Message Evidence: ${messagePreview} Full Evidence: ${attachment.url}`)
                                 }
                             })
                         })
