@@ -101,7 +101,6 @@ function quickMuteFromButton(interaction: { isButton: () => any; customId: strin
 
                 if(messageEvidence != null){
                     QuickMute.quickMuteUser(button.user, authorId, duration, messageEvidence, (commandsChannel as TextChannel), null);
-                    (commandsChannel as TextChannel).send(`<@${button.user.id}> Please verify the following Quick Mute. The message was not cached; it could have been edited.`)
                     ModAlert.deleteModAlert(messageId, modAlertMessage, null);
                 } else {
                     console.log(ModAlert.existingModAlerts)
