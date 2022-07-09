@@ -55,24 +55,26 @@ module.exports = {
             }
         }
 
-        if(newState.channel == null || newState.channel?.type == "GUILD_VOICE"){
+        if (newState.channel == null || newState.channel?.type == "GUILD_VOICE") {
             if (Properties.membersOnStage.has(newState.member?.id)) {
                 Properties.membersOnStage.delete(newState.member?.id)
             }
         }
 
-        if(Properties.membersOnStage.size > 0){
+        if (Properties.membersOnStage.size > 0) {
             oldState.client.channels.fetch(Properties.MOD_CAST_TEXT_CHANNEL_ID).then(textChannel => {
-                if(textChannel != null){
-                    (textChannel as TextChannel).permissionOverwrites.create((textChannel as TextChannel).guild.roles.everyone, { SEND_MESSAGES: true })
-                    .catch( e=> {});
+                textChannel = textChannel as TextChannel;
+                if (textChannel.permissionsFor(textChannel.guild.roles.everyone).has(["SEND_MESSAGES"]) == false) {
+                    textChannel.permissionOverwrites.create((textChannel as TextChannel).guild.roles.everyone, { SEND_MESSAGES: true })
+                        .catch(e => { });
                 }
             })
         } else {
             oldState.client.channels.fetch(Properties.MOD_CAST_TEXT_CHANNEL_ID).then(textChannel => {
-                if(textChannel != null){
+                textChannel = textChannel as TextChannel;
+                if (textChannel.permissionsFor(textChannel.guild.roles.everyone).has(["SEND_MESSAGES"]) == false) {
                     (textChannel as TextChannel).permissionOverwrites.create((textChannel as TextChannel).guild.roles.everyone, { SEND_MESSAGES: false })
-                    .catch( e=> {});;
+                        .catch(e => { });;
                 }
             })
         }
