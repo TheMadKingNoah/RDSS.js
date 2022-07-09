@@ -72,7 +72,7 @@ module.exports = {
         } else {
             oldState.client.channels.fetch(Properties.MOD_CAST_TEXT_CHANNEL_ID).then(textChannel => {
                 textChannel = textChannel as TextChannel;
-                if (textChannel.permissionsFor(textChannel.guild.roles.everyone).has(["SEND_MESSAGES"]) == false) {
+                if (textChannel.permissionsFor(textChannel.guild.roles.everyone).has(["SEND_MESSAGES"]) == true) {
                     (textChannel as TextChannel).permissionOverwrites.create((textChannel as TextChannel).guild.roles.everyone, { SEND_MESSAGES: false })
                         .catch(e => { });;
                 }
