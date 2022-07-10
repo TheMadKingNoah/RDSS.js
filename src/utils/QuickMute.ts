@@ -86,7 +86,7 @@ export default class QuickMute {
                     }
                 })
             }).then(e => {
-                if (messageAmount != null) {
+                if (messageAmount != 0) {
                     channel.bulkDelete(messagesToBePurged).catch(e => {})
 
                     const currentTime = new Date().toISOString();
@@ -101,7 +101,7 @@ export default class QuickMute {
                                 const attachment = message.attachments.first();
                                 if (attachment?.url != null) {
                                     const sweepEmoji = channel.client.emojis.cache.get(Properties.SWEEP_EMOJI_ID);
-                                    (commandsChannel as TextChannel).send(`<@${moderator.id}> - You swept messages by <@${member.id}>`
+                                    (commandsChannel as TextChannel).send(`<@${moderator.id}> - You swept messages by <@${member.id}> (${member.id})`
                                         + `\n> ${sweepEmoji} ${messageAmount} messages deleted in <#${channel.id}>`
                                         + `\n\n**Message Evidence:** ${attachment.url}`)
                                 }
@@ -115,63 +115,6 @@ export default class QuickMute {
                 (commandsChannel as TextChannel).send(`<@${moderator.id}> Oops! You can't Sweep another moderator. (Nice try though)`)
             }).catch(e => { console.log("channel not found") })
         }
-    }
-
-    public static quickMuteUserFromLogs(moderator: User, duration: string, commandsChannel: TextChannel, message: Message) {
-        const offenderId: string = message.content.substring(message.content.indexOf("(`") + 2, message.content.indexOf("`)"));
-        const offenseMessageEvidence = message.content.split("```")[1];
-
-        commandsChannel.guild.members.fetch(offenderId).then(member => {
-
-            if (!RoleUtils.hasAnyRole(member, [RoleUtils.ROLE_BOT_ID, RoleUtils.ROLE_TRIAL_MODERATOR_ID, RoleUtils.ROLE_MODERATOR_ID, RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID])) {
-
-                if (message.author.id == "469210425720963072") {
-
-                    if (offenseMessageEvidence.replace(/\r?\n|\r/g, " ").length < 120) {
-
-                        const evidence = offenseMessageEvidence.replace(/\r?\n|\r/g, " ");
-                        commandsChannel.send(`;mute ${offenderId} ${duration} (By ${moderator.tag} (${moderator.id})) Message Evidence: ${evidence}`)
-
-                    } else {
-
-                        let memberTitle = offenderId;
-
-                        if (member != null && member.nickname != null) {
-                            memberTitle = `${member.nickname}_${offenderId}`
-                        }
-
-                        const currentTime = new Date().toISOString();
-
-                        const evidenceFile = new MessageAttachment(Buffer.from(offenseMessageEvidence), `Evidence_against_${memberTitle}_on_${currentTime}}.txt`)
-
-                        const messagePreview = offenseMessageEvidence.substring(0, 25) + "...";
-
-                        commandsChannel.guild.channels.fetch(Properties.MESSAGE_LOGS_CHANNEL_ID).then(messageLogsChannel => {
-
-                            if (messageLogsChannel! != null) {
-
-                                (messageLogsChannel as TextChannel).send({ files: [evidenceFile] }).then(message => {
-                                    const attachment = message.attachments.first();
-                                    if (attachment?.url != null) {
-                                        commandsChannel.send(`;mute ${offenderId} ${duration} (By ${moderator.tag} (${moderator.id}) from logs) Message Evidence: ${messagePreview} Full Evidence: ${attachment.url}`)
-                                    }
-                                })
-                            }
-                        }
-                        ).catch(e => {
-                            (commandsChannel as TextChannel).send({ files: [evidenceFile] }).then(message => {
-                                const attachment = message.attachments.first();
-                                if (attachment?.url != null) {
-                                    commandsChannel.send(`;mute ${offenderId} ${duration} (By ${moderator.tag} (${moderator.id}) from logs) Message Evidence: ${messagePreview} Full Evidence: ${attachment.url}`)
-                                }
-                            })
-                        })
-                    }
-                }
-            }
-        }).catch(e => {
-            commandsChannel.send(`<@${moderator.id}> user <@${offenderId}> (${offenderId}) has left the server!`)
-        })
     }
 }
 
