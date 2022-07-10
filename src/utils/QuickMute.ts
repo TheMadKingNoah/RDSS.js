@@ -87,7 +87,7 @@ export default class QuickMute {
                 })
             }).then(e => {
                 if (messageAmount != null) {
-                    channel.bulkDelete(messagesToBePurged)
+                    channel.bulkDelete(messagesToBePurged).catch(e => {})
 
                     const currentTime = new Date().toISOString();
 
