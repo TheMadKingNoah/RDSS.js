@@ -127,7 +127,7 @@ export default class ModAlert {
                 banRequestString += banRequestMessageContent[i] + " ";
             }
 
-            const evidence = banRequestString.toString();
+            const evidence = banRequestString.replaceAll('|', '').toString();
             const userToBan: string = banRequestMessageContent[1];
 
             if (banRequestMessageContent[0].toLowerCase() === ";ban"
