@@ -34,9 +34,9 @@ module.exports = {
                     if (RoleUtils.hasAnyRole(member, [RoleUtils.ROLE_MODERATOR_ID, RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID])) {
 
                         guild.channels.fetch(Properties.COMMANDS_CHANNEL_ID).then(commandsChannel => {
-
+console.log("here")
                             reaction.message.fetch().then(message => {
-
+                                console.log("we are")
                                 if (message.channelId == Properties.MESSAGE_LOGS_CHANNEL_ID) {
 
                                     QuickMute.quickMuteUserFromLogs(user, "30m", (commandsChannel as TextChannel), message)
