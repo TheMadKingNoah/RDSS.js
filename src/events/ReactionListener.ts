@@ -34,27 +34,20 @@ module.exports = {
                     if (RoleUtils.hasAnyRole(member, [RoleUtils.ROLE_MODERATOR_ID, RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID])) {
 
                         guild.channels.fetch(Properties.COMMANDS_CHANNEL_ID).then(commandsChannel => {
-console.log("here")
+
                             reaction.message.fetch().then(message => {
-                                console.log("we are")
-                                if (message.channelId == Properties.MESSAGE_LOGS_CHANNEL_ID) {
 
-                                    QuickMute.quickMuteUserFromLogs(user, "30m", (commandsChannel as TextChannel), message)
+                                QuickMute.quickMuteUser(user, message.author.id, "30m", message.content, (commandsChannel as TextChannel), message)
 
-                                } else {
+                                guild.members.fetch(message.author.id).then(member => {
+                                    QuickMute.purgeMessagesFromUserInChannel((message.channel as TextChannel), member, user)
+                                })
 
-                                    QuickMute.quickMuteUser(user, message.author.id, "30m", message.content, (commandsChannel as TextChannel), message)
-
-                                    guild.members.fetch(message.author.id).then(member => {
-                                        QuickMute.purgeMessagesFromUserInChannel((message.channel as TextChannel), member, user)
-                                    })
-
-                                    guild.channels.fetch(Properties.ALERT_CHANNEL_ID).then(modAlertChannel => {
-                                        if (modAlertChannel != null) {
-                                            ModAlert.deleteModAlert(message.id, null, (modAlertChannel as TextChannel));
-                                        }
-                                    })
-                                }
+                                guild.channels.fetch(Properties.ALERT_CHANNEL_ID).then(modAlertChannel => {
+                                    if (modAlertChannel != null) {
+                                        ModAlert.deleteModAlert(message.id, null, (modAlertChannel as TextChannel));
+                                    }
+                                })
 
                             }).catch(e => { })
                         }).catch(e => { })
@@ -77,24 +70,18 @@ console.log("here")
 
                             reaction.message.fetch().then(message => {
 
-                                if (message.channelId == Properties.MESSAGE_LOGS_CHANNEL_ID) {
+                                QuickMute.quickMuteUser(user, message.author.id, "60m", message.content, (commandsChannel as TextChannel), message)
 
-                                    QuickMute.quickMuteUserFromLogs(user, "60m", (commandsChannel as TextChannel), message)
+                                guild.members.fetch(message.author.id).then(member => {
+                                    QuickMute.purgeMessagesFromUserInChannel((message.channel as TextChannel), member, user)
+                                })
 
-                                } else {
+                                guild.channels.fetch(Properties.ALERT_CHANNEL_ID).then(modAlertChannel => {
+                                    if (modAlertChannel != null) {
+                                        ModAlert.deleteModAlert(message.id, null, (modAlertChannel as TextChannel));
+                                    }
+                                })
 
-                                    QuickMute.quickMuteUser(user, message.author.id, "60m", message.content, (commandsChannel as TextChannel), message)
-
-                                    guild.members.fetch(message.author.id).then(member => {
-                                        QuickMute.purgeMessagesFromUserInChannel((message.channel as TextChannel), member, user)
-                                    })
-
-                                    guild.channels.fetch(Properties.ALERT_CHANNEL_ID).then(modAlertChannel => {
-                                        if (modAlertChannel != null) {
-                                            ModAlert.deleteModAlert(message.id, null, (modAlertChannel as TextChannel));
-                                        }
-                                    })
-                                }
                             }).catch(e => { console.log(e) })
                         }).catch(e => { })
                     }
