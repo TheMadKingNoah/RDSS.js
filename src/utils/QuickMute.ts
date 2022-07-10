@@ -120,51 +120,53 @@ export default class QuickMute {
     public static quickMuteUserFromLogs(moderator: User, duration: string, commandsChannel: TextChannel, message: Message) {
         const offenderId: string = message.content.substring(message.content.indexOf("(`") + 2, message.content.indexOf("`)"));
         const offenseMessageEvidence = message.content.split("```")[1];
-        console.log(offenderId)
 
         commandsChannel.guild.members.fetch(offenderId).then(member => {
 
-            if (member.id == "469210425720963072") {
+            if (RoleUtils.hasAnyRole(member, [RoleUtils.ROLE_BOT_ID, RoleUtils.ROLE_TRIAL_MODERATOR_ID, RoleUtils.ROLE_MODERATOR_ID, RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID])) {
 
-                if (offenseMessageEvidence.replace(/\r?\n|\r/g, " ").length < 120) {
+                if (message.author.id == "469210425720963072") {
 
-                    const evidence = offenseMessageEvidence.replace(/\r?\n|\r/g, " ");
-                    commandsChannel.send(`;mute ${offenderId} ${duration} (By ${moderator.tag} (${moderator.id})) Message Evidence: ${evidence}`)
+                    if (offenseMessageEvidence.replace(/\r?\n|\r/g, " ").length < 120) {
 
-                } else {
-                    
-                    let memberTitle = offenderId;
+                        const evidence = offenseMessageEvidence.replace(/\r?\n|\r/g, " ");
+                        commandsChannel.send(`;mute ${offenderId} ${duration} (By ${moderator.tag} (${moderator.id})) Message Evidence: ${evidence}`)
 
-                    if (member != null && member.nickname != null) {
-                        memberTitle = `${member.nickname}_${offenderId}`
-                    }
+                    } else {
 
-                    const currentTime = new Date().toISOString();
+                        let memberTitle = offenderId;
 
-                    const evidenceFile = new MessageAttachment(Buffer.from(offenseMessageEvidence), `Evidence_against_${memberTitle}_on_${currentTime}}.txt`)
+                        if (member != null && member.nickname != null) {
+                            memberTitle = `${member.nickname}_${offenderId}`
+                        }
 
-                    const messagePreview = offenseMessageEvidence.substring(0, 25) + "...";
+                        const currentTime = new Date().toISOString();
 
-                    commandsChannel.guild.channels.fetch(Properties.MESSAGE_LOGS_CHANNEL_ID).then(messageLogsChannel => {
+                        const evidenceFile = new MessageAttachment(Buffer.from(offenseMessageEvidence), `Evidence_against_${memberTitle}_on_${currentTime}}.txt`)
 
-                        if (messageLogsChannel! != null) {
+                        const messagePreview = offenseMessageEvidence.substring(0, 25) + "...";
 
-                            (messageLogsChannel as TextChannel).send({ files: [evidenceFile] }).then(message => {
+                        commandsChannel.guild.channels.fetch(Properties.MESSAGE_LOGS_CHANNEL_ID).then(messageLogsChannel => {
+
+                            if (messageLogsChannel! != null) {
+
+                                (messageLogsChannel as TextChannel).send({ files: [evidenceFile] }).then(message => {
+                                    const attachment = message.attachments.first();
+                                    if (attachment?.url != null) {
+                                        commandsChannel.send(`;mute ${offenderId} ${duration} (By ${moderator.tag} (${moderator.id}) from logs) Message Evidence: ${messagePreview} Full Evidence: ${attachment.url}`)
+                                    }
+                                })
+                            }
+                        }
+                        ).catch(e => {
+                            (commandsChannel as TextChannel).send({ files: [evidenceFile] }).then(message => {
                                 const attachment = message.attachments.first();
                                 if (attachment?.url != null) {
                                     commandsChannel.send(`;mute ${offenderId} ${duration} (By ${moderator.tag} (${moderator.id}) from logs) Message Evidence: ${messagePreview} Full Evidence: ${attachment.url}`)
                                 }
                             })
-                        }
-                    }
-                    ).catch(e => {
-                        (commandsChannel as TextChannel).send({ files: [evidenceFile] }).then(message => {
-                            const attachment = message.attachments.first();
-                            if (attachment?.url != null) {
-                                commandsChannel.send(`;mute ${offenderId} ${duration} (By ${moderator.tag} (${moderator.id}) from logs) Message Evidence: ${messagePreview} Full Evidence: ${attachment.url}`)
-                            }
                         })
-                    })
+                    }
                 }
             }
         }).catch(e => {
