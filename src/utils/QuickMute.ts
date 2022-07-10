@@ -123,7 +123,7 @@ export default class QuickMute {
 
         commandsChannel.guild.members.fetch(offenderId).then(member => {
 
-            if (RoleUtils.hasAnyRole(member, [RoleUtils.ROLE_BOT_ID, RoleUtils.ROLE_TRIAL_MODERATOR_ID, RoleUtils.ROLE_MODERATOR_ID, RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID])) {
+            if (!RoleUtils.hasAnyRole(member, [RoleUtils.ROLE_BOT_ID, RoleUtils.ROLE_TRIAL_MODERATOR_ID, RoleUtils.ROLE_MODERATOR_ID, RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID])) {
 
                 if (message.author.id == "469210425720963072") {
 
