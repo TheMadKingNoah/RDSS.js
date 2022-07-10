@@ -14,7 +14,7 @@ export default class QuickMute {
 
                     commandsChannel.send(`<@${moderator.id}> Oops! You can't Quick Mute another moderator. (Nice try though)`)
                 } else {
-                    if(message != null){
+                    if (message != null) {
                         message.delete().catch(e => { console.log(e) });
                     }
                     if (messageEvidence.replace(/\r?\n|\r/g, " ").length < 120) {
@@ -57,7 +57,7 @@ export default class QuickMute {
                 }
             }
         }).catch(e => {
-            if(message != null){
+            if (message != null) {
                 message.delete().catch(e => { console.log(e) });
             }
             commandsChannel.send(`<@${moderator.id}> user <@${authorId}> (${authorId}) has left the server!`)
@@ -116,4 +116,60 @@ export default class QuickMute {
             }).catch(e => { console.log("channel not found") })
         }
     }
+
+    public static quickMuteUserFromLogs(moderator: User, duration: string, commandsChannel: TextChannel, message: Message) {
+        const offenderId: string = message.content.substring(message.content.indexOf("(`") + 2, message.content.indexOf("`)"));
+        const offenseMessageEvidence = message.content.split("```")[1];
+        console.log(offenderId)
+
+        commandsChannel.guild.members.fetch(offenderId).then(member => {
+
+            if (member.id == "469210425720963072") {
+
+                if (offenseMessageEvidence.replace(/\r?\n|\r/g, " ").length < 120) {
+
+                    const evidence = offenseMessageEvidence.replace(/\r?\n|\r/g, " ");
+                    commandsChannel.send(`;mute ${offenderId} ${duration} (By ${moderator.tag} (${moderator.id})) Message Evidence: ${evidence}`)
+
+                } else {
+                    
+                    let memberTitle = offenderId;
+
+                    if (member != null && member.nickname != null) {
+                        memberTitle = `${member.nickname}_${offenderId}`
+                    }
+
+                    const currentTime = new Date().toISOString();
+
+                    const evidenceFile = new MessageAttachment(Buffer.from(offenseMessageEvidence), `Evidence_against_${memberTitle}_on_${currentTime}}.txt`)
+
+                    const messagePreview = offenseMessageEvidence.substring(0, 25) + "...";
+
+                    commandsChannel.guild.channels.fetch(Properties.MESSAGE_LOGS_CHANNEL_ID).then(messageLogsChannel => {
+
+                        if (messageLogsChannel! != null) {
+
+                            (messageLogsChannel as TextChannel).send({ files: [evidenceFile] }).then(message => {
+                                const attachment = message.attachments.first();
+                                if (attachment?.url != null) {
+                                    commandsChannel.send(`;mute ${offenderId} ${duration} (By ${moderator.tag} (${moderator.id}) from logs) Message Evidence: ${messagePreview} Full Evidence: ${attachment.url}`)
+                                }
+                            })
+                        }
+                    }
+                    ).catch(e => {
+                        (commandsChannel as TextChannel).send({ files: [evidenceFile] }).then(message => {
+                            const attachment = message.attachments.first();
+                            if (attachment?.url != null) {
+                                commandsChannel.send(`;mute ${offenderId} ${duration} (By ${moderator.tag} (${moderator.id}) from logs) Message Evidence: ${messagePreview} Full Evidence: ${attachment.url}`)
+                            }
+                        })
+                    })
+                }
+            }
+        }).catch(e => {
+            commandsChannel.send(`<@${moderator.id}> user <@${offenderId}> (${offenderId}) has left the server!`)
+        })
+    }
 }
+
