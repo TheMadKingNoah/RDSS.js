@@ -75,7 +75,7 @@ export default class ModAlert {
                 (channel as TextChannel).send({
                     content:
                         `${alertEmoji} <@&${RoleUtils.ROLE_MODERATOR_ID}> <@&${RoleUtils.ROLE_TRIAL_MODERATOR_ID}>`
-                        + `\n**Reported by:** <@${user.id}> (ID: \`${user.id}\`)`
+                        + `\n**Reported by:** <@${user.id}> (ID: \` ${user.id} \`)`
                         + `\n**Against:** <@${message.author.id}> (ID: \`${message.author.id}\`)`
                         + `\n <${message.url}>/`
                         + hasContent
