@@ -36,9 +36,10 @@ module.exports = {
                 ).then(message => {
 
                     button.reply({ content: `view infractions here ${message.url}`, ephemeral: true, fetchReply:true }).then( message => {
-                        // setTimeout(function() {
-                        //     (message as Message).delete();
-                        // }, 3000);
+                        setTimeout(function() { 
+                            console.log(message);
+                            (message as Message).delete();
+                        }, 3000);
                     })
                 });
             })
