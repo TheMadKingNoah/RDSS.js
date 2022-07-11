@@ -11,9 +11,9 @@ export default class Properties {
 
     public static SWEEP_EMOJI_ID = "783030737552670801";
 
-    public static ALERT_CHANNEL_ID: string = "864250737689362433";
+    public static ALERT_CHANNEL_ID: string = "785821764839669791";
 
-    public static COMMANDS_CHANNEL_ID: string = "864250679485136907";
+    public static COMMANDS_CHANNEL_ID: string = "150250250471342080";
 
     public static BAN_REQUESTS_QUEUE_CHANNEL_ID: string = "592580861543841802";
 
