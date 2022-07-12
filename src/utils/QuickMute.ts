@@ -42,7 +42,7 @@ export default class QuickMute {
                                     if (attachment?.url != null) {
                                         commandsChannel.send(`;mute ${authorId} ${duration} (By ${moderator.tag} (${moderator.id})) Message Evidence: ${messagePreview} Full Evidence: ${attachment.url}`)
                                     }
-                                })
+                                }).catch(e => { console.log(e) })
                             }
                         }
                         ).catch(e => {
@@ -51,8 +51,8 @@ export default class QuickMute {
                                 if (attachment?.url != null) {
                                     commandsChannel.send(`;mute ${authorId} ${duration} (By ${moderator.tag} (${moderator.id})) Message Evidence: ${messagePreview} Full Evidence: ${attachment.url}`)
                                 }
-                            })
-                        })
+                            }).catch(e => { console.log(e) })
+                        }).catch(e => { console.log(e) })
                     }
                 }
             }
@@ -105,11 +105,11 @@ export default class QuickMute {
                                         + `\n> ${sweepEmoji} ${messageAmount} messages deleted in <#${channel.id}>`
                                         + `\n\n**Message Evidence:** ${attachment.url}`)
                                 }
-                            })
-                        })
-                    })
+                            }).catch(e => { console.log(e) })
+                        }).catch(e => { console.log(e) })
+                    }).catch(e => { console.log(e) })
                 }
-            })
+            }).catch(e => { console.log(e) })
         } else {
             channel.guild.channels.fetch(Properties.COMMANDS_CHANNEL_ID).then(commandsChannel => {
                 (commandsChannel as TextChannel).send(`<@${moderator.id}> Oops! You can't Sweep another moderator. (Nice try though)`)

@@ -41,13 +41,13 @@ module.exports = {
 
                                 guild.members.fetch(message.author.id).then(member => {
                                     QuickMute.purgeMessagesFromUserInChannel((message.channel as TextChannel), member, user)
-                                })
+                                }).catch(e => { console.log(e) })
 
                                 guild.channels.fetch(Properties.ALERT_CHANNEL_ID).then(modAlertChannel => {
                                     if (modAlertChannel != null) {
                                         ModAlert.deleteModAlert(message.id, null, (modAlertChannel as TextChannel));
                                     }
-                                })
+                                }).catch(e => { console.log(e) })
 
                             }).catch(e => { })
                         }).catch(e => { })
