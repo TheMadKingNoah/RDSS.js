@@ -34,13 +34,7 @@ module.exports = {
                     `;inf search ${authorId}`
 
                 ).then(message => {
-
-                    button.reply({ content: `view infractions here ${message.url}`, ephemeral: true, fetchReply: true }).then(message => {
-                        setTimeout(function () {
-                            console.log(message);
-                            (message as Message).delete();
-                        }, 3000);
-                    }).catch(e => { console.log(e) })
+                    button.reply({ content: `view infractions here ${message.url}`, ephemeral: true, fetchReply: true }).catch(e => { });
                 }).catch(e => { console.log(e) })
             }).catch(e => { console.log(e) })
         }
