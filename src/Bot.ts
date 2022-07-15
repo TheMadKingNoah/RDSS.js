@@ -1,4 +1,6 @@
-import { Client, TextChannel } from "discord.js";
+import { REST } from "@discordjs/rest";
+import { Client, Options, TextChannel } from "discord.js";
+const { Routes } = require('discord-api-types/v9');
 import path from "path";
 const fs = require("fs");
 require("dotenv").config();
@@ -6,6 +8,10 @@ require("dotenv").config();
 console.log("Bot is starting...");
 
 const client = new Client({
+    makeCache: Options.cacheWithLimits({
+        MessageManager: 0,
+        GuildMemberManager: 0
+    }),
 
     intents: ["GUILDS", 'GUILD_MESSAGE_REACTIONS', "GUILD_MEMBERS", "GUILD_VOICE_STATES", "GUILD_MESSAGES"],
     partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
