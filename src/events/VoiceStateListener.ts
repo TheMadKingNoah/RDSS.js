@@ -17,7 +17,7 @@ module.exports = {
 
                     if (newState.member != null) {
                         if (newVoiceChannel.type == "GUILD_VOICE") {
-                            (voiceLogsChannel as TextChannel).send({ embeds: [EmbedBuilds.getOnVoiceChannelJoinEmbed(newState)] }).catch(e => { })
+                            (voiceLogsChannel as TextChannel).send({ embeds: [EmbedBuilds.getOnVoiceChannelJoinEmbed(newState)] }).catch(e => { console.log(e)})
                         }
                     }
 
