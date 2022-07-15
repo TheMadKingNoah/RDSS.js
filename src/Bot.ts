@@ -9,8 +9,8 @@ console.log("Bot is starting...");
 
 const client = new Client({
     makeCache: Options.cacheWithLimits({
-        MessageManager: 0,
-        GuildMemberManager: 0
+        MessageManager: 10000,
+        GuildMemberManager: 10000
     }),
 
     intents: ["GUILDS", 'GUILD_MESSAGE_REACTIONS', "GUILD_MEMBERS", "GUILD_VOICE_STATES", "GUILD_MESSAGES"],
