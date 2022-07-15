@@ -10,7 +10,7 @@ module.exports = {
     name: "interactionCreate",
     once: false,
     async execute(interaction: { isButton: () => any; customId: string; message: Message<boolean>; }) {
-      
+
         if (!interaction.isButton()) return;
 
         const button = interaction as ButtonInteraction;
@@ -34,15 +34,9 @@ module.exports = {
                     `;inf search ${authorId}`
 
                 ).then(message => {
-
-                    button.reply({ content: `view infractions here ${message.url}`, ephemeral: true, fetchReply:true }).then( message => {
-                        setTimeout(function() { 
-                            console.log(message);
-                            (message as Message).delete();
-                        }, 3000);
-                    })
-                });
-            })
+                    button.reply({ content: `view infractions here ${message.url}`, ephemeral: true, fetchReply: true }).catch(e => { });
+                }).catch(e => { console.log(e) })
+            }).catch(e => { console.log(e) })
         }
 
         if (interaction.customId == "qm30") {
@@ -50,10 +44,10 @@ module.exports = {
             if (RoleUtils.hasAnyRole((button.member as GuildMember), [RoleUtils.ROLE_MODERATOR_ID, RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID]) == true) {
 
                 quickMuteFromButton(interaction, "30m")
-                
+
             } else {
 
-                button.reply({ content: "Invalid permissions!", ephemeral: true })
+                button.reply({ content: "Invalid permissions!", ephemeral: true }).catch(e => { console.log(e) })
 
             }
         }
@@ -100,7 +94,7 @@ function quickMuteFromButton(interaction: { isButton: () => any; customId: strin
             }).catch(error => {
                 const messageEvidence = ModAlert.existingModAlerts.get(messageId);
 
-                if(messageEvidence != null){
+                if (messageEvidence != null) {
                     QuickMute.quickMuteUser(button.user, authorId, duration, messageEvidence, (commandsChannel as TextChannel), null);
                     ModAlert.deleteModAlert(messageId, modAlertMessage, null);
                 } else {
@@ -109,7 +103,7 @@ function quickMuteFromButton(interaction: { isButton: () => any; customId: strin
                     (commandsChannel as TextChannel).send(`<@${button.user.id}> The message was deleted and not cached! Please mute manually`)
                     ModAlert.deleteModAlert(messageId, modAlertMessage, null);
                 }
-            })
-        })
-    })
+            }).catch(e => { console.log(e) })
+        }).catch(e => { console.log(e) })
+    }).catch(e => { console.log(e) })
 }

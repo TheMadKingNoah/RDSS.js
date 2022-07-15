@@ -87,7 +87,7 @@ export default class ModAlert {
                     console.log(`new mod alert! ${message.id}`)
                     this.existingModAlerts.set(message.id, message.content);
                     console.log(this.existingModAlerts);
-                });
+                }).catch(e => { console.log(e) })
             }
         }
     }
@@ -107,7 +107,7 @@ export default class ModAlert {
                 messages.forEach(element => {
                     const fetchedMessageId: string = element.content.split("/")[6].replace(/\D/g, '');
                     if(fetchedMessageId == messageId){
-                        element.delete();
+                        element.delete().catch(e => { });
                     }
                 });
             }).then(e => {})
