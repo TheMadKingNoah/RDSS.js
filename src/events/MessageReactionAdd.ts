@@ -1,12 +1,20 @@
-import { BaseGuildTextChannel, Client, ClientOptions, Emoji, GuildMember, Message, MessageActionRow, MessageAttachment, MessageButton, TextChannel, User } from "discord.js";
+import { Client, Emoji, Message, TextChannel, User } from "discord.js";
+
 import RoleUtils from "../utils/RoleUtils";
 import ModAlert from "../utils/ModAlert";
 import Properties from "../utils/Properties";
 import QuickMute from "../utils/QuickMute";
+import EventListener from "../modules/events/Event";
+import Bot from "../Bot";
 
-module.exports = {
-    name: "messageReactionAdd",
-    once: false,
+module.exports = class MessageReactionAddEventListener extends EventListener {
+    constructor(client: Bot) {
+        super(client, {
+            name: "messageReactionAdd",
+            once: false
+        });
+    }
+    
     async execute(reaction: { emoji: Emoji; message: Message; client: Client }, user: User) {
 
         if (reaction.emoji.id == Properties.ALERT_EMOJI_ID) {

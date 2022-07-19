@@ -3,13 +3,24 @@ import RoleUtils from "../utils/RoleUtils";
 import ModAlert from "../utils/ModAlert";
 import Properties from "../utils/Properties";
 import QuickMute from "../utils/QuickMute";
+import EventListener from "../modules/events/Event";
+import Bot from "../Bot";
 
 const fs = require("fs");
 
-module.exports = {
-    name: "interactionCreate",
-    once: false,
-    async execute(interaction: { isButton: () => any; customId: string; message: Message<boolean>; }) {
+module.exports = class InteractionCreateEventListener extends EventListener {
+    constructor(client: Bot) {
+        super(client, {
+            name: "interactionCreate",
+            once: false
+        });
+    }
+    
+    async execute(interaction: { isButton: () => any; customId: string; message: Message<boolean>; isCommand: () => any }) {
+
+        if (interaction.isCommand()) {
+                  this.client.commands.handle(interaction);
+        }
 
         if (!interaction.isButton()) return;
 
