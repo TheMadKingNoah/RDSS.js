@@ -1,10 +1,17 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
+import Command from "../../modules/interactions/commands/Command";
+import Bot from "../../Bot";
 
-module.exports = {
-    data: new SlashCommandBuilder()
-        .setName("quickmute")
-        .setDescription("QuickMutes the user"),
-    async excecute(interaction: { reply: (arg0: string) => void; }){
-    
+import { CommandInteraction } from "discord.js";
+
+export default class QuickMuteCommand extends Command {
+    constructor(client: Bot) {
+        super(client, {
+            name: "quickmute",
+            description: "Quick mute a user."
+        });
+    }
+
+    async execute(interaction: CommandInteraction) {
+        interaction.reply("This command is not yet implemented.");
     }
 }
