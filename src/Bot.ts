@@ -1,9 +1,8 @@
-import { REST } from "@discordjs/rest";
-import { Client, Options, TextChannel } from "discord.js";
-const { Routes } = require('discord-api-types/v9');
+import { Client } from "discord.js";
 import path from "path";
-const fs = require("fs");
-require("dotenv").config();
+import fs from "fs";
+
+import "dotenv/config";
 
 console.log("Bot is starting...");
 
