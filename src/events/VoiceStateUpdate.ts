@@ -1,10 +1,16 @@
-import { StageChannel, TextChannel, VoiceChannel, VoiceState } from "discord.js";
+import { TextChannel, VoiceChannel, VoiceState } from "discord.js";
 import Properties from "../utils/Properties";
 import EmbedBuilds from "../utils/EmbedBuilds";
+import EventListener from "../modules/events/Event";
+import Bot from "../Bot";
 
-module.exports = {
-    name: "voiceStateUpdate",
-    once: false,
+module.exports = class VoiceStateUpdateEventListener extends EventListener {
+    constructor(client: Bot) {
+        super(client, {
+            name: "voiceStateUpdate",
+            once: false
+        });
+    }
 
     async execute(oldState: VoiceState, newState: VoiceState) {
         oldState.client.channels.fetch(Properties.VOICE_LOGS_CHANNEL_ID).then(voiceLogsChannel => {
