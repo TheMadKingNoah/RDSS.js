@@ -22,6 +22,10 @@ module.exports = class InteractionCreateEventListener extends EventListener {
                   this.client.commands.handle(interaction);
         }
 
+        if (interaction.isButton()) {
+                  this.client.buttons.handle(interaction);
+        }
+
         if (!interaction.isButton()) return;
 
         const button = interaction as ButtonInteraction;
