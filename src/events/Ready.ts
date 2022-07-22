@@ -14,5 +14,7 @@ module.exports = class ReadyEventListener extends EventListener {
 
             client.commands.load();
             client.commands.publish();
+
+            client.buttons.load();
       }
 }

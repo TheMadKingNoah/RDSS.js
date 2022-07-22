@@ -1,5 +1,6 @@
-import { TextChannel, User, MessageAttachment, ChannelLogsQueryOptions, Collection, Message, Role, GuildMember } from "discord.js";
+import { TextChannel, User, MessageAttachment, ChannelLogsQueryOptions, Collection, Message, Role, GuildMember, ButtonInteraction } from "discord.js";
 import RoleUtils from "../utils/RoleUtils";
+import ModAlert from "./ModAlert";
 import Properties from "./Properties";
 
 export default class QuickMute {
@@ -114,6 +115,48 @@ export default class QuickMute {
             channel.guild.channels.fetch(Properties.COMMANDS_CHANNEL_ID).then(commandsChannel => {
                 (commandsChannel as TextChannel).send(`<@${moderator.id}> Oops! You can't Sweep another moderator. (Nice try though)`)
             }).catch(e => { console.log("channel not found") })
+        }
+    }
+
+    public static quickMuteFromButton(interaction: ButtonInteraction, duration: string) {
+        const modAlertMessage = (interaction.message as Message);
+        const authorId = modAlertMessage.content.split("`")[3];
+        const channelId = modAlertMessage.content.split("/")[5];
+        const messageId: string = modAlertMessage.content.split("/")[6].replace(/\D/g, '');
+    
+        try {
+            modAlertMessage.client.channels.fetch(Properties.COMMANDS_CHANNEL_ID).then(commandsChannel => {
+                modAlertMessage.client.channels.fetch(channelId).then(channel => {
+        
+                    (channel as TextChannel).messages.fetch(messageId).then(message => {
+                        const messageEvidence = ModAlert.existingModAlerts.get(messageId);
+        
+                        if (messageEvidence != null) {
+                            this.quickMuteUser(interaction.user, authorId, duration, messageEvidence, (commandsChannel as TextChannel), message);
+                            ModAlert.deleteModAlert(messageId, modAlertMessage, null);
+                        } else {
+                            this.quickMuteUser(interaction.user, authorId, duration, message.content, (commandsChannel as TextChannel), message);
+                            (commandsChannel as TextChannel).send(`<@${interaction.user.id}> Please verify the following Quick Mute. The message was not cached; it could have been edited.`)
+                            ModAlert.deleteModAlert(messageId, modAlertMessage, null);
+                        }
+        
+                    }).catch(error => {
+                        const messageEvidence = ModAlert.existingModAlerts.get(messageId);
+        
+                        if (messageEvidence != null) {
+                            this.quickMuteUser(interaction.user, authorId, duration, messageEvidence, (commandsChannel as TextChannel), null);
+                            ModAlert.deleteModAlert(messageId, modAlertMessage, null);
+                        } else {
+                            console.log(ModAlert.existingModAlerts)
+                            console.log(error);
+                            (commandsChannel as TextChannel).send(`<@${interaction.user.id}> The message was deleted and not cached! Please mute manually`)
+                            ModAlert.deleteModAlert(messageId, modAlertMessage, null);
+                        }
+                    });
+                });
+            });
+        } catch (err) {
+            console.error(err);
         }
     }
 }
