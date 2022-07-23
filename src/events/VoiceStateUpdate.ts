@@ -23,7 +23,7 @@ module.exports = class VoiceStateUpdateEventListener extends EventListener {
 
                     if (newState.member != null) {
                         if (newVoiceChannel.type == "GUILD_VOICE") {
-                            (voiceLogsChannel as TextChannel).send({ embeds: [EmbedBuilds.getOnVoiceChannelJoinEmbed(newState)] }).catch(err=> { console.log(err)})
+                            (voiceLogsChannel as TextChannel).send({ embeds: [EmbedBuilds.getOnVoiceChannelJoinEmbed(newState)] }).catch(err => { console.log(err)})
                         }
                     }
 
@@ -31,7 +31,7 @@ module.exports = class VoiceStateUpdateEventListener extends EventListener {
 
                     if (newState.member != null && newState.member != null) {
                         if (newVoiceChannel.type == "GUILD_VOICE" && oldVoiceChannel.type == "GUILD_VOICE") {
-                            (voiceLogsChannel as TextChannel).send({ embeds: [EmbedBuilds.getOnVoiceChannelChangeEmbed(oldState, newState)] }).catch(err=> { })
+                            (voiceLogsChannel as TextChannel).send({ embeds: [EmbedBuilds.getOnVoiceChannelChangeEmbed(oldState, newState)] }).catch(err => { })
                         }
                     }
 
@@ -39,12 +39,12 @@ module.exports = class VoiceStateUpdateEventListener extends EventListener {
 
                     if (oldState.member != null) {
                         if (oldVoiceChannel.type == "GUILD_VOICE") {
-                            (voiceLogsChannel as TextChannel).send({ embeds: [EmbedBuilds.getOnVoiceChannelLeaveEmbed(oldState)] }).catch(err=> { })
+                            (voiceLogsChannel as TextChannel).send({ embeds: [EmbedBuilds.getOnVoiceChannelLeaveEmbed(oldState)] }).catch(err => { })
                         }
                     }
                 }
             }
-        }).catch(err=> { })
+        }).catch(err => { })
 
         if (newState != null) {
             if (newState.suppress == false) {
@@ -72,17 +72,17 @@ module.exports = class VoiceStateUpdateEventListener extends EventListener {
                 textChannel = textChannel as TextChannel;
                 if (textChannel.permissionsFor(textChannel.guild.roles.everyone).has(["SEND_MESSAGES"]) == false) {
                     textChannel.permissionOverwrites.create((textChannel as TextChannel).guild.roles.everyone, { SEND_MESSAGES: true })
-                        .catch(err=> { });
+                        .catch(err => { });
                 }
-            }).catch(err=> { console.log(err) })
+            }).catch(err => { console.log(err) })
         } else {
             oldState.client.channels.fetch(Properties.MOD_CAST_TEXT_CHANNEL_ID).then(textChannel => {
                 textChannel = textChannel as TextChannel;
                 if (textChannel.permissionsFor(textChannel.guild.roles.everyone).has(["SEND_MESSAGES"]) == true) {
                     (textChannel as TextChannel).permissionOverwrites.create((textChannel as TextChannel).guild.roles.everyone, { SEND_MESSAGES: false })
-                        .catch(err=> { });;
+                        .catch(err => { });;
                 }
-            }).catch(err=> { console.log(err) })
+            }).catch(err => { console.log(err) })
         }
     }
 }
