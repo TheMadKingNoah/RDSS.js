@@ -12,11 +12,11 @@ module.exports = class InteractionCreateEventListener extends EventListener {
     
     async execute(interaction: Interaction) {
         if (interaction.isCommand()) {
-                  this.client.commands.handle(interaction);
+                  this.client.commands.handle(interaction).catch(err => console.error(err));
         }
 
         if (interaction.isButton()) {
-                  this.client.buttons.handle(interaction);
+                  this.client.buttons.handle(interaction).catch(err => console.error(err));
         }
     }
 }

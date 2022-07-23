@@ -19,7 +19,8 @@ export default class Bot extends Client {
                 'GUILD_MESSAGE_REACTIONS',
                 "GUILD_MEMBERS",
                 "GUILD_VOICE_STATES",
-                "GUILD_MESSAGES"],
+                "GUILD_MESSAGES"
+            ],
             partials: [
                 "MESSAGE",
                 "CHANNEL",
@@ -32,7 +33,7 @@ export default class Bot extends Client {
             this.buttons = new ButtonHandler(this);
 
             const events = new EventHandler(this);
-            events.load();
+            events.load().catch(err => console.error(err));
 
             this.login(process.env.BOT_TOKEN);
         })();
