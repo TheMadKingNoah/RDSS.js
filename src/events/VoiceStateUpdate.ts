@@ -23,7 +23,7 @@ module.exports = class VoiceStateUpdateEventListener extends EventListener {
 
                     if (newState.member != null) {
                         if (newVoiceChannel.type == "GUILD_VOICE") {
-                            (voiceLogsChannel as TextChannel).send({ embeds: [EmbedBuilds.getOnVoiceChannelJoinEmbed(newState)] }).catch(err => { console.log(err)})
+                            (voiceLogsChannel as TextChannel).send({ embeds: [EmbedBuilds.getOnVoiceChannelJoinEmbed(newState)] }).catch(err => console.error(err))
                         }
                     }
 
