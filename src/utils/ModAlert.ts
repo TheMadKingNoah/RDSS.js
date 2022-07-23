@@ -87,7 +87,7 @@ export default class ModAlert {
                     console.log(`new mod alert! ${message.id}`)
                     this.existingModAlerts.set(message.id, message.content);
                     console.log(this.existingModAlerts);
-                }).catch(err => { console.log(err) })
+                }).catch(err => console.error(err))
             }
         }
     }

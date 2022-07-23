@@ -15,7 +15,7 @@ export default class QuickMute {
                     commandsChannel.send(`<@${moderator.id}> Oops! You can't Quick Mute another moderator. (Nice try though)`)
                 } else {
                     if (message != null) {
-                        message.delete().catch(err => { console.log(err) });
+                        message.delete().catch(err => console.error(err));
                     }
                     if (messageEvidence.replace(/\r?\n|\r/g, " ").length < 120) {
                         const evidence = messageEvidence.replace(/\r?\n|\r/g, " ");
@@ -42,7 +42,7 @@ export default class QuickMute {
                                     if (attachment?.url != null) {
                                         commandsChannel.send(`;mute ${authorId} ${duration} (By ${moderator.tag} (${moderator.id})) Message Evidence: ${messagePreview} Full Evidence: ${attachment.url}`)
                                     }
-                                }).catch(err => { console.log(err) })
+                                }).catch(err => console.error(err))
                             }
                         }
                         ).catch(err => {
@@ -51,14 +51,14 @@ export default class QuickMute {
                                 if (attachment?.url != null) {
                                     commandsChannel.send(`;mute ${authorId} ${duration} (By ${moderator.tag} (${moderator.id})) Message Evidence: ${messagePreview} Full Evidence: ${attachment.url}`)
                                 }
-                            }).catch(err => { console.log(err) })
-                        }).catch(err => { console.log(err) })
+                            }).catch(err => console.error(err))
+                        }).catch(err => console.error(err))
                     }
                 }
             }
         }).catch(err => {
             if (message != null) {
-                message.delete().catch(err => { console.log(err) });
+                message.delete().catch(err => console.error(err));
             }
             commandsChannel.send(`<@${moderator.id}> user <@${authorId}> (${authorId}) has left the server!`)
         })
@@ -105,11 +105,11 @@ export default class QuickMute {
                                         + `\n> ${sweepEmoji} ${messageAmount} messages deleted in <#${channel.id}>`
                                         + `\n\n**Message Evidence:** ${attachment.url}`)
                                 }
-                            }).catch(err => { console.log(err) })
-                        }).catch(err => { console.log(err) })
-                    }).catch(err => { console.log(err) })
+                            }).catch(err => console.error(err))
+                        }).catch(err => console.error(err))
+                    }).catch(err => console.error(err))
                 }
-            }).catch(err => { console.log(err) })
+            }).catch(err => console.error(err))
         } else {
             channel.guild.channels.fetch(Properties.COMMANDS_CHANNEL_ID).then(commandsChannel => {
                 (commandsChannel as TextChannel).send(`<@${moderator.id}> Oops! You can't Sweep another moderator. (Nice try though)`)

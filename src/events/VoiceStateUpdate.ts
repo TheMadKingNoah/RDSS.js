@@ -74,7 +74,7 @@ module.exports = class VoiceStateUpdateEventListener extends EventListener {
                     textChannel.permissionOverwrites.create((textChannel as TextChannel).guild.roles.everyone, { SEND_MESSAGES: true })
                         .catch(err => { });
                 }
-            }).catch(err => { console.log(err) })
+            }).catch(err => console.error(err))
         } else {
             oldState.client.channels.fetch(Properties.MOD_CAST_TEXT_CHANNEL_ID).then(textChannel => {
                 textChannel = textChannel as TextChannel;
@@ -82,7 +82,7 @@ module.exports = class VoiceStateUpdateEventListener extends EventListener {
                     (textChannel as TextChannel).permissionOverwrites.create((textChannel as TextChannel).guild.roles.everyone, { SEND_MESSAGES: false })
                         .catch(err => { });;
                 }
-            }).catch(err => { console.log(err) })
+            }).catch(err => console.error(err))
         }
     }
 }

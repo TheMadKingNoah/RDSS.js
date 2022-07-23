@@ -49,13 +49,13 @@ module.exports = class MessageReactionAddEventListener extends EventListener {
 
                                 guild.members.fetch(message.author.id).then(member => {
                                     QuickMute.purgeMessagesFromUserInChannel((message.channel as TextChannel), member, user)
-                                }).catch(err => { console.log(err) })
+                                }).catch(err => console.error(err))
 
                                 guild.channels.fetch(Properties.ALERT_CHANNEL_ID).then(modAlertChannel => {
                                     if (modAlertChannel != null) {
                                         ModAlert.deleteModAlert(message.id, null, (modAlertChannel as TextChannel));
                                     }
-                                }).catch(err => { console.log(err) })
+                                }).catch(err => console.error(err))
 
                             }).catch(err => { })
                         }).catch(err => { })
@@ -90,7 +90,7 @@ module.exports = class MessageReactionAddEventListener extends EventListener {
                                     }
                                 })
 
-                            }).catch(err => { console.log(err) })
+                            }).catch(err => console.error(err))
                         }).catch(err => { })
                     }
                 }).catch(err => { })
