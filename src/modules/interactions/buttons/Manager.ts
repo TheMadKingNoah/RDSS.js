@@ -43,12 +43,11 @@ export default class CommandHandler {
                   return;
             }
             
-            try {
-                  await button.execute(interaction, this.client);
-                  console.log(`(BUTTONS) "${button.name}" executed by ${interaction.user.tag}`);
-            } catch (err) {
-                  console.log(`Failed to execute button: ${button.name}`);
-                  console.error(err);
-            }
+            button.execute(interaction, this.client)
+                  .then(() => console.log(`(BUTTONS) "${button.name}" executed by ${interaction.user.tag}`))
+                  .catch((err: any) => {
+                        console.log(`Failed to execute button: ${button.name}`);
+                        console.error(err);
+                  });
       }
 }
