@@ -45,9 +45,9 @@ module.exports = class InteractionCreateEventListener extends EventListener {
                     `;inf search ${authorId}`
 
                 ).then(message => {
-                    button.reply({ content: `view infractions here ${message.url}`, ephemeral: true, fetchReply: true }).catch(e => { });
-                }).catch(e => { console.log(e) })
-            }).catch(e => { console.log(e) })
+                    button.reply({ content: `view infractions here ${message.url}`, ephemeral: true, fetchReply: true }).catch(err=> { });
+                }).catch(err=> { console.log(err) })
+            }).catch(err=> { console.log(err) })
         }
 
         if (interaction.customId == "qm30") {
@@ -58,7 +58,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 
             } else {
 
-                button.reply({ content: "Invalid permissions!", ephemeral: true }).catch(e => { console.log(e) })
+                button.reply({ content: "Invalid permissions!", ephemeral: true }).catch(err=> { console.log(err) })
 
             }
         }
@@ -114,7 +114,7 @@ function quickMuteFromButton(interaction: { isButton: () => any; customId: strin
                     (commandsChannel as TextChannel).send(`<@${button.user.id}> The message was deleted and not cached! Please mute manually`)
                     ModAlert.deleteModAlert(messageId, modAlertMessage, null);
                 }
-            }).catch(e => { console.log(e) })
-        }).catch(e => { console.log(e) })
-    }).catch(e => { console.log(e) })
+            }).catch(err=> { console.log(err) })
+        }).catch(err=> { console.log(err) })
+    }).catch(err=> { console.log(err) })
 }
