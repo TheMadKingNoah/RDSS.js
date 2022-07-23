@@ -19,7 +19,7 @@ export default class QuickMute30mButton extends Button {
             interaction.reply({ 
                   content: "Invalid permissions!", 
                   ephemeral: true 
-            });
+            }).catch(err => console.error(err));
       }
     }
 }
