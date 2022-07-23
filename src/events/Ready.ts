@@ -12,7 +12,7 @@ module.exports = class ReadyEventListener extends EventListener {
       async execute(client: Bot) {
             console.log(`${client.user?.tag} is online!`);
 
-            client.commands.load();
-            client.commands.publish();
+            client.commands.load().catch(err => console.error(err));
+            client.commands.publish().catch(err => console.error(err));
       }
 }

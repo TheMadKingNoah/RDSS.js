@@ -19,7 +19,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
     async execute(interaction: { isButton: () => any; customId: string; message: Message<boolean>; isCommand: () => any }) {
 
         if (interaction.isCommand()) {
-                  this.client.commands.handle(interaction);
+                  this.client.commands.handle(interaction).catch(err => console.error(err));
         }
 
         if (!interaction.isButton()) return;
