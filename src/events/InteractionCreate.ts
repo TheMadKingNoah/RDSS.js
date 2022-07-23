@@ -45,7 +45,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
                     `;inf search ${authorId}`
 
                 ).then(message => {
-                    button.reply({ content: `view infractions here ${message.url}`, ephemeral: true, fetchReply: true }).catch(err => { });
+                    button.reply({ content: `view infractions here ${message.url}`, ephemeral: true, fetchReply: true }).catch(err => console.error(err));
                 }).catch(err => console.error(err))
             }).catch(err => console.error(err))
         }

@@ -107,12 +107,12 @@ export default class ModAlert {
                 messages.forEach(element => {
                     const fetchedMessageId: string = element.content.split("/")[6].replace(/\D/g, '');
                     if(fetchedMessageId == messageId){
-                        element.delete().catch(err => { });
+                        element.delete().catch(err => console.error(err));
                     }
                 });
             }).then(e => {})
         } else if(modAlertMessage != null){
-            modAlertMessage.delete().catch(err => { });
+            modAlertMessage.delete().catch(err => console.error(err));
         }
     }
 

@@ -28,7 +28,7 @@ module.exports = class MessageReactionAddEventListener extends EventListener {
                         ModAlert.createModAlert(message, user);
                     }
                 }
-            }).catch(err => { })
+            }).catch(err => console.error(err))
         }
 
         if (reaction.emoji.id == Properties.QUICK_MUTE_30_MINUTES_EMOJI_ID) {
@@ -57,10 +57,10 @@ module.exports = class MessageReactionAddEventListener extends EventListener {
                                     }
                                 }).catch(err => console.error(err))
 
-                            }).catch(err => { })
-                        }).catch(err => { })
+                            }).catch(err => console.error(err))
+                        }).catch(err => console.error(err))
                     }
-                }).catch(err => { })
+                }).catch(err => console.error(err))
             }
         }
 
@@ -91,9 +91,9 @@ module.exports = class MessageReactionAddEventListener extends EventListener {
                                 })
 
                             }).catch(err => console.error(err))
-                        }).catch(err => { })
+                        }).catch(err => console.error(err))
                     }
-                }).catch(err => { })
+                }).catch(err => console.error(err))
             }
         }
 
@@ -115,7 +115,7 @@ module.exports = class MessageReactionAddEventListener extends EventListener {
 
                             }
 
-                        }).catch(err => { })
+                        }).catch(err => console.error(err))
                     }
                 })
             }
@@ -139,10 +139,10 @@ module.exports = class MessageReactionAddEventListener extends EventListener {
 
                                     ModAlert.approveBanRequest(message, (commandsChannel as TextChannel), member)
 
-                                }).catch(err => { })
-                            }).catch(err => { })
+                                }).catch(err => console.error(err))
+                            }).catch(err => console.error(err))
                         }
-                    }).catch(err => { })
+                    }).catch(err => console.error(err))
                 }
             }
         }
@@ -165,10 +165,10 @@ module.exports = class MessageReactionAddEventListener extends EventListener {
 
                                     ModAlert.rejectBanRequest(message, (commandsChannel as TextChannel), member)
 
-                                }).catch(err => { })
-                            }).catch(err => { })
+                                }).catch(err => console.error(err))
+                            }).catch(err => console.error(err))
                         }
-                    }).catch(err => { })
+                    }).catch(err => console.error(err))
                 }
             }
         }
