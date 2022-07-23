@@ -28,7 +28,7 @@ module.exports = class MessageReactionAddEventListener extends EventListener {
                         ModAlert.createModAlert(message, user);
                     }
                 }
-            }).catch(e => { })
+            }).catch(err => console.error(err))
         }
 
         if (reaction.emoji.id == Properties.QUICK_MUTE_30_MINUTES_EMOJI_ID) {
@@ -49,18 +49,18 @@ module.exports = class MessageReactionAddEventListener extends EventListener {
 
                                 guild.members.fetch(message.author.id).then(member => {
                                     QuickMute.purgeMessagesFromUserInChannel((message.channel as TextChannel), member, user)
-                                }).catch(e => { console.log(e) })
+                                }).catch(err => console.error(err))
 
                                 guild.channels.fetch(Properties.ALERT_CHANNEL_ID).then(modAlertChannel => {
                                     if (modAlertChannel != null) {
                                         ModAlert.deleteModAlert(message.id, null, (modAlertChannel as TextChannel));
                                     }
-                                }).catch(e => { console.log(e) })
+                                }).catch(err => console.error(err))
 
-                            }).catch(e => { })
-                        }).catch(e => { })
+                            }).catch(err => console.error(err))
+                        }).catch(err => console.error(err))
                     }
-                }).catch(e => { })
+                }).catch(err => console.error(err))
             }
         }
 
@@ -90,10 +90,10 @@ module.exports = class MessageReactionAddEventListener extends EventListener {
                                     }
                                 })
 
-                            }).catch(e => { console.log(e) })
-                        }).catch(e => { })
+                            }).catch(err => console.error(err))
+                        }).catch(err => console.error(err))
                     }
-                }).catch(e => { })
+                }).catch(err => console.error(err))
             }
         }
 
@@ -115,7 +115,7 @@ module.exports = class MessageReactionAddEventListener extends EventListener {
 
                             }
 
-                        }).catch(e => { })
+                        }).catch(err => console.error(err))
                     }
                 })
             }
@@ -139,10 +139,10 @@ module.exports = class MessageReactionAddEventListener extends EventListener {
 
                                     ModAlert.approveBanRequest(message, (commandsChannel as TextChannel), member)
 
-                                }).catch(e => { })
-                            }).catch(e => { })
+                                }).catch(err => console.error(err))
+                            }).catch(err => console.error(err))
                         }
-                    }).catch(e => { })
+                    }).catch(err => console.error(err))
                 }
             }
         }
@@ -165,10 +165,10 @@ module.exports = class MessageReactionAddEventListener extends EventListener {
 
                                     ModAlert.rejectBanRequest(message, (commandsChannel as TextChannel), member)
 
-                                }).catch(e => { })
-                            }).catch(e => { })
+                                }).catch(err => console.error(err))
+                            }).catch(err => console.error(err))
                         }
-                    }).catch(e => { })
+                    }).catch(err => console.error(err))
                 }
             }
         }

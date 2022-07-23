@@ -41,12 +41,9 @@ export default class CommandHandler {
                   this.client.commands.commands.map(command => command.build())
             );
 
-            try {
-                  await this.client.application?.commands.set(commands);
-                  console.log(`(COMMANDS) Successfully loaded ${this.client.commands.commands.size} commands!`);
-            } catch (err) {
-                  console.error(err);
-            }
+            this.client.application?.commands.set(commands)
+                  .then(() => console.log(`(COMMANDS) Successfully loaded ${this.client.commands.commands.size} commands!`))
+                  .catch(err => console.error(err));
       }
 
       public async handle(interaction: any) {
@@ -56,12 +53,11 @@ export default class CommandHandler {
                   return;
             }
             
-            try {
-                  await command.execute(interaction, this.client);
-                  console.log(`"${command.name}" executed by ${interaction.user.tag} ("${interaction.guild?.name}" • ${interaction.guildId})`);
-            } catch (err) {
-                  console.log(`Failed to execute command: ${command.name}`);
-                  console.error(err);
-            }
+            command.execute(interaction, this.client)
+                  .then(() => console.log(`"${command.name}" executed by ${interaction.user.tag} ("${interaction.guild?.name}" • ${interaction.guildId})`))
+                  .catch((err: any) => {
+                        console.log(`Failed to execute command: ${command.name}`);
+                        console.error(err);
+                  });
       }
 }
