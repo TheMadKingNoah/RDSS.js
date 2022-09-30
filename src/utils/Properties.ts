@@ -17,7 +17,7 @@ export default class Properties {
 
     public static BAN_REQUESTS_QUEUE_CHANNEL_ID: string = "592580861543841802";
 
-    public static MESSAGE_LOGS_CHANNEL_ID = "366624514651717663";
+    public static MESSAGE_LOGS_CHANNEL_ID = "1024534308762947594";
 
     public static VOICE_LOGS_CHANNEL_ID: string = "366624876544655360";
 
