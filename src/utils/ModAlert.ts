@@ -39,7 +39,7 @@ export default class ModAlert {
             const row = new MessageActionRow()
                 .addComponents(
                     new MessageButton()
-                        .setCustomId('OK')
+                        .setCustomId('ApproveModAlert')
                         .setLabel('OK')
                         .setStyle('SUCCESS'),
                 );

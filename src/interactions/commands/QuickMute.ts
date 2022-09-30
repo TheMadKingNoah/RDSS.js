@@ -12,6 +12,9 @@ export default class QuickMuteCommand extends Command {
     }
 
     async execute(interaction: CommandInteraction) {
-        interaction.reply("This command is not yet implemented.");
+        interaction.reply({ 
+            content: "This command is not yet implemented.", 
+            ephemeral: true 
+        }).catch(err => console.error(err));
     }
 }
