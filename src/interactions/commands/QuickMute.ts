@@ -15,6 +15,6 @@ export default class QuickMuteCommand extends Command {
         interaction.reply({ 
             content: "This command is not yet implemented.", 
             ephemeral: true 
-        }).catch(err => console.error(err));
+        }).catch(console.error);
     }
 }

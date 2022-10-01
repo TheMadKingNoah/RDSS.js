@@ -13,15 +13,21 @@ export default class InfractionsButton extends Button {
 
     async execute(interaction: ButtonInteraction) {
         const authorId = interaction.message.content.split("`")[3];
+        const commandsChannel = await this.client.channels.fetch(Properties.channels.commands) as TextChannel;
 
-        this.client.channels.fetch(Properties.COMMANDS_CHANNEL_ID).then(commandChannel => {
-            (commandChannel as TextChannel).send(`;inf search ${authorId}`).then(message => {
-                interaction.reply({ 
-                    content: `view infractions here ${message.url}`, 
-                    ephemeral: true, 
-                    fetchReply: true 
-                }).catch(err => console.error(err));
-            }).catch(err => console.error(err));
-        }).catch(err => console.error(err));
+        if (!commandsChannel) {
+            await interaction.reply({
+                content: "Unable to fetch the commands channel.",
+                ephemeral: true
+            });
+            return;
+        }
+
+        commandsChannel.send(`;inf search ${authorId}`).then(message => {
+            interaction.reply({
+                content: `view infractions here ${message.url}`,
+                ephemeral: true
+            }).catch(console.error);
+        }).catch(console.error);
     }
 }
