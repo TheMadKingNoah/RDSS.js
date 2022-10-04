@@ -4,10 +4,10 @@ import Bot from "../../Bot";
 
 import { ButtonInteraction, Message } from "discord.js";
 
-export default class ApproveModAlertButton extends Button {
+export default class ClearModAlertButton extends Button {
     constructor(client: Bot) {
         super(client, {
-            name: "ApproveModAlert"
+            name: "ClearModAlert"
         });
     }
 

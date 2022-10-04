@@ -17,7 +17,7 @@ export default class Command {
             this.description = data.description;
             this.options = data.options ?? [];
 
-            this.client.commands.register(this).catch(err => console.error(err));
+            this.client.commands.register(this).catch(console.error);
       }
 
       build(): ChatInputApplicationCommandData {

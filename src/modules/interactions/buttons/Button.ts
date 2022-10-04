@@ -8,6 +8,6 @@ export default class Button {
             this.client = client;
             this.name = data.name;
 
-            this.client.buttons.register(this).catch(err => console.error(err));
+            this.client.buttons.register(this).catch(console.error);
       }
 }

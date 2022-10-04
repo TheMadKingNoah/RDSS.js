@@ -6,6 +6,14 @@ import EventHandler from "./modules/events/Manager";
 
 import "dotenv/config";
 
+process.on("unhandledRejection", (error: Error) => {
+    console.error(error.stack);
+});
+
+process.on("uncaughtException", (error: Error) => {
+    console.error(error.stack);
+});
+
 console.log("Bot is starting...");
 
 export default class Bot extends Client {
@@ -33,9 +41,9 @@ export default class Bot extends Client {
             this.buttons = new ButtonHandler(this);
 
             const events = new EventHandler(this);
-            events.load().catch(err => console.error(err));
+            events.load().catch(console.error);
 
-            this.login(process.env.BOT_TOKEN);
+            await this.login(process.env.BOT_TOKEN);
         })();
     }
 }
