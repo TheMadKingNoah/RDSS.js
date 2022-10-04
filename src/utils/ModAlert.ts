@@ -1,4 +1,4 @@
-import { GuildMember, Message, MessageActionRow, MessageButton, TextChannel, User } from "discord.js";
+import { Channel, GuildMember, Message, MessageActionRow, MessageButton, TextChannel, User } from "discord.js";
 import Properties from "./Properties";
 import QuickMute from "./QuickMute";
 import RoleUtils from "./RoleUtils";
@@ -90,6 +90,19 @@ export default class ModAlert {
                 }).catch(err => console.error(err))
             }
         }
+    }
+
+    public static updateModAlert(message: Message, member: GuildMember, modAlertChannel: TextChannel) {
+        modAlertChannel.messages.fetch({
+            limit: 100,
+        }).then((messages) => {
+            messages.forEach(element => {
+                const fetchedMessageId: string = element.content.split("/")[6].replace(/\D/g, '');
+                if(fetchedMessageId == message.id){
+                    element.edit(`a mod alert is handled by <@${member.id}>`);
+                }
+            });
+        }).then(e => {})
     }
 
     public static deleteModAlert(messageId: string, modAlertMessage: Message | null, modAlertChannel: TextChannel | null) {
