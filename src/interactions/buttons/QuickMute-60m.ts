@@ -13,13 +13,19 @@ export default class QuickMute60mButton extends Button {
     }
 
     async execute(interaction: ButtonInteraction) {
-      if (RoleUtils.hasAnyRole((interaction.member as GuildMember), [RoleUtils.ROLE_MODERATOR_ID, RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID]) == true) { 
-            QuickMute.quickMuteFromButton(interaction, "60m")
-      } else {
-            interaction.reply({ 
-                  content: "Invalid permissions!", 
-                  ephemeral: true 
-            }).catch(err => console.error(err));
-      }
+        if (!RoleUtils.hasAnyRole((interaction.member as GuildMember), [
+            RoleUtils.roles.moderator,
+            RoleUtils.roles.seniorModerator,
+            RoleUtils.roles.manager
+        ])) {
+            interaction.reply({
+                content: "Invalid permissions!",
+                ephemeral: true
+            }).catch(console.error);
+
+            return;
+        }
+
+        await QuickMute.quickMuteFromButton(interaction, "30m");
     }
 }

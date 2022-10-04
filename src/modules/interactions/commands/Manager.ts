@@ -43,7 +43,7 @@ export default class CommandHandler {
 
             this.client.application?.commands.set(commands)
                   .then(() => console.log(`(COMMANDS) Successfully loaded ${this.client.commands.commands.size} commands!`))
-                  .catch(err => console.error(err));
+                  .catch(console.error);
       }
 
       public async handle(interaction: any) {

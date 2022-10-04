@@ -1,11 +1,18 @@
-import { Client, Emoji, Message, TextChannel, User } from "discord.js";
-
 import RoleUtils from "../utils/RoleUtils";
 import ModAlert from "../utils/ModAlert";
 import Properties from "../utils/Properties";
 import QuickMute from "../utils/QuickMute";
+import BanRequest from "../utils/BanRequest";
 import EventListener from "../modules/events/Event";
 import Bot from "../Bot";
+
+import {
+    MessageReaction,
+    TextChannel,
+    GuildMember,
+    Message,
+    User
+} from "discord.js";
 
 module.exports = class MessageReactionAddEventListener extends EventListener {
     constructor(client: Bot) {
@@ -14,163 +21,100 @@ module.exports = class MessageReactionAddEventListener extends EventListener {
             once: false
         });
     }
-    
-    async execute(reaction: { emoji: Emoji; message: Message; client: Client }, user: User) {
 
-        if (reaction.emoji.id == Properties.ALERT_EMOJI_ID) {
+    async execute(reaction: MessageReaction, user: User) {
+        if (!reaction.message.guild) return;
 
-            reaction.message.fetch().then(message => {
+        let message!: Message;
 
-                if (message.channel.id != Properties.ALERT_CHANNEL_ID) {
+        await reaction.message.fetch()
+            .then(m => message = m)
+            .catch(console.error);
 
-                    if (!ModAlert.existingModAlerts.has(message.id)) {
+        if (!message) return;
 
-                        ModAlert.createModAlert(message, user);
-                    }
-                }
-            }).catch(err => console.error(err))
+        // Mod alert handler
+        if (reaction.emoji.id == Properties.emojis.alert) {
+            if (message.channel.id == Properties.channels.alerts) return;
+            if (ModAlert.existingModAlerts.has(message.id)) return;
+
+            ModAlert.createModAlert(message, user);
         }
 
-        if (reaction.emoji.id == Properties.QUICK_MUTE_30_MINUTES_EMOJI_ID) {
+        const reactee = await message.guild?.members.fetch(user.id);
+        if (!reactee) return;
 
-            const guild = reaction.message.guild;
+        // Quick mute handler
+        if (
+            reaction.emoji.id == Properties.emojis.quickMute30 ||
+            reaction.emoji.id == Properties.emojis.quickMute60
+        ) {
+            if (!RoleUtils.hasAnyRole(reactee, [
+                RoleUtils.roles.moderator,
+                RoleUtils.roles.seniorModerator,
+                RoleUtils.roles.manager
+            ])) return;
 
-            if (guild != null) {
+            const commandsChannel = await message.guild?.channels.fetch(Properties.channels.commands) as TextChannel;
+            if (!commandsChannel) return;
+            
+            const { member, channel } = message;
 
-                guild.members.fetch(user.id).then(member => {
+            let duration = "30m";
+            if (reaction.emoji.id == Properties.emojis.quickMute60) duration = "60m";
 
-                    if (RoleUtils.hasAnyRole(member, [RoleUtils.ROLE_MODERATOR_ID, RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID])) {
+            await QuickMute.quickMuteUser(user, message.author.id, duration, message.content, commandsChannel, message);
+            await QuickMute.purgeMessagesFromUserInChannel((channel as TextChannel), (member as GuildMember), user);
 
-                        guild.channels.fetch(Properties.COMMANDS_CHANNEL_ID).then(commandsChannel => {
+            const modAlertChannel = await message.guild?.channels.fetch(Properties.channels.alerts) as TextChannel;
+            if (!modAlertChannel) return;
 
-                            reaction.message.fetch().then(message => {
-
-                                QuickMute.quickMuteUser(user, message.author.id, "30m", message.content, (commandsChannel as TextChannel), message)
-
-                                guild.members.fetch(message.author.id).then(member => {
-                                    QuickMute.purgeMessagesFromUserInChannel((message.channel as TextChannel), member, user)
-                                }).catch(err => console.error(err))
-
-                                guild.channels.fetch(Properties.ALERT_CHANNEL_ID).then(modAlertChannel => {
-                                    if (modAlertChannel != null) {
-                                        ModAlert.deleteModAlert(message.id, null, (modAlertChannel as TextChannel));
-                                    }
-                                }).catch(err => console.error(err))
-
-                            }).catch(err => console.error(err))
-                        }).catch(err => console.error(err))
-                    }
-                }).catch(err => console.error(err))
-            }
+            ModAlert.deleteModAlert(message.id, null, modAlertChannel);
         }
 
-        if (reaction.emoji.id == Properties.QUICK_MUTE_60_MINUTES_EMOJI_ID) {
 
-            const guild = reaction.message.guild;
+        // Message purging handler
+        if (reaction.emoji.id == Properties.emojis.sweep) {
+            if (!RoleUtils.hasAnyRole(reactee, [
+                RoleUtils.roles.moderator,
+                RoleUtils.roles.seniorModerator,
+                RoleUtils.roles.manager
+            ])) return;
 
-            if (guild != null) {
-
-                guild.members.fetch(user.id).then(member => {
-
-                    if (RoleUtils.hasAnyRole(member, [RoleUtils.ROLE_MODERATOR_ID, RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID])) {
-
-                        guild.channels.fetch(Properties.COMMANDS_CHANNEL_ID).then(commandsChannel => {
-
-                            reaction.message.fetch().then(message => {
-
-                                QuickMute.quickMuteUser(user, message.author.id, "60m", message.content, (commandsChannel as TextChannel), message)
-
-                                guild.members.fetch(message.author.id).then(member => {
-                                    QuickMute.purgeMessagesFromUserInChannel((message.channel as TextChannel), member, user)
-                                })
-
-                                guild.channels.fetch(Properties.ALERT_CHANNEL_ID).then(modAlertChannel => {
-                                    if (modAlertChannel != null) {
-                                        ModAlert.deleteModAlert(message.id, null, (modAlertChannel as TextChannel));
-                                    }
-                                })
-
-                            }).catch(err => console.error(err))
-                        }).catch(err => console.error(err))
-                    }
-                }).catch(err => console.error(err))
-            }
+            if (!message.member) return;
+            await QuickMute.purgeMessagesFromUserInChannel((message.channel as TextChannel), message.member, user)
         }
 
-        if (reaction.emoji.id == Properties.SWEEP_EMOJI_ID) {
 
-            const guild = reaction.message.guild;
+        // Approve ban request
+        if (reaction.emoji.id == Properties.emojis.approve) {
+            if (message.channel.id != Properties.channels.banRequestsQueue) return;
 
-            if (guild != null) {
+            if (!RoleUtils.hasAnyRole(reactee, [
+                RoleUtils.roles.seniorModerator,
+                RoleUtils.roles.manager
+            ])) return;
 
-                guild.members.fetch(user.id).then(member => {
+            const commandsChannel = await message.guild?.channels.fetch(Properties.channels.commands) as TextChannel;
+            if (!commandsChannel) return;
 
-                    if (RoleUtils.hasAnyRole(member, [RoleUtils.ROLE_MODERATOR_ID, RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID])) {
-
-                        reaction.message.fetch().then(message => {
-
-                            if (message.member != null) {
-
-                                QuickMute.purgeMessagesFromUserInChannel((message.channel as TextChannel), message.member, user)
-
-                            }
-
-                        }).catch(err => console.error(err))
-                    }
-                })
-            }
+            BanRequest.approveBanRequest(message, commandsChannel, reactee)
         }
 
-        if (reaction.emoji.id == Properties.APPROVE_EMOJI_ID) {
 
-            if (reaction.message.channel.id == Properties.BAN_REQUESTS_QUEUE_CHANNEL_ID) {
+        // Reject ban request
+        if (reaction.emoji.id == Properties.emojis.reject) {
+            if (message.channel.id != Properties.channels.banRequestsQueue) return;
 
-                const guild = reaction.message.guild;
+            if (!RoleUtils.hasAnyRole(reactee, [
+                RoleUtils.roles.seniorModerator,
+                RoleUtils.roles.manager
+            ])) return;
 
-                if (guild != null) {
+            const commandsChannel = await message.guild?.channels.fetch(Properties.channels.commands) as TextChannel;
+            if (!commandsChannel) return;
 
-                    guild.members.fetch(user.id).then(member => {
-
-                        if (RoleUtils.hasAnyRole(member, [RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID])) {
-
-                            reaction.client.channels.fetch(Properties.COMMANDS_CHANNEL_ID).then(commandsChannel => {
-
-                                reaction.message.fetch().then(message => {
-
-                                    ModAlert.approveBanRequest(message, (commandsChannel as TextChannel), member)
-
-                                }).catch(err => console.error(err))
-                            }).catch(err => console.error(err))
-                        }
-                    }).catch(err => console.error(err))
-                }
-            }
-        }
-
-        if (reaction.emoji.id == Properties.REJECT_EMOJI_ID) {
-
-            if (reaction.message.channel.id == Properties.BAN_REQUESTS_QUEUE_CHANNEL_ID) {
-
-                const guild = reaction.message.guild;
-
-                if (guild != null) {
-
-                    guild.members.fetch(user.id).then(member => {
-
-                        if (RoleUtils.hasAnyRole(member, [RoleUtils.ROLE_SENIOR_MODERATOR_ID, RoleUtils.ROLE_MANAGER_ID])) {
-
-                            reaction.client.channels.fetch(Properties.COMMANDS_CHANNEL_ID).then(commandsChannel => {
-
-                                reaction.message.fetch().then(message => {
-
-                                    ModAlert.rejectBanRequest(message, (commandsChannel as TextChannel), member)
-
-                                }).catch(err => console.error(err))
-                            }).catch(err => console.error(err))
-                        }
-                    }).catch(err => console.error(err))
-                }
-            }
+            BanRequest.rejectBanRequest(message, commandsChannel, reactee)
         }
     }
 }

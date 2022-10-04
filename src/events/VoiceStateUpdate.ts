@@ -1,8 +1,9 @@
-import { TextChannel, VoiceChannel, VoiceState } from "discord.js";
 import Properties from "../utils/Properties";
 import EmbedBuilds from "../utils/EmbedBuilds";
 import EventListener from "../modules/events/Event";
 import Bot from "../Bot";
+
+import {StageChannel, TextChannel, VoiceChannel, VoiceState} from "discord.js";
 
 module.exports = class VoiceStateUpdateEventListener extends EventListener {
     constructor(client: Bot) {
@@ -13,76 +14,77 @@ module.exports = class VoiceStateUpdateEventListener extends EventListener {
     }
 
     async execute(oldState: VoiceState, newState: VoiceState) {
-        oldState.client.channels.fetch(Properties.VOICE_LOGS_CHANNEL_ID).then(voiceLogsChannel => {
-            let newVoiceChannel = (newState.channel as VoiceChannel)
-            let oldVoiceChannel = (oldState.channel as VoiceChannel)
+        const voiceLogsChannel = await this.client.channels.fetch(Properties.channels.voiceLogs) as TextChannel;
 
-            if (voiceLogsChannel != null) {
+        const newVoiceChannel = newState.channel as VoiceChannel | StageChannel
+        const oldVoiceChannel = oldState.channel as VoiceChannel | StageChannel
 
-                if (newVoiceChannel !== null && oldVoiceChannel === null) {
-
-                    if (newState.member != null) {
-                        if (newVoiceChannel.type == "GUILD_VOICE") {
-                            (voiceLogsChannel as TextChannel).send({ embeds: [EmbedBuilds.getOnVoiceChannelJoinEmbed(newState)] }).catch(err => console.error(err))
-                        }
-                    }
-
-                } else if (newVoiceChannel !== null && oldVoiceChannel !== null) {
-
-                    if (newState.member != null && newState.member != null) {
-                        if (newVoiceChannel.type == "GUILD_VOICE" && oldVoiceChannel.type == "GUILD_VOICE") {
-                            (voiceLogsChannel as TextChannel).send({ embeds: [EmbedBuilds.getOnVoiceChannelChangeEmbed(oldState, newState)] }).catch(err => console.error(err))
-                        }
-                    }
-
-                } else if (newVoiceChannel === null && oldVoiceChannel !== null) {
-
-                    if (oldState.member != null) {
-                        if (oldVoiceChannel.type == "GUILD_VOICE") {
-                            (voiceLogsChannel as TextChannel).send({ embeds: [EmbedBuilds.getOnVoiceChannelLeaveEmbed(oldState)] }).catch(err => console.error(err))
-                        }
-                    }
-                }
+        if (!newState.suppress) {
+            if (!Properties.membersOnStage.has(newState.member?.id)) {
+                Properties.membersOnStage.set(newState.member?.id, new Date())
             }
-        }).catch(err => console.error(err))
-
-        if (newState != null) {
-            if (newState.suppress == false) {
-                if (!Properties.membersOnStage.has(newState.member?.id)) {
-                    Properties.membersOnStage.set(newState.member?.id, new Date())
-                }
-            }
-
-
-            if (newState.suppress == true) {
-                if (Properties.membersOnStage.has(newState.member?.id)) {
-                    Properties.membersOnStage.delete(newState.member?.id)
-                }
+        } else {
+            if (Properties.membersOnStage.has(newState.member?.id)) {
+                Properties.membersOnStage.delete(newState.member?.id)
             }
         }
 
-        if (newState.channel == null || newState.channel?.type == "GUILD_VOICE") {
+        if (newState.channel?.type != "GUILD_STAGE_VOICE") {
             if (Properties.membersOnStage.has(newState.member?.id)) {
                 Properties.membersOnStage.delete(newState.member?.id)
             }
         }
 
         if (Properties.membersOnStage.size > 0) {
-            oldState.client.channels.fetch(Properties.MOD_CAST_TEXT_CHANNEL_ID).then(textChannel => {
-                textChannel = textChannel as TextChannel;
-                if (textChannel.permissionsFor(textChannel.guild.roles.everyone).has(["SEND_MESSAGES"]) == false) {
-                    textChannel.permissionOverwrites.create((textChannel as TextChannel).guild.roles.everyone, { SEND_MESSAGES: true })
-                        .catch(err => console.error(err));
-                }
-            }).catch(err => console.error(err))
+            const modCastText = await this.client.channels.fetch(Properties.channels.modCastText) as TextChannel;
+            if (!modCastText) return;
+
+            if (!modCastText.permissionsFor(modCastText.guild.roles.everyone).has(["SEND_MESSAGES"])) {
+                modCastText.permissionOverwrites.create(modCastText.guild.roles.everyone, {
+                    SEND_MESSAGES: true
+                }).catch(console.error);
+            }
         } else {
-            oldState.client.channels.fetch(Properties.MOD_CAST_TEXT_CHANNEL_ID).then(textChannel => {
-                textChannel = textChannel as TextChannel;
-                if (textChannel.permissionsFor(textChannel.guild.roles.everyone).has(["SEND_MESSAGES"]) == true) {
-                    (textChannel as TextChannel).permissionOverwrites.create((textChannel as TextChannel).guild.roles.everyone, { SEND_MESSAGES: false })
-                        .catch(err => console.error(err));;
-                }
-            }).catch(err => console.error(err))
+            const modCastText = await this.client.channels.fetch(Properties.channels.modCastText) as TextChannel;
+            if (!modCastText) return;
+
+            if (modCastText.permissionsFor(modCastText.guild.roles.everyone).has(["SEND_MESSAGES"])) {
+                modCastText.permissionOverwrites.create(modCastText.guild.roles.everyone, {
+                    SEND_MESSAGES: false
+                }).catch(console.error);
+            }
+        }
+
+        if (voiceLogsChannel) {
+            if (
+                (newVoiceChannel && !oldVoiceChannel) ||
+                (newVoiceChannel && oldVoiceChannel.type == "GUILD_STAGE_VOICE")
+            ) {
+                if (!newState.member) return;
+                if (newVoiceChannel.type != "GUILD_VOICE") return;
+
+                voiceLogsChannel.send({
+                    embeds: [EmbedBuilds.getOnVoiceChannelJoinEmbed(newState)]
+                }).catch(console.error);
+            }
+
+            if (newVoiceChannel && oldVoiceChannel) {
+                if (!newState.member || !oldState.member) return;
+                if (newVoiceChannel.type != "GUILD_VOICE" || oldVoiceChannel.type != "GUILD_VOICE") return;
+
+                voiceLogsChannel.send({
+                    embeds: [EmbedBuilds.getOnVoiceChannelChangeEmbed(oldState, newState)]
+                }).catch(console.error);
+            }
+
+            if (!newVoiceChannel && oldVoiceChannel) {
+                if (!oldState.member) return;
+                if (oldVoiceChannel.type != "GUILD_VOICE") return;
+
+                voiceLogsChannel.send({
+                    embeds: [EmbedBuilds.getOnVoiceChannelLeaveEmbed(oldState)]
+                }).catch(console.error);
+            }
         }
     }
 }
