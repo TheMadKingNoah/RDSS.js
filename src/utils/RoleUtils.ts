@@ -1,53 +1,21 @@
-import { Collection, GuildMember, Role } from "discord.js";
+import { GuildMember } from "discord.js";
 
 export default class RoleUtils {
-
-    public static ROLE_BOT_ID: string = "150075195971862528";
-
-    public static ROLE_TRIAL_MODERATOR_ID: string = "218513797659230209";
-
-    public static ROLE_MODERATOR_ID: string = "150093661231775744";
-
-    public static ROLE_SENIOR_MODERATOR_ID: string = "234520161720205312";
-
-    public static ROLE_MANAGER_ID: string = "150074509393788929";
-
-    public static hasRole(member: GuildMember, roleId: string): boolean {
-
-        if (member != null) {
-
-            let role = member.roles.cache.get(roleId);
-
-            if (role != null) {
-
-                return true;
-
-            }
-        }
-
-        return false;
-
+    public static roles = {
+        bot: "150075195971862528",
+        trialModerator: "218513797659230209",
+        moderator: "150093661231775744",
+        seniorModerator: "234520161720205312",
+        manager: "150074509393788929"
     }
 
-    public static hasAnyRole(member: GuildMember | null, roles: string[]): boolean {
-        let hasRole = false;
+    public static hasRole(member: GuildMember, roleId: string): boolean {
+        if (!member) return false;
+        return member.roles.cache.has(roleId);
+    }
 
-        if (member != null) {
-
-
-            roles.forEach(roleId => {
-                if (hasRole != true) {
-
-
-                    if (this.hasRole(member, roleId) == true) {
-                 
-                        hasRole = true;
-
-                    }
-                }
-            })
-        }
-
-        return hasRole;
+    public static hasAnyRole(member: GuildMember, roles: string[]): boolean {
+        if (!member) return false;
+        return roles.some(roleId => this.hasRole(member, roleId));
     }
 }
