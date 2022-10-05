@@ -43,10 +43,6 @@ module.exports = class MessageDeleteEventListener extends EventListener {
                         }
                     })
                 }
-            } else {
-                if(message.author && message.author.id){
-                console.log(`A message by <@${message.author.id}> was deleted, but we don't know by who.`)
-                }
             }
         }
     }
