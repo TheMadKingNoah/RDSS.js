@@ -111,8 +111,14 @@ export default class ModAlert {
                             .setLabel('OK')
                             .setStyle('SUCCESS'),
                     );
+                    actionRow.addComponents(
+                        new MessageButton()
+                            .setCustomId("Infractions")
+                            .setLabel("Infractions")
+                            .setStyle("SECONDARY"),
+                    );
 
-                    element.edit({content: element.content + `\n This mod alert is being handled by <@${member.id}>.`, components: [actionRow]})
+                    element.edit({content: element.content + `\n\n **This mod alert is being handled by <@${member.id}>.**`, components: [actionRow]})
                 }
             });
         }).then(e => {})
