@@ -6,7 +6,8 @@ import {
     MessageButton,
     TextChannel,
     Message,
-    User
+    User,
+    GuildMember
 } from "discord.js";
 
 export default class ModAlert {
@@ -94,6 +95,27 @@ export default class ModAlert {
             this.existingModAlerts.set(message.id, message.content);
             console.log(this.existingModAlerts);
         }).catch(console.error)
+    }
+
+    public static updateModAlert(message: Message, member: GuildMember, modAlertChannel: TextChannel) {
+        modAlertChannel.messages.fetch({
+            limit: 100,
+        }).then((messages) => {
+            messages.forEach(element => {
+                const fetchedMessageId: string = element.content.split("/")[6].replace(/\D/g, '');
+                if(fetchedMessageId == message.id){
+                    const actionRow = new MessageActionRow()
+                    .addComponents(
+                        new MessageButton()
+                            .setCustomId('ClearModAlert')
+                            .setLabel('OK')
+                            .setStyle('SUCCESS'),
+                    );
+
+                    element.edit({content: element.content + `\n This mod alert is being handled by <@${member.id}>.`, components: [actionRow]})
+                }
+            });
+        }).then(e => {})
     }
 
     public static deleteModAlert(messageId: string, modAlertMessage: Message | null, modAlertChannel: TextChannel | null) {
