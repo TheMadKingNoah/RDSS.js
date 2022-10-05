@@ -26,6 +26,6 @@ export default class QuickMute60mButton extends Button {
             return;
         }
 
-        await QuickMute.quickMuteFromButton(interaction, "30m");
+        await QuickMute.quickMuteFromButton(interaction, "60m");
     }
 }
