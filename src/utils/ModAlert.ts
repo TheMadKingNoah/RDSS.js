@@ -104,7 +104,15 @@ export default class ModAlert {
             messages.forEach(element => {
                 const fetchedMessageId: string = element.content.split("/")[6].replace(/\D/g, '');
                 if(fetchedMessageId == message.id){
-                    element.edit(`a mod alert is handled by <@${member.id}>`);
+                    const actionRow = new MessageActionRow()
+                    .addComponents(
+                        new MessageButton()
+                            .setCustomId('ClearModAlert')
+                            .setLabel('OK')
+                            .setStyle('SUCCESS'),
+                    );
+
+                    element.edit({content: element.content + `\n This mod alert is being handled by <@${member.id}>.`, components: [actionRow]})
                 }
             });
         }).then(e => {})
