@@ -2,11 +2,11 @@ import { GuildMember } from "discord.js";
 
 export default class RoleUtils {
     public static roles = {
-        bot: "150075195971862528",
-        trialModerator: "218513797659230209",
-        moderator: "150093661231775744",
-        seniorModerator: "234520161720205312",
-        manager: "150074509393788929"
+        bot: "722582966261383188",
+        trialModerator: "926583545856675860",
+        moderator: "921934689550368773",
+        seniorModerator: "921934871314718810",
+        manager: "926583726719250483"
     }
 
     public static hasRole(member: GuildMember, roleId: string): boolean {

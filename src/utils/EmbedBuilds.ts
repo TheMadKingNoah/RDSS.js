@@ -1,4 +1,4 @@
-import { MessageEmbed, VoiceState } from "discord.js";
+import { MessageEmbed, VoiceState, TextChannel } from "discord.js";
 
 export default class EmbedBuilds {
     public static getOnVoiceChannelJoinEmbed(newState: VoiceState): MessageEmbed {
@@ -48,5 +48,19 @@ export default class EmbedBuilds {
             .setDescription(`Member left \`#${oldState.channel?.name}\` (${oldState.channel})`)
             .setFooter({ text:`ID: ${oldState.member?.id}` })
             .setTimestamp();
+    }
+
+    public static getPendingAlertsEmbed(modAlertsChannel: TextChannel): MessageEmbed {
+        return new MessageEmbed()
+            .setColor(0x748bd8)
+            .setTitle("Moderation Alerts")
+            .setDescription(
+                `There are pending moderation alerts in ${modAlertsChannel.toString()}`
+                + `\n\nPlease remember to monitor moderation alerts frequently in order to avoid`
+                + ` an accumulation of messages (and untreated reports) in the channel`
+            )
+            .setFooter({
+                text: "This message appears whenever there are alerts that are over 2 hours old"
+            })
     }
  }

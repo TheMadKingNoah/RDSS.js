@@ -3,6 +3,7 @@ import { Client } from "discord.js";
 import CommandHandler from "./modules/interactions/commands/Manager";
 import ButtonHandler from "./modules/interactions/buttons/Manager";
 import EventHandler from "./modules/events/Manager";
+import AlertMaintainer from "./utils/AlertMaintainer";
 
 import "dotenv/config";
 
@@ -19,6 +20,7 @@ console.log("Bot is starting...");
 export default class Bot extends Client {
     commands!: CommandHandler;
     buttons!: ButtonHandler;
+    alertMaintainer!: AlertMaintainer;
 
     constructor() {
         super({
@@ -39,6 +41,7 @@ export default class Bot extends Client {
         (async () => {
             this.commands = new CommandHandler(this);
             this.buttons = new ButtonHandler(this);
+            this.alertMaintainer = new AlertMaintainer(this);
 
             const events = new EventHandler(this);
             events.load().catch(console.error);
