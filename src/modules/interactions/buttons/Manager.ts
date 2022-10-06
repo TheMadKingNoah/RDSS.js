@@ -1,4 +1,4 @@
-import { Collection, GuildMember, ButtonInteraction } from "discord.js";
+import { Collection } from "discord.js";
 
 import Button from "./Button";
 import Bot from "../../../Bot";
@@ -7,7 +7,7 @@ import fs from "fs";
 
 export default class CommandHandler {
       client: Bot;
-      buttons: Collection<string, any>;
+      buttons: Collection<string | { startsWith: string } | { endsWith: string } | { includes: string }, Button>;
 
       constructor(client: Bot) {
             this.client = client;
@@ -33,20 +33,36 @@ export default class CommandHandler {
 
       public async register(button: Button) {
             this.buttons.set(button.name, button);
-            console.log(`(BUTTONS) Registered button: "${button.name}"`);
+
+            const buttonName = typeof button.name === "string" ?
+                button.name :
+                Object.values(button.name)[0];
+
+            console.log(`(BUTTONS) Registered button: "${buttonName}"`);
       }
 
       public async handle(interaction: any) {
-            const button = this.buttons.get(interaction.customId);
+            const button = this.buttons.find(b => {
+                  if (typeof b.name === "string") return b.name === interaction.customId;
 
-            if (!button) {
-                  return;
-            }
+                  if ((b.name as { startsWith: string }).startsWith) return interaction.customId.startsWith((b.name as { startsWith: string }).startsWith);
+                  if ((b.name as { endsWith: string }).endsWith) return interaction.customId.endsWith((b.name as { endsWith: string }).endsWith);
+                  if ((b.name as { includes: string }).includes) return interaction.customId.includes((b.name as { includes: string }).includes);
+
+                  return false;
+            });
+
+            if (!button) return;
+
+            const buttonName = typeof button.name === "string" ?
+                button.name :
+                Object.values(button.name)[0];
             
+            // @ts-ignore
             button.execute(interaction, this.client)
-                  .then(() => console.log(`(BUTTONS) "${button.name}" executed by ${interaction.user.tag}`))
+                  .then(() => console.log(`(BUTTONS) "${buttonName}" executed by ${interaction.user.tag}`))
                   .catch((err: any) => {
-                        console.log(`Failed to execute button: ${button.name}`);
+                        console.log(`Failed to execute button: ${buttonName}`);
                         console.error(err);
                   });
       }
