@@ -3,12 +3,12 @@ import QuickMute from "../../utils/QuickMute";
 import RoleUtils from "../../utils/RoleUtils";
 import Bot from "../../Bot";
 
-import { ButtonInteraction, GuildMember } from "discord.js";
+import {ButtonInteraction, GuildMember} from "discord.js";
 
-export default class QuickMute60mButton extends Button {
+export default class QuickMuteButton extends Button {
     constructor(client: Bot) {
         super(client, {
-            name: "qm60"
+            name: { startsWith: "qm" }
         });
     }
 
@@ -26,6 +26,7 @@ export default class QuickMute60mButton extends Button {
             return;
         }
 
-        await QuickMute.quickMuteFromButton(interaction, "60m");
+        const duration = interaction.customId.replace("qm", "");
+        await QuickMute.quickMuteFromButton(interaction, `${duration}m`);
     }
 }
