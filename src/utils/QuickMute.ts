@@ -23,6 +23,7 @@ export default class QuickMute {
 
         if (RoleUtils.hasAnyRole(member, [
             RoleUtils.roles.trialModerator,
+            RoleUtils.roles.moderator,
             RoleUtils.roles.seniorModerator,
             RoleUtils.roles.manager,
             RoleUtils.roles.bot

@@ -43,7 +43,7 @@ export default class QuickMute30mCommand extends ContextMenu {
         await QuickMute.purgeMessagesFromUserInChannel(
             interaction.channel as TextChannel, 
             interaction.targetMessage.member as GuildMember, 
-            interaction.targetMessage.author as User
+            interaction.user as User
         );
 
         interaction.reply({ 
