@@ -6,6 +6,7 @@ import ContextMenu from "../../modules/interactions/contexts/ContextMenu";
 import QuickMute from "../../utils/QuickMute";
 import Properties from "../../utils/Properties";
 import RoleUtils from "../..//utils/RoleUtils";
+import ModAlert from "../../utils/ModAlert";
 
 export default class QuickMute30mCommand extends ContextMenu {
     constructor(client: Bot) {
