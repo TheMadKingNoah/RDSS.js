@@ -47,7 +47,7 @@ export default class QuickMute30mCommand extends ContextMenu {
         );
 
         interaction.reply({ 
-            content: `${interaction.targetMessage.member} has been muted for 60 minutes!`, 
+            content: `${interaction.targetMessage.author} has been muted for 60 minutes!`, 
             ephemeral: true 
         }).catch(console.error);
     }
