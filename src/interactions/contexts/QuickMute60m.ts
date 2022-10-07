@@ -46,6 +46,11 @@ export default class QuickMute30mCommand extends ContextMenu {
             interaction.user as User
         );
 
+        const modAlertChannel = await interaction.guild?.channels.fetch(Properties.channels.alerts) as TextChannel;
+        if (!modAlertChannel) return;
+
+        ModAlert.deleteModAlert(interaction.targetMessage.id, null, modAlertChannel);
+
         interaction.reply({ 
             content: `${interaction.targetMessage.author} has been muted for 60 minutes!`, 
             ephemeral: true 
