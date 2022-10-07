@@ -81,8 +81,6 @@ export default class QuickMute {
             RoleUtils.roles.seniorModerator,
             RoleUtils.roles.manager
         ])) {
-            console.log(member)
-            console.log(moderator)
             await commandsChannel.send(`${moderator} Oops! You can't Sweep another moderator. (Nice try though)`);
             return;
         }
