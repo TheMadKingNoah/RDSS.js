@@ -6,8 +6,8 @@ import { CommandInteraction } from "discord.js";
 export default class QuickMuteCommand extends Command {
     constructor(client: Bot) {
         super(client, {
-            name: "quickmute",
-            description: "Quick mute a user."
+            name: "user-info",
+            description: "Get info of a user"
         });
     }
 
