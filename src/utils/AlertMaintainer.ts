@@ -5,7 +5,7 @@ import ModAlert from "./ModAlert";
 import { TextChannel } from "discord.js";
 
 export default class AlertMaintainer {
-    public static minTimeToPostNotice = 7200e3; // (ms) Minimum time needed for staff to be pinged with an alert regarding untreated reports
+    public static minTimeToPostNotice = 60e3; // (ms) Minimum time needed for staff to be pinged with an alert regarding untreated reports
     public static updateInterval = 3600e3; // (ms) Time difference between alert checks
     public static minTimeToDelete = 86400e3; // (ms) Minimum time needed for untreated reports to be deleted
 
