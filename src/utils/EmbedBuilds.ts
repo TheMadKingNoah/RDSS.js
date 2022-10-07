@@ -1,6 +1,4 @@
-import { GuildMember, MessageEmbed, Role, User, VoiceState } from "discord.js";
-import { url } from "inspector";
-import Properties from "./Properties";
+import { GuildMember, MessageEmbed, Role, TextChannel, User, VoiceState } from "discord.js";
 
 export default class EmbedBuilds {
     public static getOnVoiceChannelJoinEmbed(newState: VoiceState): MessageEmbed {
@@ -105,5 +103,20 @@ export default class EmbedBuilds {
         embed.setFooter({text:`ID: ${user.id}`})
 
         return embed;
+
+    }
+
+    public static getPendingAlertsEmbed(modAlertsChannel: TextChannel): MessageEmbed {
+        return new MessageEmbed()
+            .setColor(0x748bd8)
+            .setTitle("Moderation Alerts")
+            .setDescription(
+                `There are pending moderation alerts in ${modAlertsChannel.toString()}`
+                + `\n\nPlease remember to monitor moderation alerts frequently in order to avoid`
+                + ` an accumulation of messages (and untreated reports) in the channel`
+            )
+            .setFooter({
+                text: "This message appears whenever there are alerts that are over 2 hours old"
+            })
     }
  }

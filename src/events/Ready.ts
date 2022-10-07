@@ -20,5 +20,6 @@ module.exports = class ReadyEventListener extends EventListener {
             client.contexts.publish().catch(console.error);
             
             client.buttons.load().catch(console.error);
+            client.alertMaintainer.initiate().catch(console.error);
       }
 }
