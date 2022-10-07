@@ -18,6 +18,10 @@ export default class Properties {
         modCastText: "933975893599211570"
     }
 
+    public static categories = {
+        internalChannels: "360904621524385792"
+    }
+
     public static modAlertCooldown: number = 5;
     public static membersOnStage = new Map();
 }
