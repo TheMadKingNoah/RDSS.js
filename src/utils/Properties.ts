@@ -15,6 +15,7 @@ export default class Properties {
         banRequestsQueue: "592580861543841802",
         messageLogs: "1024534308762947594",
         voiceLogs: "366624876544655360",
+        trialModerators: "678671353473269799",
         modCastText: "933975893599211570"
     }
 
