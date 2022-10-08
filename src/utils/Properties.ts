@@ -14,9 +14,12 @@ export default class Properties {
         banRequestsQueue: "592580861543841802",
         messageLogs: "1024534308762947594",
         voiceLogs: "366624876544655360",
-        modCastText: "933975893599211570"
+        modCastText: "933975893599211570",
+        winnerQueue: "963136283633389668"
     }
 
     public static modAlertCooldown: number = 5;
     public static membersOnStage = new Map();
+    public static guildId = "150074202727251969";
+    public static winnerRoleDuration = 604800; // 7 Days
 }
