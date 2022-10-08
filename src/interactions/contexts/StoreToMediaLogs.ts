@@ -28,7 +28,7 @@ export default class QuickMute30mCommand extends ContextMenu {
                 messageAttachments.push(new MessageAttachment(media.attachment));
             });
 
-            logChannel.send({content: `Media-logs by ${interaction.user}(\`${interaction.user.username}#${interaction.user.discriminator}\`) <t:${Math.trunc(message.createdTimestamp/1000)}:F>`, 
+            logChannel.send({content: `Media-logs by ${interaction.user} (\`${interaction.user.username}#${interaction.user.discriminator}\`) <t:${Math.trunc(message.createdTimestamp/1000)}:F>`, 
             files:messageAttachments,
             allowedMentions:undefined
         }).then(mediaLogMessage => {
