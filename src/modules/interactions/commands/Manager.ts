@@ -41,7 +41,11 @@ export default class CommandHandler {
                   this.client.commands.commands.map(command => command.build())
             );
 
-            this.client.application?.commands.set(commands)
+            const contexts: ApplicationCommandDataResolvable[] = await Promise.all(
+                  this.client.contexts.contexts.map(command => command.build())
+            );
+
+            this.client.application?.commands.set(commands.concat(contexts))
                   .then(() => console.log(`(COMMANDS) Successfully loaded ${this.client.commands.commands.size} commands!`))
                   .catch(console.error);
       }

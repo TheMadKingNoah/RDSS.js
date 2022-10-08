@@ -1,9 +1,11 @@
 import {Client} from "discord.js";
 
 import CommandHandler from "./modules/interactions/commands/Manager";
+import ContextMenuHandler from "./modules/interactions/contexts/Manager";
 import ButtonHandler from "./modules/interactions/buttons/Manager";
 import SelectMenuHandler from "./modules/interactions/select_menus/Manager";
 import EventHandler from "./modules/events/Manager";
+import AlertMaintainer from "./utils/AlertMaintainer";
 
 import "dotenv/config";
 import EventWinners from "./utils/EventWinners";
@@ -23,6 +25,8 @@ export default class Bot extends Client {
     commands!: CommandHandler;
     buttons!: ButtonHandler;
     select_menus!: SelectMenuHandler;
+    alertMaintainer!: AlertMaintainer;
+    contexts!: ContextMenuHandler;
 
     constructor() {
         super({
@@ -45,6 +49,8 @@ export default class Bot extends Client {
             this.commands = new CommandHandler(this);
             this.buttons = new ButtonHandler(this);
             this.select_menus = new SelectMenuHandler(this);
+            this.alertMaintainer = new AlertMaintainer(this);
+            this.contexts = new ContextMenuHandler(this);
 
             const events = new EventHandler(this);
             events.load().catch(console.error);
