@@ -14,6 +14,7 @@ export default class Properties {
         moderators: "150255535927721984",
         banRequestsQueue: "592580861543841802",
         messageLogs: "1024534308762947594",
+        mediaLogs: "1028104917170258030",
         voiceLogs: "366624876544655360",
         modCastText: "933975893599211570"
     }
