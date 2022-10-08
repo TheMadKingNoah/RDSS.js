@@ -6,7 +6,9 @@ export default class RoleUtils {
         trialModerator: "218513797659230209",
         moderator: "150093661231775744",
         seniorModerator: "234520161720205312",
-        manager: "150074509393788929"
+        manager: "150074509393788929",
+        gameChampion: "933135286022590505",
+        publicSectorPm: "922614306720317470"
     }
 
     public static hasRole(member: GuildMember, roleId: string): boolean {
