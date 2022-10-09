@@ -16,6 +16,7 @@ export default class Properties {
         messageLogs: "1024534308762947594",
         mediaLogs: "1028104917170258030",
         voiceLogs: "366624876544655360",
+        trialModerators: "678671353473269799",
         modCastText: "933975893599211570"
     }
 
