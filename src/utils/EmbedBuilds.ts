@@ -106,7 +106,7 @@ export default class EmbedBuilds {
 
     }
 
-    public static getPendingAlertsEmbed(modAlertsChannel: TextChannel): MessageEmbed {
+    public static getPendingAlertsEmbed(modAlertsChannel: TextChannel, intervalText: string): MessageEmbed {
         return new MessageEmbed()
             .setColor(0x748bd8)
             .setTitle("Moderation Alerts")
@@ -116,7 +116,7 @@ export default class EmbedBuilds {
                 + ` an accumulation of messages (and untreated reports) in the channel`
             )
             .setFooter({
-                text: "This message appears whenever there are alerts that are over 2 hours old"
+                text: `This message appears whenever there are alerts that are over ${intervalText}`
             })
     }
  }
