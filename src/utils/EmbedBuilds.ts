@@ -111,7 +111,9 @@ export default class EmbedBuilds {
             .setColor(0x748bd8)
             .setTitle("Moderation Alerts")
             .setDescription(
-                `( ͡ಠ ʖ̯ ͡ಠ)`
+              `There are pending moderation alerts in ${modAlertsChannel.toString()}`
+                + `\n\nPlease remember to monitor moderation alerts frequently in order to avoid`
+                + ` an accumulation of messages (and untreated reports) in the channel`
             )
             .setFooter({
                 text: `This message appears whenever there are alerts that are over ${intervalText}`
