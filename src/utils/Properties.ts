@@ -16,8 +16,9 @@ export default class Properties {
         messageLogs: "1024534308762947594",
         mediaLogs: "1028104917170258030",
         voiceLogs: "366624876544655360",
-        trialModerators: "678671353473269799",
-        modCastText: "933975893599211570"
+        modCastText: "933975893599211570",
+        winnerQueue: "963136283633389668",
+        trialModerators: "678671353473269799"
     }
 
     public static categories = {
@@ -26,4 +27,6 @@ export default class Properties {
 
     public static modAlertCooldown: number = 5;
     public static membersOnStage = new Map();
+    public static guildId = "150074202727251969";
+    public static winnerRoleDuration = 604800; // 7 Days
 }

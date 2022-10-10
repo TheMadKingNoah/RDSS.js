@@ -1,12 +1,14 @@
-import { Client } from "discord.js";
+import {Client} from "discord.js";
 
 import CommandHandler from "./modules/interactions/commands/Manager";
 import ContextMenuHandler from "./modules/interactions/contexts/Manager";
 import ButtonHandler from "./modules/interactions/buttons/Manager";
+import SelectMenuHandler from "./modules/interactions/select_menus/Manager";
 import EventHandler from "./modules/events/Manager";
 import AlertMaintainer from "./utils/AlertMaintainer";
 
 import "dotenv/config";
+import EventWinners from "./utils/EventWinners";
 
 process.on("unhandledRejection", (error: Error) => {
     console.error(error.stack);
@@ -19,8 +21,10 @@ process.on("uncaughtException", (error: Error) => {
 console.log("Bot is starting...");
 
 export default class Bot extends Client {
+    winners!: EventWinners;
     commands!: CommandHandler;
     buttons!: ButtonHandler;
+    select_menus!: SelectMenuHandler;
     alertMaintainer!: AlertMaintainer;
     contexts!: ContextMenuHandler;
 
@@ -41,8 +45,10 @@ export default class Bot extends Client {
         });
 
         (async () => {
+            this.winners = new EventWinners(this);
             this.commands = new CommandHandler(this);
             this.buttons = new ButtonHandler(this);
+            this.select_menus = new SelectMenuHandler(this);
             this.alertMaintainer = new AlertMaintainer(this);
             this.contexts = new ContextMenuHandler(this);
 
