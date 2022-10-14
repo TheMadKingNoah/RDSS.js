@@ -28,8 +28,8 @@ export default class AlertMaintainer {
         // Moderator alerts
         this.register({
             name: "ModeratorAlert",
-            minTimeToPostNotice: 3600e3,
-            updateInterval: 7200e3,
+            minTimeToPostNotice: 7200e3,
+            updateInterval: 3600e3,
             intervalText: "2 hours old",
             alertContent: "@here Pending moderation alerts",
             alertChannelId: Properties.channels.moderators
