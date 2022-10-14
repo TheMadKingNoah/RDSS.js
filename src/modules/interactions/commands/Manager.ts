@@ -1,4 +1,4 @@
-import { ApplicationCommandDataResolvable, Collection, CommandInteraction } from "discord.js";
+import { ApplicationCommandDataResolvable, Collection } from "discord.js";
 
 import Command from "./Command";
 import Bot from "../../../Bot";
@@ -41,7 +41,11 @@ export default class CommandHandler {
                   this.client.commands.commands.map(command => command.build())
             );
 
-            this.client.application?.commands.set(commands)
+            const contexts: ApplicationCommandDataResolvable[] = await Promise.all(
+                  this.client.contexts.contexts.map(command => command.build())
+            );
+
+            this.client.application?.commands.set(commands.concat(contexts))
                   .then(() => console.log(`(COMMANDS) Successfully loaded ${this.client.commands.commands.size} commands!`))
                   .catch(console.error);
       }
@@ -54,7 +58,7 @@ export default class CommandHandler {
             }
             
             command.execute(interaction, this.client)
-                  .then(() => console.log(`"${command.name}" executed by ${interaction.user.tag} ("${interaction.guild?.name}" • ${interaction.guildId})`))
+                  .then(() => console.log(`(COMMANDS) "${command.name}" executed by ${interaction.user.tag}`))
                   .catch((err: any) => {
                         console.log(`Failed to execute command: ${command.name}`);
                         console.error(err);

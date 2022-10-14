@@ -1,4 +1,4 @@
-import { MessageEmbed, VoiceState, TextChannel } from "discord.js";
+import { GuildMember, MessageEmbed, Role, TextChannel, User, VoiceState } from "discord.js";
 
 export default class EmbedBuilds {
     public static getOnVoiceChannelJoinEmbed(newState: VoiceState): MessageEmbed {
@@ -50,17 +50,73 @@ export default class EmbedBuilds {
             .setTimestamp();
     }
 
-    public static getPendingAlertsEmbed(modAlertsChannel: TextChannel): MessageEmbed {
+    public static getUserInfoEmbed(user: User, member:GuildMember|null): MessageEmbed {
+        const embed = new MessageEmbed()
+
+        const avatar = member ? member.displayAvatarURL() : user.displayAvatarURL();
+        embed.setAuthor({
+            name: (user.username + "#" + user.discriminator),
+            iconURL: avatar,
+            url: avatar
+        })
+
+        if(member){
+            if(member.nickname){
+                embed.setDescription(`This user is verified as \`${member.nickname}\``)
+            } else {
+                embed.setDescription(`This user is not verified!`)
+                embed.setColor(0xFFFFFF)
+            }
+
+            let roles = "";
+            
+            member.roles.cache.sort((a,b)=>b.position-a.position).forEach(element => {
+                if (element.name != "@everyone"){ 
+                    roles += `<@&${element.id}> `;
+                }
+            });
+
+            if (roles.length === 0){
+                roles = "**None**"
+            }
+
+            embed.addField("**Roles**", roles, true,)
+            
+            if(member.joinedTimestamp){
+                embed.addField(
+                    "**Joined at**",
+                    `<t:${Math.trunc(member.joinedTimestamp/1000)}:F>\n (<t:${Math.trunc(member.joinedTimestamp/1000)}:R>)`,
+                    true
+                )
+            }
+        } else {
+            embed.setDescription("This user is not in this Guild!")
+            embed.setColor(0xFF0000)
+        }
+
+        embed.addField(
+            "**Created at**",
+            `<t:${Math.trunc(user.createdTimestamp/1000)}:F>\n (<t:${Math.trunc(user.createdTimestamp/1000)}:R>)`,
+            true
+        )
+
+        embed.setFooter({text:`ID: ${user.id}`})
+
+        return embed;
+
+    }
+
+    public static getPendingAlertsEmbed(modAlertsChannel: TextChannel, intervalText: string): MessageEmbed {
         return new MessageEmbed()
             .setColor(0x748bd8)
             .setTitle("Moderation Alerts")
             .setDescription(
-                `There are pending moderation alerts in ${modAlertsChannel.toString()}`
+              `There are pending moderation alerts in ${modAlertsChannel.toString()}`
                 + `\n\nPlease remember to monitor moderation alerts frequently in order to avoid`
                 + ` an accumulation of messages (and untreated reports) in the channel`
             )
             .setFooter({
-                text: "This message appears whenever there are alerts that are over 2 hours old"
+                text: `This message appears whenever there are alerts that are over ${intervalText}`
             })
     }
  }

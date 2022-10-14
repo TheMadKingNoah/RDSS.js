@@ -13,7 +13,7 @@ import {
 
 export default class QuickMute {
     public static async quickMuteUser(moderator: User, authorId: string, duration: string, messageEvidence: string, commandsChannel: TextChannel, message: Message | null) {
-        const member = await commandsChannel.guild.members.fetch(authorId);
+        const member = await commandsChannel.guild.members.fetch(authorId).catch( e => {console.log("Member has left the server")});
 
         if (!member) {
             if (message) message.delete().catch(console.error);
@@ -23,6 +23,7 @@ export default class QuickMute {
 
         if (RoleUtils.hasAnyRole(member, [
             RoleUtils.roles.trialModerator,
+            RoleUtils.roles.moderator,
             RoleUtils.roles.seniorModerator,
             RoleUtils.roles.manager,
             RoleUtils.roles.bot

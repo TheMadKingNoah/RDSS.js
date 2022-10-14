@@ -6,6 +6,7 @@ import ContextMenu from "../../modules/interactions/contexts/ContextMenu";
 import QuickMute from "../../utils/QuickMute";
 import Properties from "../../utils/Properties";
 import RoleUtils from "../..//utils/RoleUtils";
+import ModAlert from "../../utils/ModAlert";
 
 export default class QuickMute30mCommand extends ContextMenu {
     constructor(client: Bot) {
@@ -43,11 +44,16 @@ export default class QuickMute30mCommand extends ContextMenu {
         await QuickMute.purgeMessagesFromUserInChannel(
             interaction.channel as TextChannel, 
             interaction.targetMessage.member as GuildMember, 
-            interaction.targetMessage.author as User
+            interaction.user as User
         );
 
+        const modAlertChannel = await interaction.guild?.channels.fetch(Properties.channels.alerts) as TextChannel;
+        if (!modAlertChannel) return;
+
+        ModAlert.deleteModAlert(interaction.targetMessage.id, null, modAlertChannel);
+
         interaction.reply({ 
-            content: `${interaction.targetMessage.member} has been muted for 30 minutes!`, 
+            content: `${interaction.targetMessage.author} has been muted for 30 minutes!`, 
             ephemeral: true 
         }).catch(console.error);
     }
