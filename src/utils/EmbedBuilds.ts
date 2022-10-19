@@ -91,9 +91,13 @@ export default class EmbedBuilds {
                 )
             }
         } else {
+            console.log("test1")
             user.client.guilds.fetch(Properties.guildId).then( guild =>{
+                console.log("test2")
                 guild.bans.fetch(user.id).then(bannedUser => {
+                    console.log("test3")
                     if(bannedUser !== null){
+                        console.log("test4")
                         embed.setDescription("This user has been banned from this Guild")
                         embed.setColor(0xFF0000)
                     } else {
