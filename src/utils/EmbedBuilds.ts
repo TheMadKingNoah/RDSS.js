@@ -92,8 +92,7 @@ export default class EmbedBuilds {
             }
         } else {
             if(isBanned !== null){
-                console.log("test4")
-                embed.setDescription("This user has been banned from this Guild")
+                embed.setDescription(`This user has been banned from this Guild: \n ${isBanned.reason}`);
                 embed.setColor(0xFF0000)
             } else {
                 embed.setDescription("This user is not in this Guild!")
