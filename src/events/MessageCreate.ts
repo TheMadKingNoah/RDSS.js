@@ -7,7 +7,7 @@ import {
     GuildMember,
     Message,
     MessageButton,
-    MessageActionRow, MessageEmbed, MessageSelectMenu
+    MessageActionRow, MessageEmbed, MessageSelectMenu, MessageAttachment
 } from "discord.js";
 
 module.exports = class MessageCreateEventListener extends EventListener {
@@ -86,6 +86,32 @@ module.exports = class MessageCreateEventListener extends EventListener {
             }).catch(console.error);
 
             message.delete().catch(console.error);
+        }
+
+        if(message.channel.id === Properties.channels.commands){
+            let logChannel = message.guild?.channels.cache.get(Properties.channels.mediaLogs) as TextChannel;
+
+            if(message.attachments.size > 0){
+                let messageAttachments:MessageAttachment[] = [];
+                message.attachments.forEach(media => {
+                    console.log(media)
+                    messageAttachments.push(new MessageAttachment(media.attachment));
+                });
+
+                logChannel.send({content: `Media-logs by ${message.author} (\`${message.author.id}\`) <t:${Math.trunc(message.createdTimestamp/1000)}:F>`,  
+                files:messageAttachments,
+                allowedMentions:undefined
+            }).then(mediaLogMessage => {
+                    let evidenceLinks = "";
+                    mediaLogMessage.attachments.forEach( element => {
+                        evidenceLinks += element.url + "\n"
+                    })
+
+                    message.channel.send(`${message.author} Your media links: \n\n ${evidenceLinks}`)
+
+                    message.delete();
+                })
+            }
         }
     }
 }
