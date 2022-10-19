@@ -18,7 +18,8 @@ export default class Properties {
         voiceLogs: "366624876544655360",
         modCastText: "933975893599211570",
         winnerQueue: "963136283633389668",
-        trialModerators: "678671353473269799"
+        trialModerators: "678671353473269799",
+        muteRequestQueue: "912280762760454174"
     }
 
     public static categories = {
