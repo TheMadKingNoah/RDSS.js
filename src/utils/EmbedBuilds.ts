@@ -1,4 +1,5 @@
-import { GuildMember, MessageEmbed, Role, TextChannel, User, VoiceState } from "discord.js";
+import { Guild, GuildMember, MessageEmbed, Role, TextChannel, User, VoiceState } from "discord.js";
+import Properties from "./Properties";
 
 export default class EmbedBuilds {
     public static getOnVoiceChannelJoinEmbed(newState: VoiceState): MessageEmbed {
@@ -90,8 +91,21 @@ export default class EmbedBuilds {
                 )
             }
         } else {
-            embed.setDescription("This user is not in this Guild!")
-            embed.setColor(0xFF0000)
+            user.client.guilds.fetch(Properties.guildId).then( guild =>{
+                guild.bans.fetch(user.id).then(bannedUser => {
+                    if(bannedUser !== null){
+                        embed.setDescription("This user has been banned from this Guild")
+                        embed.setColor(0xFF0000)
+                    } else {
+                        embed.setDescription("This user is not in this Guild!")
+                        embed.setColor(0xFF0000)
+                    }
+
+                }).catch( e=> {
+                    embed.setDescription("This user is not in this Guild!")
+                    embed.setColor(0xFF0000)
+                })
+            });
         }
 
         embed.addField(

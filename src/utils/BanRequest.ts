@@ -27,7 +27,7 @@ export default class BanRequest {
                 banRequestContent[0].toLowerCase() === ";ban" ||
                 banRequestContent[0].toLowerCase() === ";forceban"
             ) {
-                commandChannel.send(`;ban ${userToBan} ${evidence}`);
+                commandChannel.send(`;ban ${userToBan} ${evidence}`).then( message => { message.suppressEmbeds(true)});
             } else {
                 commandChannel.send(`${moderator} the ban you tried to invoke was not correctly formatted. Please run the command manually`);
             }
