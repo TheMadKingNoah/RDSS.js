@@ -88,17 +88,32 @@ module.exports = class MessageReactionAddEventListener extends EventListener {
 
         // Approve ban request
         if (reaction.emoji.id == Properties.emojis.approve) {
-            if (message.channel.id != Properties.channels.banRequestsQueue) return;
+            if (message.channel.id === Properties.channels.banRequestsQueue) {
+                if (!RoleUtils.hasAnyRole(reactee, [
+                    RoleUtils.roles.seniorModerator,
+                    RoleUtils.roles.manager
+                ])) return;
 
-            if (!RoleUtils.hasAnyRole(reactee, [
-                RoleUtils.roles.seniorModerator,
-                RoleUtils.roles.manager
-            ])) return;
+                const commandsChannel = await message.guild?.channels.fetch(Properties.channels.commands) as TextChannel;
+                if (!commandsChannel) return;
 
-            const commandsChannel = await message.guild?.channels.fetch(Properties.channels.commands) as TextChannel;
-            if (!commandsChannel) return;
+                BanRequest.approveBanRequest(message, commandsChannel, reactee) 
+            } 
 
-            BanRequest.approveBanRequest(message, commandsChannel, reactee)
+            if (message.channel.id === Properties.channels.muteRequestQueue){
+                if (!RoleUtils.hasAnyRole(reactee, [
+                    RoleUtils.roles.moderator,
+                    RoleUtils.roles.seniorModerator,
+                    RoleUtils.roles.manager
+                ])) return;
+
+                const commandsChannel = await message.guild?.channels.fetch(Properties.channels.commands) as TextChannel;
+                if (!commandsChannel) return;
+
+                BanRequest.approveBanRequest(message, commandsChannel, reactee)
+            } 
+
+            return;
         }
 
 
