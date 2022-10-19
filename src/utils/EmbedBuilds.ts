@@ -100,12 +100,11 @@ export default class EmbedBuilds {
                         embed.setDescription("This user is not in this Guild!")
                         embed.setColor(0xFF0000)
                     }
-
                 }).catch( e=> {
                     embed.setDescription("This user is not in this Guild!")
                     embed.setColor(0xFF0000)
                 })
-            });
+            }).catch(e => console.log(e));
         }
 
         embed.addField(
