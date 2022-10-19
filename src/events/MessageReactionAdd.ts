@@ -3,6 +3,7 @@ import ModAlert from "../utils/ModAlert";
 import Properties from "../utils/Properties";
 import QuickMute from "../utils/QuickMute";
 import BanRequest from "../utils/BanRequest";
+import MuteRequest from "../utils/MuteRequest";
 import EventListener from "../modules/events/Event";
 import Bot from "../Bot";
 
@@ -86,7 +87,7 @@ module.exports = class MessageReactionAddEventListener extends EventListener {
         }
 
 
-        // Approve ban request
+        // Approve mute/ban request
         if (reaction.emoji.id == Properties.emojis.approve) {
             if (message.channel.id === Properties.channels.banRequestsQueue) {
                 if (!RoleUtils.hasAnyRole(reactee, [
@@ -110,7 +111,7 @@ module.exports = class MessageReactionAddEventListener extends EventListener {
                 const commandsChannel = await message.guild?.channels.fetch(Properties.channels.commands) as TextChannel;
                 if (!commandsChannel) return;
 
-                BanRequest.approveBanRequest(message, commandsChannel, reactee)
+                MuteRequest.approveMuteRequest(message, commandsChannel, reactee)
             } 
 
             return;
