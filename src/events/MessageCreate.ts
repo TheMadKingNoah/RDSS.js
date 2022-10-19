@@ -89,6 +89,7 @@ module.exports = class MessageCreateEventListener extends EventListener {
         }
 
         if(message.channel.id === Properties.channels.commands){
+            if (message.author.bot) return;
             let logChannel = message.guild?.channels.cache.get(Properties.channels.mediaLogs) as TextChannel;
 
             if(message.attachments.size > 0){
@@ -107,7 +108,7 @@ module.exports = class MessageCreateEventListener extends EventListener {
                         evidenceLinks += element.url + "\n"
                     })
 
-                    message.channel.send(`${message.author} Your media links: \n\n ${evidenceLinks}`)
+                    message.channel.send(`${message.author} Your media links: \n ${evidenceLinks}`)
 
                     message.delete();
                 })
