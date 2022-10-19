@@ -1,4 +1,4 @@
-import { Guild, GuildMember, MessageEmbed, Role, TextChannel, User, VoiceState } from "discord.js";
+import { Guild, GuildBan, GuildMember, MessageEmbed, Role, TextChannel, User, VoiceState } from "discord.js";
 import Properties from "./Properties";
 
 export default class EmbedBuilds {
@@ -51,7 +51,7 @@ export default class EmbedBuilds {
             .setTimestamp();
     }
 
-    public static getUserInfoEmbed(user: User, member:GuildMember|null): MessageEmbed {
+    public static getUserInfoEmbed(user: User, member:GuildMember|null, isBanned:GuildBan|null): MessageEmbed {
         const embed = new MessageEmbed()
 
         const avatar = member ? member.displayAvatarURL() : user.displayAvatarURL();
@@ -91,24 +91,14 @@ export default class EmbedBuilds {
                 )
             }
         } else {
-            console.log("test1")
-            user.client.guilds.fetch(Properties.guildId).then( guild =>{
-                console.log("test2")
-                guild.bans.fetch(user.id).then(bannedUser => {
-                    console.log("test3")
-                    if(bannedUser !== null){
-                        console.log("test4")
-                        embed.setDescription("This user has been banned from this Guild")
-                        embed.setColor(0xFF0000)
-                    } else {
-                        embed.setDescription("This user is not in this Guild!")
-                        embed.setColor(0xFF0000)
-                    }
-                }).catch( e=> {
-                    embed.setDescription("This user is not in this Guild!")
-                    embed.setColor(0xFF0000)
-                })
-            }).catch(e => console.log(e));
+            if(isBanned !== null){
+                console.log("test4")
+                embed.setDescription("This user has been banned from this Guild")
+                embed.setColor(0xFF0000)
+            } else {
+                embed.setDescription("This user is not in this Guild!")
+                embed.setColor(0xFF0000)
+            }               
         }
 
         embed.addField(
