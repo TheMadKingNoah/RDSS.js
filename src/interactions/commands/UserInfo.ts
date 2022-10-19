@@ -28,8 +28,6 @@ export default class UserInfoCommand extends Command {
         let channel = interaction.channel as GuildChannel;
         let isInternal = channel.parentId == Properties.categories.internalChannels;
 
-        interaction.deferReply();
-
         interaction.guild?.bans.fetch(user.id).then( isBanned => { 
             let embed = EmbedBuilds.getUserInfoEmbed(user, member, isBanned )
 
