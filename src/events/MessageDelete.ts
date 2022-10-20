@@ -44,6 +44,17 @@ module.exports = class MessageDeleteEventListener extends EventListener {
                     })
                 }
             }
+
+            if(message.content.length === 0){
+                message.stickers.forEach( sticker => {
+                    message.client.channels.fetch(Properties.channels.mediaLogs).then(mediaLogChannel =>{
+                        let logChannel = mediaLogChannel as TextChannel;
+                        logChannel.send({content: `Sticker Deleted from (\`${message.author.id}\`)` 
+                        + `\n[Sticker: ${sticker.name} (<https://media.discordapp.net/stickers/${sticker.id}.webp?size=240>)]`
+                    })
+                    })
+                })
+            }
         }
     }
 }
