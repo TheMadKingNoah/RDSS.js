@@ -37,7 +37,7 @@ module.exports = class MessageDeleteEventListener extends EventListener {
             if (message.author && target.id === message.author.id && message.author.username) {
                 if(executor){
                     message.guild.members.fetch(executor.id).then(moderator => {
-                        if (RoleUtils.hasAnyRole(moderator, [RoleUtils.roles.moderator, RoleUtils.roles.seniorModerator, RoleUtils.roles.manager])) {
+                        if (RoleUtils.hasAnyRole(moderator, [RoleUtils.roles.trialModerator, RoleUtils.roles.moderator, RoleUtils.roles.seniorModerator, RoleUtils.roles.manager])) {
                             message.client.channels.fetch(Properties.channels.alerts).then(alertChannel => {
                                 ModAlert.updateModAlert(message, moderator, alertChannel as TextChannel)
                             })
