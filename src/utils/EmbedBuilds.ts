@@ -1,4 +1,4 @@
-import { Guild, GuildBan, GuildMember, MessageEmbed, Role, TextChannel, User, VoiceState } from "discord.js";
+import { Activity, Guild, GuildBan, GuildMember, MessageEmbed, Role, TextChannel, User, VoiceState } from "discord.js";
 import Properties from "./Properties";
 
 export default class EmbedBuilds {
@@ -124,5 +124,22 @@ export default class EmbedBuilds {
             .setFooter({
                 text: `This message appears whenever there are alerts that are over ${intervalText}`
             })
+    }
+
+    public static getSpotifyPartyInviteDeletedEmbed(activity: Activity, member:GuildMember){
+        let embed = new MessageEmbed();
+
+        embed.setTitle("Spotify Party invite deleted")
+        if(activity.assets !== null && activity.assets.largeImage !== null) {  
+            let imageUrl = activity.assets.largeImage.replace('spotify:','');
+            embed.setThumbnail(`https://i.scdn.co/image/${imageUrl}`)
+        }
+
+        if(activity.state) {embed.addField('**Artist**', activity.state, false)}
+        if(activity.details) {embed.addField('**Title**', activity.details, false )};
+
+        embed.setFooter({text:`Spotify Party Invite by: ${member.id}`})
+
+        return embed;
     }
  }

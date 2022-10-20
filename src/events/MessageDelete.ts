@@ -1,9 +1,10 @@
-import { Channel, Message, TextChannel } from "discord.js";
+import { Activity, Channel, GuildMember, Message, TextChannel, User } from "discord.js";
 import EventListener from "../modules/events/Event";
 import Bot from "../Bot";
 import RoleUtils from "../utils/RoleUtils";
 import ModAlert from "../utils/ModAlert";
 import Properties from "../utils/Properties";
+import EmbedBuilds from "../utils/EmbedBuilds";
 
 module.exports = class MessageDeleteEventListener extends EventListener {
     constructor(client: Bot) {
@@ -36,7 +37,7 @@ module.exports = class MessageDeleteEventListener extends EventListener {
             if (message.author && target.id === message.author.id && message.author.username) {
                 if(executor){
                     message.guild.members.fetch(executor.id).then(moderator => {
-                        if (RoleUtils.hasAnyRole(moderator, [RoleUtils.roles.moderator, RoleUtils.roles.seniorModerator, RoleUtils.roles.manager])) {
+                        if (RoleUtils.hasAnyRole(moderator, [RoleUtils.roles.trialModerator, RoleUtils.roles.moderator, RoleUtils.roles.seniorModerator, RoleUtils.roles.manager])) {
                             message.client.channels.fetch(Properties.channels.alerts).then(alertChannel => {
                                 ModAlert.updateModAlert(message, moderator, alertChannel as TextChannel)
                             })
@@ -45,16 +46,29 @@ module.exports = class MessageDeleteEventListener extends EventListener {
                 }
             }
 
-            if(message.content.length === 0){
+            if(message.content.length === 0 && message.stickers.size > 0){
                 message.stickers.forEach( sticker => {
                     message.client.channels.fetch(Properties.channels.mediaLogs).then(mediaLogChannel =>{
                         let logChannel = mediaLogChannel as TextChannel;
-                        logChannel.send({content: `Sticker Deleted from (\`${message.author.id}\`)` 
-                        + `\n[Sticker: ${sticker.name} (<https://media.discordapp.net/stickers/${sticker.id}.webp?size=240>)]`
+                        logChannel.send({content: 
+                            `[<t:${Math.trunc(new Date().getTime()/1000)}:F>] :wastebasket: ${message.author.username}#${message.author.discriminator}(\`${message.author.id}\`)` 
+                        + `sticker deleted in (\`${message.channel}\`)` 
+                        + `\n\`[Sticker: ${sticker.name} (<https://media.discordapp.net/stickers/${sticker.id}.webp?size=240>)]\``
                     })
                     })
                 })
             }
+
+            // message.guild.members.fetch(message.author.id).then( member => {
+            //     if(member.presence !== null){
+            //         let presence = member.presence.activities.filter(x=>x.name === "Spotify")[0] as Activity;
+            //         let embed = EmbedBuilds.getSpotifyPartyInviteDeletedEmbed(presence, member);
+            //         message.client.channels.fetch(Properties.channels.mediaLogs).then(mediaLogChannel =>{
+            //             let logChannel = mediaLogChannel as TextChannel;
+            //             logChannel.send({embeds: [embed]})
+            //         })
+            //     }
+            // })
         }
     }
 }
