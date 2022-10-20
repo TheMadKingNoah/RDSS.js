@@ -99,7 +99,7 @@ module.exports = class MessageCreateEventListener extends EventListener {
                     messageAttachments.push(new MessageAttachment(media.attachment));
                 });
 
-                logChannel.send({content: `Media-logs by ${message.author} (\`${message.author.id}\`) <t:${Math.trunc(message.createdTimestamp/1000)}:F>`,  
+                logChannel.send({content:`<t:${Math.trunc(message.createdTimestamp/1000)}:F> :park: ${message.author.username}#${message.author.discriminator} (\`${message.author.id}\`)`,  
                 files:messageAttachments,
                 allowedMentions:undefined
             }).then(mediaLogMessage => {

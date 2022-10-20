@@ -51,24 +51,26 @@ module.exports = class MessageDeleteEventListener extends EventListener {
                     message.client.channels.fetch(Properties.channels.mediaLogs).then(mediaLogChannel =>{
                         let logChannel = mediaLogChannel as TextChannel;
                         logChannel.send({content: 
-                            `[<t:${Math.trunc(new Date().getTime()/1000)}:F>] :wastebasket: ${message.author.username}#${message.author.discriminator}(\`${message.author.id}\`)` 
-                        + `sticker deleted in (\`${message.channel}\`)` 
-                        + `\n\`[Sticker: ${sticker.name} (<https://media.discordapp.net/stickers/${sticker.id}.webp?size=240>)]\``
+                            `[<t:${Math.trunc(new Date().getTime()/1000)}:F>] :wastebasket: ${message.author.username}#${message.author.discriminator} (\`${message.author.id}\`)` 
+                        + ` sticker deleted in ${message.channel}`
+                        + `\n\`\`\` Name: ${sticker.name} \n Image: <https://media.discordapp.net/stickers/${sticker.id}.webp?size=240>\`\`\``
                     })
                     })
                 })
             }
 
-            // message.guild.members.fetch(message.author.id).then( member => {
-            //     if(member.presence !== null){
-            //         let presence = member.presence.activities.filter(x=>x.name === "Spotify")[0] as Activity;
-            //         let embed = EmbedBuilds.getSpotifyPartyInviteDeletedEmbed(presence, member);
-            //         message.client.channels.fetch(Properties.channels.mediaLogs).then(mediaLogChannel =>{
-            //             let logChannel = mediaLogChannel as TextChannel;
-            //             logChannel.send({embeds: [embed]})
-            //         })
-            //     }
-            // })
+            if(message.activity !== null && message.activity.partyId.includes("spotify")){
+                message.guild.members.fetch(message.author.id).then( member => {
+                    if(member.presence !== null){
+                        let presence = member.presence.activities.filter(x=>x.name === "Spotify")[0] as Activity;
+                        let embed = EmbedBuilds.getSpotifyPartyInviteDeletedEmbed(presence, member);
+                        message.client.channels.fetch(Properties.channels.mediaLogs).then(mediaLogChannel =>{
+                            let logChannel = mediaLogChannel as TextChannel;
+                            logChannel.send({embeds: [embed]})
+                        })
+                    }
+                })
+            }
         }
     }
 }
