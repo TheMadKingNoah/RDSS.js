@@ -35,12 +35,13 @@ export default class Bot extends Client {
                 'GUILD_MESSAGE_REACTIONS',
                 "GUILD_MEMBERS",
                 "GUILD_VOICE_STATES",
-                "GUILD_MESSAGES"
+                "GUILD_MESSAGES",
+                "GUILD_PRESENCES"
             ],
             partials: [
                 "MESSAGE",
                 "CHANNEL",
-                "REACTION"
+                "REACTION",
             ],
         });
 
