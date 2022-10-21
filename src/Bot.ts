@@ -36,7 +36,7 @@ export default class Bot extends Client {
                 "GUILD_MEMBERS",
                 "GUILD_VOICE_STATES",
                 "GUILD_MESSAGES",
-                "GUILD_PRESENCES"
+//                 "GUILD_PRESENCES"
             ],
             partials: [
                 "MESSAGE",
