@@ -46,7 +46,7 @@ export default class Bot extends Client {
             makeCache: Options.cacheWithLimits({
                 ...Options.defaultMakeCacheSettings,
                 ReactionManager: 0,
-                PresenceManager: 0,
+                PresenceManager: 5,
             })
         });
 
