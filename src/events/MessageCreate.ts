@@ -9,6 +9,7 @@ import {
     MessageButton,
     MessageActionRow, MessageEmbed, MessageSelectMenu, MessageAttachment
 } from "discord.js";
+import RoleUtils from "../utils/RoleUtils";
 
 module.exports = class MessageCreateEventListener extends EventListener {
     constructor(client: Bot) {
@@ -113,6 +114,15 @@ module.exports = class MessageCreateEventListener extends EventListener {
                     message.delete();
                 })
             }
+        }
+
+        if(message.activity !== null && message.activity.partyId.includes("spotify")){
+            if (message.guild === null) return;
+            message.guild.members.fetch(message.author.id).then(member => {
+                if (!RoleUtils.hasAnyRole(member, [RoleUtils.roles.trialModerator, RoleUtils.roles.moderator, RoleUtils.roles.seniorModerator, RoleUtils.roles.manager])) {
+                    message.delete();
+                }
+            })
         }
     }
 }

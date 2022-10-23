@@ -59,13 +59,18 @@ module.exports = class MessageDeleteEventListener extends EventListener {
                 })
             }
 
-            if(message.activity !== null && message.activity.partyId.includes("spotify")){
-                message.guild.members.fetch(message.author.id).then(member => {
-                    if (!RoleUtils.hasAnyRole(member, [RoleUtils.roles.trialModerator, RoleUtils.roles.moderator, RoleUtils.roles.seniorModerator, RoleUtils.roles.manager])) {
-                        message.delete();
-                    }
-                })
-            }
+//             if(message.activity !== null && message.activity.partyId.includes("spotify")){
+//                 message.guild.members.fetch(message.author.id).then( member => {
+//                     if(member.presence !== null){
+//                         let presence = member.presence.activities.filter(x=>x.name === "Spotify")[0] as Activity;
+//                         let embed = EmbedBuilds.getSpotifyPartyInviteDeletedEmbed(presence, member);
+//                         message.client.channels.fetch(Properties.channels.mediaLogs).then(mediaLogChannel =>{
+//                             let logChannel = mediaLogChannel as TextChannel;
+//                             logChannel.send({embeds: [embed]})
+//                         })
+//                     }
+//                 })
+//             }
         }
     }
 }
