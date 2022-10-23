@@ -1,4 +1,4 @@
-import { Activity, Channel, GuildMember, Message, TextChannel, User } from "discord.js";
+import { Activity, Channel, GuildMember, Message, Options, TextChannel, User } from "discord.js";
 import EventListener from "../modules/events/Event";
 import Bot from "../Bot";
 import RoleUtils from "../utils/RoleUtils";
@@ -59,18 +59,18 @@ module.exports = class MessageDeleteEventListener extends EventListener {
                 })
             }
 
-            if(message.activity !== null && message.activity.partyId.includes("spotify")){
-                message.guild.members.fetch(message.author.id).then( member => {
-                    if(member.presence !== null){
-                        let presence = member.presence.activities.filter(x=>x.name === "Spotify")[0] as Activity;
-                        let embed = EmbedBuilds.getSpotifyPartyInviteDeletedEmbed(presence, member);
-                        message.client.channels.fetch(Properties.channels.mediaLogs).then(mediaLogChannel =>{
-                            let logChannel = mediaLogChannel as TextChannel;
-                            logChannel.send({embeds: [embed]})
-                        })
-                    }
-                })
-            }
+            // if(message.activity !== null && message.activity.partyId.includes("spotify")){
+            //     message.guild.members.fetch({withPresences: true, user:message.author.id}).then( member => {
+            //         if(member.presence !== null){
+            //             let presence = member.presence.activities.filter(x=>x.name === "Spotify")[0] as Activity;
+            //             let embed = EmbedBuilds.getSpotifyPartyInviteDeletedEmbed(presence, member);
+            //             message.client.channels.fetch(Properties.channels.mediaLogs).then(mediaLogChannel =>{
+            //                 let logChannel = mediaLogChannel as TextChannel;
+            //                 logChannel.send({embeds: [embed]})
+            //             })
+            //         }
+            //     })
+            // }
         }
     }
 }
