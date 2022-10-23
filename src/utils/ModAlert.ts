@@ -77,6 +77,11 @@ export default class ModAlert {
                 .setCustomId("Infractions")
                 .setLabel("Infractions")
                 .setStyle("SECONDARY"),
+
+                new MessageButton()
+                .setCustomId("Userinfo")
+                .setLabel("User Info")
+                .setStyle("SECONDARY"),
         );
 
         modAlertChannel.send({
