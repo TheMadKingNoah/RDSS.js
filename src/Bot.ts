@@ -45,9 +45,8 @@ export default class Bot extends Client {
             ],
             makeCache: Options.cacheWithLimits({
                 ...Options.defaultMakeCacheSettings,
-                ReactionManager: 0,
-                GuildMemberManager: 0,
-                MessageManager: 0
+                // ReactionManager: 0,
+                // GuildMemberManager: 0,
             })
         });
 
