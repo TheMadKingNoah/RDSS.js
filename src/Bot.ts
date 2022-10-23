@@ -1,4 +1,4 @@
-import {Client} from "discord.js";
+import {CachedManager, Client, Options, ReactionManager} from "discord.js";
 
 import CommandHandler from "./modules/interactions/commands/Manager";
 import ContextMenuHandler from "./modules/interactions/contexts/Manager";
@@ -27,7 +27,7 @@ export default class Bot extends Client {
     select_menus!: SelectMenuHandler;
     alertMaintainer!: AlertMaintainer;
     contexts!: ContextMenuHandler;
-
+    
     constructor() {
         super({
             intents: [
@@ -36,13 +36,18 @@ export default class Bot extends Client {
                 "GUILD_MEMBERS",
                 "GUILD_VOICE_STATES",
                 "GUILD_MESSAGES",
-//                 "GUILD_PRESENCES"
+                "GUILD_PRESENCES"
             ],
             partials: [
                 "MESSAGE",
                 "CHANNEL",
                 "REACTION",
             ],
+            makeCache: Options.cacheWithLimits({
+                ...Options.defaultMakeCacheSettings,
+                ReactionManager: 0,
+                PresenceManager: 0,
+            })
         });
 
         (async () => {
