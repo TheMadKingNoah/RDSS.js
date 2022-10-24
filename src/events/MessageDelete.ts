@@ -45,9 +45,7 @@ module.exports = class MessageDeleteEventListener extends EventListener {
 
                         //trial phase
                         if (RoleUtils.hasAnyRole(moderator, [RoleUtils.roles.trialModerator])) {
-                            console.log(" trial found")
                             message.client.channels.fetch(Properties.channels.trialLogs).then(channel => {
-                                console.log(" channel found");
                                 (channel as ThreadChannel).send(`${moderator} deleted the following message: \n\`\`\`${message.content}\`\`\``)
                             })
                         }
