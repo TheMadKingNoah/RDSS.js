@@ -1,4 +1,4 @@
-import { Activity, Channel, GuildMember, Message, Options, TextChannel, User } from "discord.js";
+import { Activity, Channel, GuildMember, Message, Options, TextChannel, ThreadChannel, User } from "discord.js";
 import EventListener from "../modules/events/Event";
 import Bot from "../Bot";
 import RoleUtils from "../utils/RoleUtils";
@@ -45,8 +45,10 @@ module.exports = class MessageDeleteEventListener extends EventListener {
 
                         //trial phase
                         if (RoleUtils.hasAnyRole(moderator, [RoleUtils.roles.trialModerator])) {
+                            console.log(" trial found")
                             message.client.channels.fetch(Properties.channels.trialLogs).then(channel => {
-                                (channel as TextChannel).send(`${moderator} deleted the following message: \n\`\`\`${message.content}\`\`\``)
+                                console.log(" channel found");
+                                (channel as ThreadChannel).send(`${moderator} deleted the following message: \n\`\`\`${message.content}\`\`\``)
                             })
                         }
                     })
