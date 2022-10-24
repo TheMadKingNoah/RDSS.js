@@ -46,7 +46,7 @@ module.exports = class MessageDeleteEventListener extends EventListener {
                         //trial phase
                         if (RoleUtils.hasAnyRole(moderator, [RoleUtils.roles.trialModerator])) {
                             message.client.channels.fetch(Properties.channels.trialLogs).then(channel => {
-                                (channel as ThreadChannel).send(`${moderator} deleted the following message: \n\`\`\`${message.content}\`\`\``)
+                                (channel as ThreadChannel).send(`${moderator} deleted the following message from ${message.author}: \n\`\`\`${message.content}\`\`\``)
                             })
                         }
                     })
