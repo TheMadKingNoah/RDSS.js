@@ -23,15 +23,27 @@ export default class MuteRequest {
             let evidence = actionAuthor.replaceAll('|', '').toString();
             const userToMute = muteRequestContent[1];
             const duration = muteRequestContent[2];
-            evidence.replace(duration, "")
 
-            if (
-                muteRequestContent[0].toLowerCase() === ";mute" ||
-                muteRequestContent[0].toLowerCase() === ";forcemute"
-            ) {
-                commandChannel.send(`;mute ${userToMute} ${duration} ${evidence}`);
+            if(duration.length < 4){
+                evidence.replace(duration, "")
+
+                if (
+                    muteRequestContent[0].toLowerCase() === ";mute" ||
+                    muteRequestContent[0].toLowerCase() === ";forcemute"
+                ) {
+                    commandChannel.send(`;mute ${userToMute} ${duration} ${evidence}`);
+                } else {
+                    commandChannel.send(`${moderator} the mute you tried to invoke was not correctly formatted. Please run the command manually`);
+                }
             } else {
-                commandChannel.send(`${moderator} the mute you tried to invoke was not correctly formatted. Please run the command manually`);
+                if (
+                    muteRequestContent[0].toLowerCase() === ";mute" ||
+                    muteRequestContent[0].toLowerCase() === ";forcemute"
+                ) {
+                    commandChannel.send(`;mute ${userToMute} ${evidence}`);
+                } else {
+                    commandChannel.send(`${moderator} the mute you tried to invoke was not correctly formatted. Please run the command manually`);
+                }
             }
         } catch {
             commandChannel.send(`${moderator} the mute you tried to invoke was not correctly formatted. Please run the command manually`)
