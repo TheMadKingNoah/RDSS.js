@@ -42,6 +42,13 @@ module.exports = class MessageDeleteEventListener extends EventListener {
                                 ModAlert.updateModAlert(message, moderator, alertChannel as TextChannel)
                             })
                         }
+
+                        //trial phase
+                        if (RoleUtils.hasAnyRole(moderator, [RoleUtils.roles.trialModerator])) {
+                            message.client.channels.fetch(Properties.channels.trialLogs).then(channel => {
+                                (channel as TextChannel).send(`${moderator} deleted the following message: \n\`\`\`${message.content}\`\`\``)
+                            })
+                        }
                     })
                 }
             }

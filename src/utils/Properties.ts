@@ -19,7 +19,8 @@ export default class Properties {
         modCastText: "933975893599211570",
         winnerQueue: "963136283633389668",
         trialModerators: "678671353473269799",
-        muteRequestQueue: "912280762760454174"
+        muteRequestQueue: "912280762760454174",
+        trialLogs: "1034134657261908038"
     }
 
     public static categories = {
