@@ -25,7 +25,7 @@ export default class MuteRequest {
             const duration = muteRequestContent[2];
 
             if(duration.length < 4){
-                evidence.replace(duration, "")
+                evidence = evidence.replace(duration, "")
 
                 if (
                     muteRequestContent[0].toLowerCase() === ";mute" ||
