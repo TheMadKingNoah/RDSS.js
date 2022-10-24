@@ -20,14 +20,16 @@ export default class MuteRequest {
                 actionAuthor += muteRequestContent[i] + " ";
             }
 
-            const evidence = actionAuthor.replaceAll('|', '').toString();
+            let evidence = actionAuthor.replaceAll('|', '').toString();
             const userToMute = muteRequestContent[1];
+            const duration = muteRequestContent[2];
+            evidence.replace(duration, "")
 
             if (
                 muteRequestContent[0].toLowerCase() === ";mute" ||
                 muteRequestContent[0].toLowerCase() === ";forcemute"
             ) {
-                commandChannel.send(`;mute ${userToMute} ${evidence}`);
+                commandChannel.send(`;mute ${userToMute} ${duration} ${evidence}`);
             } else {
                 commandChannel.send(`${moderator} the mute you tried to invoke was not correctly formatted. Please run the command manually`);
             }
