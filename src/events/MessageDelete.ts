@@ -46,7 +46,7 @@ module.exports = class MessageDeleteEventListener extends EventListener {
                 }
             }
 
-            if(message.content.length === null && message.stickers.size > 0){
+            if(message.content.length === 0 && message.stickers.size > 0){
                 message.stickers.forEach( sticker => {
                     message.client.channels.fetch(Properties.channels.mediaLogs).then(mediaLogChannel =>{
                         let logChannel = mediaLogChannel as TextChannel;
