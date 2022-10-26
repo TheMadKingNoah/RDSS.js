@@ -77,6 +77,7 @@ module.exports = class MessageReactionAddEventListener extends EventListener {
         // Message purging handler
         if (reaction.emoji.id == Properties.emojis.sweep) {
             if (!RoleUtils.hasAnyRole(reactee, [
+                RoleUtils.roles.trialModerator,
                 RoleUtils.roles.moderator,
                 RoleUtils.roles.seniorModerator,
                 RoleUtils.roles.manager
