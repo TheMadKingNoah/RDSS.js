@@ -36,8 +36,8 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
             return;
         }
 
-        let duration;
-        if (roleId === RoleUtils.roles.gameChampion) duration = Properties.winnerRoleDuration;
+        let isTemporary = false;
+        if (roleId === RoleUtils.roles.gameChampion) isTemporary = true;
 
         const winnerList = interaction.message.embeds[0].fields?.[0].value;
 
@@ -67,7 +67,13 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
             }
 
             member.roles.add(roleId).catch(console.error);
-            if (duration) this.client.winners.add(member, (interaction.message as Message), roleId);
+            if (isTemporary) this.client.winners.add(member, interaction.message.id, roleId);
+        }
+
+        if (isTemporary) {
+            setTimeout(() => {
+                (interaction.message as Message).delete().catch(e => e);
+            }, Properties.winnerRoleDuration * 1000);
         }
 
         let timestamp = "";
@@ -76,8 +82,8 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
             .setLabel("Remove Roles")
             .setCustomId("removeWinnerRoles")
 
-        if (duration) {
-            timestamp = ` - Remove <t:${Math.trunc(Date.now() / 1000) + duration}:R>`;
+        if (isTemporary) {
+            timestamp = ` - Remove <t:${Math.trunc(Date.now() / 1000) + Properties.winnerRoleDuration}:R>`;
             removeRoles
                 .setLabel("Force Remove Roles")
                 .setCustomId("forceRemoveWinnerRoles")
@@ -87,8 +93,8 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
         const editedEmbed = new MessageEmbed(interaction.message.embeds[0])
             .setColor(roleProperties.color)
             .setFields([{
-                    name: `${roleProperties.name}(s)${timestamp}`,
-                    value: winnerList
+                name: `${roleProperties.name}${timestamp}`,
+                value: winnerList
             }]);
 
         await interaction.update({
