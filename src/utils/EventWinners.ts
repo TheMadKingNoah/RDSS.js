@@ -42,7 +42,6 @@ export default class EventWinners {
 
                     const currentTime = Math.trunc(Date.now() / 1000);
                     const remainingTime = message.embeds[0].fields[0].name?.match(/\d{10,}/g)?.map(Number)[0] as number - currentTime;
-                    console.log(`REMAINING TIME: ${remainingTime}`);
 
                     const winnerList = message.embeds[0].fields[0].value;
                     const winnerIds = winnerList.match(/(?<=`)\d{17,19}(?=`)/g) as string[];
