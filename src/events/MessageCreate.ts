@@ -6,6 +6,7 @@ import {
     TextChannel,
     GuildMember,
     Message,
+    User,
     MessageButton,
     MessageActionRow, MessageEmbed, MessageSelectMenu, MessageAttachment
 } from "discord.js";
@@ -26,7 +27,7 @@ module.exports = class MessageCreateEventListener extends EventListener {
             const winnerQueue = await message.guild?.channels.fetch(Properties.channels.winnerQueue) as TextChannel;
             if (!winnerQueue) return;
 
-            const mentions = await message.guild.members.fetch({ user: message.mentions.users?.map((user: User) => user.id) })
+            const mentions = await message.guild?.members.fetch({ user: message.mentions.users?.map((user: User) => user.id) })
 
             if (mentions?.size === 0 || !mentions) {
                 const deleteMessage = new MessageButton()
