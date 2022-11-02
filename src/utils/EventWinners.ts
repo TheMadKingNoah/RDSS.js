@@ -1,7 +1,7 @@
 import Bot from "../Bot";
 import RoleUtils from "./RoleUtils";
 
-import {Collection, GuildMember, TextChannel} from "discord.js";
+import {Collection, GuildMember, TextChannel, MessageButton, MessageActionRow} from "discord.js";
 import Properties from "./Properties";
 
 export default class EventWinners {
@@ -47,7 +47,23 @@ export default class EventWinners {
                     const winnerIds = winnerList.match(/(?<=`)\d{17,19}(?=`)/g) as string[];
 
                     setTimeout(() => {
-                        message.delete().catch(console.error);
+                        const removedRoles = new MessageButton()
+                        .setLabel("Automatically Removed Roles")
+                        .setStyle("LINK")
+                        .setURL("https://discord.com/")
+                        .setDisabled(true)
+
+                        const deleteMessage = new MessageButton()
+                        .setCustomId("deleteMessage")
+                        .setLabel("Delete")
+                        .setStyle("DANGER")
+
+                        const actionRow = new MessageActionRow().setComponents(removedRoles, deleteMessage);
+
+                        message.edit({
+                            embeds: message.embeds,
+                            components: [actionRow]
+                        })
                     }, remainingTime * 1000);
 
                     for await (const winnerId of winnerIds) {

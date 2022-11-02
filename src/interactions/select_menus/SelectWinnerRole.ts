@@ -72,7 +72,23 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
 
         if (isTemporary) {
             setTimeout(() => {
-                (interaction.message as Message).delete().catch(e => e);
+                const removedRoles = new MessageButton()
+                    .setLabel("Automatically Removed Roles")
+                    .setStyle("LINK")
+                    .setURL("https://discord.com/")
+                    .setDisabled(true)
+
+                const deleteMessage = new MessageButton()
+                    .setCustomId("deleteMessage")
+                    .setLabel("Delete")
+                    .setStyle("DANGER")
+
+                const actionRow = new MessageActionRow().setComponents(removedRoles, deleteMessage);
+
+                (interaction.message as Message).edit({
+                    embeds: interaction.message.embeds,
+                    components: [actionRow]
+                })
             }, Properties.winnerRoleDuration * 1000);
         }
 
