@@ -24,6 +24,29 @@ module.exports = class MessageCreateEventListener extends EventListener {
         if (message.channelId === Properties.channels.winnerQueue) {
             if (message.author.bot) return;
 
+            if (message.reference) {
+                const referencedMessage = await message.channel.messages.fetch(message.reference.messageId as string);
+
+                if (!referencedMessage.author.bot) return;
+                if (referencedMessage.embeds.length === 0) return;
+
+                const note = message.content;
+                const hasNote = referencedMessage.embeds[0].fields[1]?.name.includes("Note");
+
+                if (note !== "-") {
+                    if (hasNote) referencedMessage.embeds[0].fields[1].value = note;
+                    else referencedMessage.embeds[0].fields.push({ name: `Note (By ${message.author.tag})`, value: note, inline: false });
+                } else if (hasNote && note === "-") {
+                    referencedMessage.embeds[0].fields.pop();
+                }
+
+                referencedMessage.edit({ embeds: referencedMessage.embeds })
+                    .then(() => message.delete().catch(e => e))
+                    .catch(console.error);
+
+                return;
+            }
+
             const winnerQueue = await message.guild?.channels.fetch(Properties.channels.winnerQueue) as TextChannel;
             if (!winnerQueue) return;
 

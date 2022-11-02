@@ -1,7 +1,15 @@
 import SelectMenu from "../../modules/interactions/select_menus/SelectMenu";
 import Bot from "../../Bot";
 
-import {GuildMember, Message, MessageActionRow, MessageButton, MessageEmbed, SelectMenuInteraction} from "discord.js";
+import {
+    EmbedField,
+    GuildMember,
+    Message,
+    MessageActionRow,
+    MessageButton,
+    MessageEmbed,
+    SelectMenuInteraction
+} from "discord.js";
 import RoleUtils from "../../utils/RoleUtils";
 import Properties from "../../utils/Properties";
 
@@ -108,10 +116,15 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
         const actionRow = new MessageActionRow().setComponents(removeRoles);
         const editedEmbed = new MessageEmbed(interaction.message.embeds[0])
             .setColor(roleProperties.color)
-            .setFields([{
-                name: `${roleProperties.name}${timestamp}`,
-                value: winnerList
-            }]);
+            .setFields([
+                {
+                    name: `${roleProperties.name}${timestamp}`,
+                    value: winnerList
+                }
+            ]);
+
+        if (interaction.message.embeds[0].fields?.[1].name.includes("Note"))
+            editedEmbed.fields.push(interaction.message.embeds[0].fields[1] as EmbedField)
 
         await interaction.update({
             content: `<@&${roleId}>`,
