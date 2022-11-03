@@ -29,18 +29,30 @@ module.exports = class MessageCreateEventListener extends EventListener {
 
                 if (!referencedMessage.author.bot) return;
                 if (referencedMessage.embeds.length === 0) return;
+                if (!referencedMessage.components[0].components[0].customId) return;
 
                 const note = message.content;
                 const hasNote = referencedMessage.embeds[0].fields[1]?.name.includes("Note");
 
-                if (note !== "-") {
-                    if (hasNote) referencedMessage.embeds[0].fields[1].value = note;
-                    else referencedMessage.embeds[0].fields.push({ name: `Note (By ${message.author.tag})`, value: note, inline: false });
-                } else if (hasNote && note === "-") {
-                    referencedMessage.embeds[0].fields.pop();
+                if (hasNote) referencedMessage.embeds[0].fields[1].value = note;
+                else {
+                    referencedMessage.embeds[0].fields.push({ name: `Note (By ${message.author.tag})`, value: note, inline: false });
+
+                    const removeNote = new MessageButton()
+                        .setCustomId("removeWinnerRequestNote")
+                        .setLabel("Remove Note")
+                        .setStyle("SECONDARY")
+
+                    if (!referencedMessage.content)
+                        referencedMessage.components.push(new MessageActionRow().setComponents(removeNote));
+                    else
+                        referencedMessage.components[0].components.push(removeNote);
                 }
 
-                referencedMessage.edit({ embeds: referencedMessage.embeds })
+                referencedMessage.edit({
+                    embeds: referencedMessage.embeds,
+                    components: referencedMessage.components
+                })
                     .then(() => message.delete().catch(e => e))
                     .catch(console.error);
 

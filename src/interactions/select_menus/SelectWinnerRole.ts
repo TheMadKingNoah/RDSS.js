@@ -123,7 +123,11 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
                 }
             ]);
 
-        if (interaction.message.embeds[0].fields?.[1].name.includes("Note"))
+
+        if (interaction.message.components?.length === 2)
+            actionRow.addComponents(interaction.message.components[1].components[0]);
+
+        if (interaction.message.embeds[0].fields?.[1]?.name.includes("Note"))
             editedEmbed.fields.push(interaction.message.embeds[0].fields[1] as EmbedField)
 
         await interaction.update({
