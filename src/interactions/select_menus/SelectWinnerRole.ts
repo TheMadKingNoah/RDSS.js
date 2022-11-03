@@ -1,7 +1,15 @@
 import SelectMenu from "../../modules/interactions/select_menus/SelectMenu";
 import Bot from "../../Bot";
 
-import {GuildMember, Message, MessageActionRow, MessageButton, MessageEmbed, SelectMenuInteraction} from "discord.js";
+import {
+    EmbedField,
+    GuildMember,
+    Message,
+    MessageActionRow,
+    MessageButton,
+    MessageEmbed,
+    SelectMenuInteraction
+} from "discord.js";
 import RoleUtils from "../../utils/RoleUtils";
 import Properties from "../../utils/Properties";
 
@@ -36,8 +44,8 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
             return;
         }
 
-        let duration;
-        if (roleId === RoleUtils.roles.gameChampion) duration = Properties.winnerRoleDuration;
+        let isTemporary = false;
+        if (roleId === RoleUtils.roles.gameChampion) isTemporary = true;
 
         const winnerList = interaction.message.embeds[0].fields?.[0].value;
 
@@ -67,7 +75,29 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
             }
 
             member.roles.add(roleId).catch(console.error);
-            if (duration) this.client.winners.add(member, (interaction.message as Message), roleId);
+            if (isTemporary) this.client.winners.add(member, interaction.message.id, roleId);
+        }
+
+        if (isTemporary) {
+            setTimeout(() => {
+                const removedRoles = new MessageButton()
+                    .setLabel("Automatically Removed Roles")
+                    .setStyle("LINK")
+                    .setURL("https://discord.com/")
+                    .setDisabled(true)
+
+                const deleteMessage = new MessageButton()
+                    .setCustomId("deleteMessage")
+                    .setLabel("Delete")
+                    .setStyle("DANGER")
+
+                const actionRow = new MessageActionRow().setComponents(removedRoles, deleteMessage);
+
+                (interaction.message as Message).edit({
+                    embeds: interaction.message.embeds,
+                    components: [actionRow]
+                })
+            }, Properties.winnerRoleDuration * 1000);
         }
 
         let timestamp = "";
@@ -76,8 +106,8 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
             .setLabel("Remove Roles")
             .setCustomId("removeWinnerRoles")
 
-        if (duration) {
-            timestamp = ` - Remove <t:${Math.trunc(Date.now() / 1000) + duration}:R>`;
+        if (isTemporary) {
+            timestamp = ` - Remove <t:${Math.trunc(Date.now() / 1000) + Properties.winnerRoleDuration}:R>`;
             removeRoles
                 .setLabel("Force Remove Roles")
                 .setCustomId("forceRemoveWinnerRoles")
@@ -85,10 +115,20 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
 
         const actionRow = new MessageActionRow().setComponents(removeRoles);
         const editedEmbed = new MessageEmbed(interaction.message.embeds[0])
-            .setFields([{
-                    name: `${roleProperties.name}(s)${timestamp}`,
+            .setColor(roleProperties.color)
+            .setFields([
+                {
+                    name: `${roleProperties.name}${timestamp}`,
                     value: winnerList
-            }]);
+                }
+            ]);
+
+
+        if (interaction.message.components?.length === 2)
+            actionRow.addComponents(interaction.message.components[1].components[0]);
+
+        if (interaction.message.embeds[0].fields?.[1]?.name.includes("Note"))
+            editedEmbed.fields.push(interaction.message.embeds[0].fields[1] as EmbedField)
 
         await interaction.update({
             content: `<@&${roleId}>`,

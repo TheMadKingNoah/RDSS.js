@@ -6,6 +6,7 @@ import {
     TextChannel,
     GuildMember,
     Message,
+    User,
     MessageButton,
     MessageActionRow, MessageEmbed, MessageSelectMenu, MessageAttachment
 } from "discord.js";
@@ -23,10 +24,45 @@ module.exports = class MessageCreateEventListener extends EventListener {
         if (message.channelId === Properties.channels.winnerQueue) {
             if (message.author.bot) return;
 
+            if (message.reference) {
+                const referencedMessage = await message.channel.messages.fetch(message.reference.messageId as string);
+
+                if (!referencedMessage.author.bot) return;
+                if (referencedMessage.embeds.length === 0) return;
+                if (!referencedMessage.components[0].components[0].customId) return;
+
+                const note = message.content;
+                const hasNote = referencedMessage.embeds[0].fields[1]?.name.includes("Note");
+
+                if (hasNote) referencedMessage.embeds[0].fields[1].value = note;
+                else {
+                    referencedMessage.embeds[0].fields.push({ name: `Note (By ${message.author.tag})`, value: note, inline: false });
+
+                    const removeNote = new MessageButton()
+                        .setCustomId("removeWinnerRequestNote")
+                        .setLabel("Remove Note")
+                        .setStyle("SECONDARY")
+
+                    if (!referencedMessage.content)
+                        referencedMessage.components.push(new MessageActionRow().setComponents(removeNote));
+                    else
+                        referencedMessage.components[0].components.push(removeNote);
+                }
+
+                referencedMessage.edit({
+                    embeds: referencedMessage.embeds,
+                    components: referencedMessage.components
+                })
+                    .then(() => message.delete().catch(e => e))
+                    .catch(console.error);
+
+                return;
+            }
+
             const winnerQueue = await message.guild?.channels.fetch(Properties.channels.winnerQueue) as TextChannel;
             if (!winnerQueue) return;
 
-            const mentions = message.mentions.members;
+            const mentions = await message.guild?.members.fetch({ user: message.mentions.users?.map((user: User) => user.id) })
 
             if (mentions?.size === 0 || !mentions) {
                 const deleteMessage = new MessageButton()
