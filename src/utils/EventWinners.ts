@@ -14,7 +14,7 @@ export default class EventWinners {
     }
 
     public add(member: GuildMember, messageId: string, roleId: string, duration = Properties.defaultWinnerRoleDuration) {
-        this.list.set(member.id, {
+        this.list.set(`${member.id}_${roleId}`, {
             timeout: setTimeout(() => {
                 member.roles.remove(roleId).catch(console.error);
                 this.list.delete(member.id);
