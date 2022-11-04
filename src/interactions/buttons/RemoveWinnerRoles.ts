@@ -34,7 +34,12 @@ export default class ForceRemoveWinnerRolesButton extends Button {
 
         await interaction.channel?.messages.fetch({limit: 100}).then(messages => {
             for (const message of messages.values()) {
+                if (!message.author.bot) continue;
+                if (message.embeds.length === 0) continue;
+                if (!message.content) continue;
+
                 const winners = message.embeds[0].fields[0].value?.match(/(?<=`)\d{17,19}(?=`)/g) as string[];
+
                 if (
                     message.content.includes(roleId) &&
                     message.components[0].components[0].customId &&
