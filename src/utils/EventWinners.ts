@@ -14,12 +14,12 @@ export default class EventWinners {
     }
 
     public add(member: GuildMember, messageId: string, roleId: string, duration = Properties.defaultWinnerRoleDuration) {
-        this.list.set(member.id, {
+        this.list.set(`${member.id}_${roleId}`, {
             timeout: setTimeout(() => {
                 member.roles.remove(roleId).catch(console.error);
                 this.list.delete(member.id);
             }, duration * 1000),
-            messageId: messageId,
+            messageId,
             roleId
         });
     }
@@ -38,7 +38,7 @@ export default class EventWinners {
                     if (!message.content) continue;
 
                     const roleId = message.content.replace(/\D/g, "");
-                    if (roleId !== RoleUtils.roles.gameChampion) continue;
+                    if (roleId !== RoleUtils.roles.gameChampion && roleId !== RoleUtils.roles.triviaMaster) continue;
 
                     const currentTime = Math.trunc(Date.now() / 1000);
                     const remainingTime = message.embeds[0].fields[0].name?.match(/\d{10,}/g)?.map(Number)[0] as number - currentTime;
@@ -76,14 +76,8 @@ export default class EventWinners {
                         const winner = await guild.members.fetch(winnerId).catch(console.error);
                         if (!winner) continue;
 
-                        if (timeUntilRoleRemoval <= 0) {
-                            winner.roles.remove(roleId).catch(console.error);
-                            continue;
-                        }
-
-                        winner.roles.add(roleId)
-                            .then(() => this.add(winner, message.id, roleId, timeUntilRoleRemoval * 1000))
-                            .catch(console.error);
+                        if (timeUntilRoleRemoval <= 0) winner.roles.remove(roleId).catch(console.error);
+                        else this.add(winner, message.id, roleId, timeUntilRoleRemoval);
                     }
                 }
             })

@@ -80,10 +80,12 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
                 continue;
             }
 
-            if (this.client.winners.list.has(winnerId)) {
+            const [winner] = this.client.winners.list.filter((value, key) => key.includes(winnerId) && value.roleId === roleId);
+
+            if (winner && winner[1].roleId === roleId) {
                 winnerIds.splice(winnerIds.indexOf(winnerId), 1);
 
-                clearTimeout(this.client.winners.list.get(winnerId)?.timeout);
+                clearTimeout(winner[1].timeout);
                 this.client.winners.list.delete(winnerId);
             }
 
@@ -110,7 +112,7 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
                     embeds: interaction.message.embeds,
                     components: [actionRow]
                 })
-            }, duration);
+            }, duration * 1000);
         }
 
         let timestamp = "";
