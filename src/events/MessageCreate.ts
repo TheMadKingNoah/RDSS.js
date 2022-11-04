@@ -85,7 +85,7 @@ module.exports = class MessageCreateEventListener extends EventListener {
             if (!winnerRoles) return;
             const winnerRoleList: { label: string, value: string }[] = []
 
-            winnerRoles = await winnerRoles.filter((role) => role.name.includes("Winner") || role.name.includes("Champion"));
+            winnerRoles = await winnerRoles.filter((role) => role.name.includes("Winner") || role.name.includes("Champion") || role.name.includes("Master"));
             winnerRoles.forEach((role) => {
                 const year = role.name.match(/\d{4}/g)?.[0];
                 const winnerRole = {
