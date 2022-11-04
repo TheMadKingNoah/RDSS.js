@@ -30,7 +30,7 @@ export default class EventWinners {
 
         winnerQueue.messages.fetch({limit: 100})
             .then(async messages => {
-                const remainingTimesList: { [key: string]: number } = {};
+                const remainingTimesList = new Map();
 
                 for (const message of messages.values()) {
                     if (!message.author.bot) continue;
@@ -48,15 +48,15 @@ export default class EventWinners {
 
                     setTimeout(() => {
                         const removedRoles = new MessageButton()
-                        .setLabel("Automatically Removed Roles")
-                        .setStyle("LINK")
-                        .setURL("https://discord.com/")
-                        .setDisabled(true)
+                            .setLabel("Automatically Removed Roles")
+                            .setStyle("LINK")
+                            .setURL("https://discord.com/")
+                            .setDisabled(true)
 
                         const deleteMessage = new MessageButton()
-                        .setCustomId("deleteMessage")
-                        .setLabel("Delete")
-                        .setStyle("DANGER")
+                            .setCustomId("deleteMessage")
+                            .setLabel("Delete")
+                            .setStyle("DANGER")
 
                         const actionRow = new MessageActionRow().setComponents(removedRoles, deleteMessage);
 
@@ -67,12 +67,13 @@ export default class EventWinners {
                     }, remainingTime * 1000);
 
                     for await (const winnerId of winnerIds) {
-                        if (!remainingTimesList[winnerId] || remainingTimesList[winnerId] < remainingTime) {
-                            remainingTimesList[winnerId] = remainingTime;
-                        }
+                        const roleTimer = remainingTimesList.get(`${winnerId}_${roleId}`);
+                        if (!roleTimer || roleTimer < remainingTime) remainingTimesList.set(`${winnerId}_${roleId}`, remainingTime);
                     }
 
-                    for (const [winnerId, timeUntilRoleRemoval] of Object.entries(remainingTimesList)) {
+                    for (let [winnerId, timeUntilRoleRemoval] of remainingTimesList) {
+                        winnerId = winnerId.split("_")[0];
+
                         const winner = await guild.members.fetch(winnerId).catch(console.error);
                         if (!winner) continue;
 
@@ -80,6 +81,7 @@ export default class EventWinners {
                         else this.add(winner, message.id, roleId, timeUntilRoleRemoval);
                     }
                 }
+                console.log(this.list);
             })
             .catch(console.error);
     }
