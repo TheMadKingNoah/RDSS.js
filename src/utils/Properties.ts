@@ -30,5 +30,6 @@ export default class Properties {
     public static modAlertCooldown: number = 5;
     public static membersOnStage = new Map();
     public static guildId = "150074202727251969";
-    public static winnerRoleDuration = 604800; // 7 Days
+    public static defaultWinnerRoleDuration = 60 * 60 * 24 * 7; // 7 Days
+    public static triviaMasterRoleDuration = 60 * 60 * 24 * 14; // 14 Days
 }
