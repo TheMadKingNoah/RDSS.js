@@ -45,7 +45,20 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
         }
 
         let isTemporary = false;
-        if (roleId === RoleUtils.roles.gameChampion) isTemporary = true;
+        let duration = Properties.defaultWinnerRoleDuration;
+
+        switch (roleId) {
+            case RoleUtils.roles.gameChampion: {
+                isTemporary = true;
+                break;
+            }
+
+            case RoleUtils.roles.triviaMaster: {
+                duration = Properties.triviaMasterRoleDuration;
+                isTemporary = true;
+                break;
+            }
+        }
 
         const winnerList = interaction.message.embeds[0].fields?.[0].value;
 
@@ -75,7 +88,7 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
             }
 
             member.roles.add(roleId).catch(console.error);
-            if (isTemporary) this.client.winners.add(member, interaction.message.id, roleId);
+            if (isTemporary) this.client.winners.add(member, interaction.message.id, roleId, duration);
         }
 
         if (isTemporary) {
@@ -97,7 +110,7 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
                     embeds: interaction.message.embeds,
                     components: [actionRow]
                 })
-            }, Properties.winnerRoleDuration * 1000);
+            }, duration);
         }
 
         let timestamp = "";
@@ -107,7 +120,7 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
             .setCustomId("removeWinnerRoles")
 
         if (isTemporary) {
-            timestamp = ` - Remove <t:${Math.trunc(Date.now() / 1000) + Properties.winnerRoleDuration}:R>`;
+            timestamp = ` - Remove <t:${Math.trunc(Date.now() / 1000) + duration}:R>`;
             removeRoles
                 .setLabel("Force Remove Roles")
                 .setCustomId("forceRemoveWinnerRoles")

@@ -30,7 +30,22 @@ export default class ForceRemoveWinnerRolesButton extends Button {
         const winnerIds = winnerList?.match(/(?<=`)\d{17,19}(?=`)/g) as string[];
         const roleId = interaction.message.content.replace(/\D/g, "");
 
+        const allWinners = new Set();
+
+        await interaction.channel?.messages.fetch({limit: 100}).then(messages => {
+            for (const message of messages.values()) {
+                const winners = message.embeds[0].fields[0].value?.match(/(?<=`)\d{17,19}(?=`)/g) as string[];
+                if (
+                    message.content.includes(roleId) &&
+                    message.components[0].components[0].customId &&
+                    message.id !== interaction.message.id
+                ) winners.forEach(allWinners.add, allWinners);
+            }
+        });
+
         for (const winnerId of winnerIds) {
+            if (allWinners.has(winnerId)) continue;
+
             const member = await interaction.guild?.members.fetch(winnerId).catch(console.error) as GuildMember;
             if (!member) continue;
 

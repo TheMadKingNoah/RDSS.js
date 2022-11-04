@@ -13,7 +13,7 @@ export default class EventWinners {
         this.list = new Collection();
     }
 
-    public add(member: GuildMember, messageId: string, roleId: string, duration = Properties.winnerRoleDuration) {
+    public add(member: GuildMember, messageId: string, roleId: string, duration = Properties.defaultWinnerRoleDuration) {
         this.list.set(member.id, {
             timeout: setTimeout(() => {
                 member.roles.remove(roleId).catch(console.error);
