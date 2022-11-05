@@ -34,7 +34,13 @@ module.exports = class MessageCreateEventListener extends EventListener {
                 const note = message.content;
                 const hasNote = referencedMessage.embeds[0].fields[1]?.name.includes("Note");
 
-                if (hasNote) referencedMessage.embeds[0].fields[1].value = note;
+                if (hasNote) {
+                    referencedMessage.embeds[0].fields[1] = {
+                        name: `Note (By ${message.author.tag})`,
+                        value: note,
+                        inline: false
+                    };
+                }
                 else {
                     referencedMessage.embeds[0].fields.push({ name: `Note (By ${message.author.tag})`, value: note, inline: false });
 
