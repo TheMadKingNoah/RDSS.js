@@ -131,7 +131,7 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
         const actionRow = new MessageActionRow().setComponents(removeRoles);
         const editedEmbed = new MessageEmbed(interaction.message.embeds[0])
             .setColor(roleProperties.color)
-            .setDescription(`Accepted by ${interaction.user}`)
+            .setDescription(`Approved by ${interaction.user}`)
             .setFields([
                 {
                     name: `${roleProperties.name}${timestamp}`,
