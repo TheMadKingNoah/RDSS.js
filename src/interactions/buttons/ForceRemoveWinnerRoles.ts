@@ -51,10 +51,10 @@ export default class ForceRemoveWinnerRolesButton extends Button {
         .catch(console.error);
 
         let removedRoles = 0;
-        const winners = this.client.winners.list.filter(winner => winner.messageId === interaction.message.id);
         let winnerRole = "winner";
+        const storedWinners = this.client.winners.list.filter(winner => winner.messageId === interaction.message.id);
 
-        for (let [winnerId, data] of winners.entries()) {
+        for (let [winnerId, data] of storedWinners.entries()) {
             winnerId = winnerId.split("_")[0];
             const member = await interaction.guild?.members.fetch(winnerId).catch(console.error) as GuildMember;
 

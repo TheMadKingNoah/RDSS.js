@@ -2,6 +2,7 @@ import SelectMenu from "../../modules/interactions/select_menus/SelectMenu";
 import Bot from "../../Bot";
 
 import {
+    Collection,
     EmbedField,
     GuildMember,
     Message,
@@ -71,26 +72,19 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
         }
 
         const winnerIds = winnerList?.match(/(?<=`)\d{17,19}(?=`)/g) as string[];
+        const winners = await interaction.guild?.members.fetch({ user: winnerIds }) as Collection<string, GuildMember>;
 
-        for (const winnerId of winnerIds) {
-            const member = await interaction.guild?.members.fetch(winnerId).catch(console.error);
+        for (const [_, winner] of winners) {
+            if (!winner) continue;
+            const [winnerData] = this.client.winners.list.filter((value, key) => key.includes(winner.id) && value.roleId === roleId);
 
-            if (!member) {
-                winnerIds.splice(winnerIds.indexOf(winnerId), 1);
-                continue;
+            if (winnerData && winnerData[1].roleId === roleId) {
+                clearTimeout(winnerData[1].timeout);
+                this.client.winners.list.delete(winner.id);
             }
 
-            const [winner] = this.client.winners.list.filter((value, key) => key.includes(winnerId) && value.roleId === roleId);
-
-            if (winner && winner[1].roleId === roleId) {
-                winnerIds.splice(winnerIds.indexOf(winnerId), 1);
-
-                clearTimeout(winner[1].timeout);
-                this.client.winners.list.delete(winnerId);
-            }
-
-            member.roles.add(roleId).catch(console.error);
-            if (isTemporary) this.client.winners.add(member, interaction.message.id, roleId, duration);
+            winner.roles.add(roleId).catch(console.error);
+            if (isTemporary) this.client.winners.add(winner, interaction.message.id, roleId, duration);
         }
 
         if (isTemporary) {

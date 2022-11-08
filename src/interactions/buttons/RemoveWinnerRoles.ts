@@ -1,7 +1,7 @@
 import Button from "../../modules/interactions/buttons/Button";
 import Bot from "../../Bot";
 
-import {ButtonInteraction, GuildMember, Message} from "discord.js";
+import {ButtonInteraction, Collection, GuildMember, Message} from "discord.js";
 import RoleUtils from "../../utils/RoleUtils";
 
 export default class ForceRemoveWinnerRolesButton extends Button {
@@ -24,13 +24,8 @@ export default class ForceRemoveWinnerRolesButton extends Button {
             return;
         }
 
-        let removedRoles = 0;
-
-        const winnerList = interaction.message.embeds[0].fields?.[0].value;
-        const winnerIds = winnerList?.match(/(?<=`)\d{17,19}(?=`)/g) as string[];
-        const roleId = interaction.message.content.replace(/\D/g, "");
-
         const allWinners = new Set();
+        const roleId = interaction.message.content.replace(/\D/g, "");
 
         await interaction.channel?.messages.fetch({limit: 100}).then(messages => {
             for (const message of messages.values()) {
@@ -48,13 +43,16 @@ export default class ForceRemoveWinnerRolesButton extends Button {
             }
         });
 
-        for (const winnerId of winnerIds) {
-            if (allWinners.has(winnerId)) continue;
+        let removedRoles = 0;
 
-            const member = await interaction.guild?.members.fetch(winnerId).catch(console.error) as GuildMember;
-            if (!member) continue;
+        const winnerList = interaction.message.embeds[0].fields?.[0].value;
+        const winnerIds = winnerList?.match(/(?<=`)\d{17,19}(?=`)/g) as string[];
 
-            member.roles.remove(roleId).catch(console.error);
+        const fetchedWinners = await interaction.guild?.members.fetch({ user: winnerIds }) as Collection<string, GuildMember>;
+
+        for (const [_, winner] of fetchedWinners) {
+            if (!winner || allWinners.has(winner.id)) continue;
+            winner.roles.remove(roleId).catch(console.error);
             removedRoles++;
         }
 
