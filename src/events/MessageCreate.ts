@@ -22,8 +22,6 @@ module.exports = class MessageCreateEventListener extends EventListener {
 
     async execute(message: Message) {
         if (message.channelId === Properties.channels.winnerQueue) {
-            if (message.author.bot) return;
-
             if (message.reference) {
                 const referencedMessage = await message.channel.messages.fetch(message.reference.messageId as string);
 
@@ -71,6 +69,8 @@ module.exports = class MessageCreateEventListener extends EventListener {
             const mentions = await message.guild?.members.fetch({ user: message.mentions.users?.map((user: User) => user.id) })
 
             if (mentions?.size === 0 || !mentions) {
+                if (message.author.bot) return;
+
                 const deleteMessage = new MessageButton()
                     .setCustomId("deleteMessage")
                     .setLabel("Delete Reply")
@@ -122,6 +122,16 @@ module.exports = class MessageCreateEventListener extends EventListener {
                 }])
                 .setFooter({ text: `ID: ${message.author.id}` })
                 .setTimestamp()
+
+            if (message.author.id === this.client.user?.id) {
+                const [roleId, messageUrl] = message.content.split(" | ");
+
+                embed.fields.push({
+                    name: `Note (By ${this.client.user?.tag})`,
+                    value: `Members that were unable to receive the <@&${roleId}> role in [another request](${messageUrl}).`,
+                    inline: false
+                })
+            }
 
             winnerQueue.send({
                 embeds: [embed],

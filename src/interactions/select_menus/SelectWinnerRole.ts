@@ -61,7 +61,7 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
             }
         }
 
-        const winnerList = interaction.message.embeds[0].fields?.[0].value;
+        let winnerList = interaction.message.embeds[0].fields?.[0].value;
 
         if (!winnerList) {
             await interaction.reply({
@@ -73,6 +73,22 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
 
         const winnerIds = winnerList?.match(/(?<=`)\d{17,19}(?=`)/g) as string[];
         const winners = await interaction.guild?.members.fetch({ user: winnerIds }) as Collection<string, GuildMember>;
+        const failedWinners = [];
+
+        for (const winnerId of winnerIds) {
+            const winner = winners.find(winner => winner.id === winnerId);
+            if (!winner) {
+                const fetchedWinner = await interaction.guild?.members.fetch(winnerId);
+                if (fetchedWinner) {
+                    winners.set(winnerId, fetchedWinner);
+                    continue;
+                }
+
+                const re = new RegExp(`<@${winnerId}> \\(\`${winnerId}\`\\)(?:\\n)?`, "gm");
+                winnerList = winnerList.replace(re, "");
+                failedWinners.push(winnerId);
+            }
+        }
 
         for (const [_, winner] of winners) {
             if (!winner) continue;
@@ -120,6 +136,14 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
             removeRoles
                 .setLabel("Force Remove Roles")
                 .setCustomId("forceRemoveWinnerRoles")
+        }
+
+        if (failedWinners.length > 0) {
+            interaction.channel?.send(`${roleId} | ${(interaction.message as Message).url} | <@${failedWinners.join("> <@")}>`);
+            if (!winnerList.match(/\S/g)) {
+                await (interaction.message as Message).delete();
+                return;
+            }
         }
 
         const actionRow = new MessageActionRow().setComponents(removeRoles);
