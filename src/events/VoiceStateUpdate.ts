@@ -71,6 +71,7 @@ module.exports = class VoiceStateUpdateEventListener extends EventListener {
             if (newVoiceChannel && oldVoiceChannel) {
                 if (!newState.member || !oldState.member) return;
                 if (newVoiceChannel.type != "GUILD_VOICE" || oldVoiceChannel.type != "GUILD_VOICE") return;
+                if (newVoiceChannel.id === oldVoiceChannel.id) return;
 
                 voiceLogsChannel.send({
                     embeds: [EmbedBuilds.getOnVoiceChannelChangeEmbed(oldState, newState)]
