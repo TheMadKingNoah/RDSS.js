@@ -168,6 +168,15 @@ module.exports = class MessageCreateEventListener extends EventListener {
             }
         }
 
+        if(message.channel.id === Properties.channels.creations || message.channel.id === Properties.channels.avatars) {
+            if (message.author.bot) return;
+
+            message.react("275832913025564682")
+                .then(() => message.react("♥️"))
+                .then(() => message.react("😎"))
+                .catch(() => {});
+        }
+
         if(message.activity !== null && message.activity.partyId.includes("spotify")){
             if (message.guild === null) return;
             message.guild.members.fetch(message.author.id).then(member => {
