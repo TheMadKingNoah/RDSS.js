@@ -20,7 +20,9 @@ export default class Properties {
         winnerQueue: "963136283633389668",
         trialModerators: "678671353473269799",
         muteRequestQueue: "912280762760454174",
-        trialLogs: "1034134657261908038"
+        trialLogs: "1034134657261908038",
+        creations: "150077608602632192",
+        avatars: "779975211063443456"
     }
 
     public static categories = {
