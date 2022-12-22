@@ -168,8 +168,10 @@ module.exports = class MessageCreateEventListener extends EventListener {
             }
         }
 
-        if(message.channel.id === Properties.channels.creations || message.channel.id === Properties.channels.avatars) {
-            if (message.author.bot) return;
+        if(message.channel.id === Properties.channels.creations || message.channel.id === Properties.channels.avatars || message.channel.type === "GUILD_NEWS") {
+            if (message.channel.type === "GUILD_NEWS") {
+                if (message.channel.parent?.id !== Properties.categories.feeds) return;
+            } else if (message.author.bot) return;
 
             message.react("275832913025564682")
                 .then(() => message.react("♥️"))

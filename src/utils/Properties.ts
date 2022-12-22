@@ -26,7 +26,8 @@ export default class Properties {
     }
 
     public static categories = {
-        internalChannels: "360904621524385792"
+        internalChannels: "360904621524385792",
+        feeds: "721914280878014524"
     }
 
     public static modAlertCooldown: number = 5;
