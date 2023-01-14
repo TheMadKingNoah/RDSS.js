@@ -13,7 +13,12 @@ export default class EventWinners {
         this.list = new Collection();
     }
 
-    public add(member: GuildMember, messageId: string, roleId: string, duration = Properties.defaultWinnerRoleDuration) {
+    public add(member: GuildMember, messageId: string, roleId: string, duration?: number) {
+        if (!duration) {
+            const temporaryRoleData = RoleUtils.temporaryWinnerRoles.find(role => role.id === roleId)
+            duration = temporaryRoleData?.duration || 604804; // Default: 7 days
+        }
+
         this.list.set(`${member.id}_${roleId}`, {
             timeout: setTimeout(() => {
                 member.roles.remove(roleId).catch(console.error);

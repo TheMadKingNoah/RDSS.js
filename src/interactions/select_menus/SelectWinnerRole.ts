@@ -12,7 +12,6 @@ import {
     SelectMenuInteraction
 } from "discord.js";
 import RoleUtils from "../../utils/RoleUtils";
-import Properties from "../../utils/Properties";
 
 export default class SelectWinnerRoleSelectMenu extends SelectMenu {
     constructor(client: Bot) {
@@ -45,21 +44,8 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
             return;
         }
 
-        let isTemporary = false;
-        let duration = Properties.defaultWinnerRoleDuration;
-
-        switch (roleId) {
-            case RoleUtils.roles.gameChampion: {
-                isTemporary = true;
-                break;
-            }
-
-            case RoleUtils.roles.triviaMaster: {
-                duration = Properties.triviaMasterRoleDuration;
-                isTemporary = true;
-                break;
-            }
-        }
+        const temporaryRoleData = RoleUtils.temporaryWinnerRoles.find(role => role.id === roleId);
+        const duration = temporaryRoleData?.duration;
 
         let winnerList = interaction.message.embeds[0].fields?.[0].value;
 
@@ -84,7 +70,7 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
                     continue;
                 }
 
-                const re = new RegExp(`<@${winnerId}> \\(\`${winnerId}\`\\)(?:\\n)?`, "gm");
+                const re = new RegExp(`<@${winnerId}> \\(\`${winnerId}\`\\)(\\n)?`, "gm");
                 winnerList = winnerList.replace(re, "");
                 failedWinners.push(winnerId);
             }
@@ -100,10 +86,10 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
             }
 
             winner.roles.add(roleId).catch(console.error);
-            if (isTemporary) this.client.winners.add(winner, interaction.message.id, roleId, duration);
+            if (duration) this.client.winners.add(winner, interaction.message.id, roleId, duration);
         }
 
-        if (isTemporary) {
+        if (duration) {
             setTimeout(() => {
                 const removedRoles = new MessageButton()
                     .setLabel("Automatically Removed Roles")
@@ -131,7 +117,7 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
             .setLabel("Remove Roles")
             .setCustomId("removeWinnerRoles")
 
-        if (isTemporary) {
+        if (duration) {
             timestamp = ` - Remove <t:${Math.trunc(Date.now() / 1000) + duration}:R>`;
             removeRoles
                 .setLabel("Force Remove Roles")
@@ -147,6 +133,10 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
         }
 
         const actionRow = new MessageActionRow().setComponents(removeRoles);
+        const components = [];
+
+        if (temporaryRoleData) components.push(actionRow);
+
         const editedEmbed = new MessageEmbed(interaction.message.embeds[0])
             .setColor(roleProperties.color)
             .setDescription(`Approved by ${interaction.user}`)
@@ -167,7 +157,7 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
         await interaction.update({
             content: `<@&${roleId}>`,
             embeds: [editedEmbed],
-            components: [actionRow]
+            components
         });
     }
 }
