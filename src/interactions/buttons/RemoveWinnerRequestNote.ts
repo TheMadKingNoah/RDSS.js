@@ -13,10 +13,10 @@ export default class RemoveWinnerRequestNoteButton extends Button {
     async execute(interaction: ButtonInteraction) {
         interaction.message.embeds[0].fields?.pop();
 
-        if (interaction.message.components?.length === 2)
-            interaction.message.components.pop();
+        if (interaction.message.components?.[0]?.components[0].type !== "SELECT_MENU")
+            interaction.message.components?.pop();
         else
-            interaction.message.components?.[0].components.pop();
+            interaction.message.components[0].components.pop();
 
         await interaction.update({
             embeds: interaction.message.embeds,

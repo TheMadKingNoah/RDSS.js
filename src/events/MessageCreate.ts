@@ -27,7 +27,6 @@ module.exports = class MessageCreateEventListener extends EventListener {
 
                 if (!referencedMessage.author.bot) return;
                 if (referencedMessage.embeds.length === 0) return;
-                if (!referencedMessage.components[0].components[0].customId) return;
 
                 const note = message.content;
                 const hasNote = referencedMessage.embeds[0].fields[1]?.name.includes("Note");
@@ -47,7 +46,7 @@ module.exports = class MessageCreateEventListener extends EventListener {
                         .setLabel("Remove Note")
                         .setStyle("SECONDARY")
 
-                    if (!referencedMessage.content)
+                    if (!referencedMessage.content || !referencedMessage.components[0])
                         referencedMessage.components.push(new MessageActionRow().setComponents(removeNote));
                     else
                         referencedMessage.components[0].components.push(removeNote);
