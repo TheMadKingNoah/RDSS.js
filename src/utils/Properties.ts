@@ -7,7 +7,7 @@ export default class Properties {
         quickMute60: "452813334429827072",
         sweep: "783030737552670801"
     }
-    
+
     public static channels = {
         alerts: "785821764839669791",
         commands: "150250250471342080",
@@ -32,6 +32,4 @@ export default class Properties {
     public static modAlertCooldown: number = 5;
     public static membersOnStage = new Map();
     public static guildId = "150074202727251969";
-    public static defaultWinnerRoleDuration = 60 * 60 * 24 * 7; // 7 Days
-    public static triviaMasterRoleDuration = 60 * 60 * 24 * 14; // 14 Days
 }
