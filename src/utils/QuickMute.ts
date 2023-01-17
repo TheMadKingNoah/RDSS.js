@@ -13,7 +13,7 @@ import {
 
 export default class QuickMute {
     public static async quickMuteUser(moderator: User, authorId: string, duration: string, messageEvidence: string, commandsChannel: TextChannel, message: Message | null) {
-        const member = await commandsChannel.guild.members.fetch(authorId).catch( e => {console.log("Member has left the server")});
+        const member = await commandsChannel.guild.members.fetch(authorId).catch(() => {console.log("Member has left the server")});
 
         if (!member) {
             if (message) message.delete().catch(console.error);
@@ -86,7 +86,7 @@ export default class QuickMute {
         }
 
         let messagesToBePurged: Message[] = [];
-        let evidence = "";
+        let evidence = `Messages by ${member.user.tag} (${member.id}) purged in #${channel.name} (${channel.id})\n\n`;
         let messageCount = 0;
 
         channel.messages.fetch({
@@ -96,14 +96,12 @@ export default class QuickMute {
                 if (message.author.id == member.id) {
                     messagesToBePurged.push(message);
                     messageCount++;
-                    evidence += `[${message.createdAt.getFullYear()}-${message.createdAt.getMonth() + 1}-${message.createdAt.getDate()}`
-                        + `-${String(message.createdAt.getHours()).padStart(2, '0')}:${String(message.createdAt.getMinutes()).padStart(2, '0')}:${String(message.createdAt.getSeconds()).padStart(2, '0')}]`
-                        + `(${member.id})`
-                        + `-${message.content} \n`;
+                    evidence += `[${message.createdAt.toLocaleString("en-US")}] ${message.content}\n`;
                 }
             })
         }).then(async () => {
             if (messageCount == 0) return;
+            evidence = `${messageCount} ` + evidence;
             channel.bulkDelete(messagesToBePurged).catch(console.error)
 
             const currentTime = new Date().toISOString();
