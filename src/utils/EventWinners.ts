@@ -86,7 +86,6 @@ export default class EventWinners {
                         else this.add(winner, message.id, roleId, timeUntilRoleRemoval);
                     }
                 }
-                console.log(this.list);
             })
             .catch(console.error);
     }
