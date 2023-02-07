@@ -68,7 +68,7 @@ export default class BanRequest {
             !RoleUtils.hasRole(message.member, RoleUtils.roles.moderator)
         ) return;
 
-        const re = new RegExp(";ban (?<userId>\\d{17,19}) \\S+", "gmi");
+        const re = new RegExp("^;ban (?<userId>\\d{17,19}) \\S+", "gmi");
         const args = re.exec(message.content);
 
         const deleteMessage = new MessageButton()
