@@ -3,8 +3,11 @@ import Properties from "./Properties";
 import {
     GuildMember,
     TextChannel,
-    Message
+    Message,
+    MessageButton,
+    MessageActionRow
 } from "discord.js";
+import RoleUtils from "./RoleUtils";
 
 export default class BanRequest {
     public static approveBanRequest(message: Message, commandChannel: TextChannel, moderator: GuildMember) {
@@ -27,7 +30,9 @@ export default class BanRequest {
                 banRequestContent[0].toLowerCase() === ";ban" ||
                 banRequestContent[0].toLowerCase() === ";forceban"
             ) {
-                commandChannel.send(`;ban ${userToBan} ${evidence}`).then( message => { message.suppressEmbeds(true)});
+                commandChannel.send(`;ban ${userToBan} ${evidence}`).then(message => {
+                    message.suppressEmbeds(true)
+                });
             } else {
                 commandChannel.send(`${moderator} the ban you tried to invoke was not correctly formatted. Please run the command manually`);
             }
@@ -54,6 +59,58 @@ export default class BanRequest {
             commandChannel.send(rejectionNotice);
         } catch {
             commandChannel.send(`${moderator} the ban you tried to invoke was not correctly formatted. Please run the command manually`)
+        }
+    }
+
+    public static async validate(message: Message) {
+        if (
+            message.member &&
+            !RoleUtils.hasRole(message.member, RoleUtils.roles.moderator)
+        ) return;
+
+        const re = new RegExp(";ban (?<userId>\\d{17,19}) \\S+", "gmi");
+        const args = re.exec(message.content);
+
+        const deleteMessage = new MessageButton()
+            .setCustomId("deleteMessage")
+            .setEmoji("🗑️")
+            .setStyle("SECONDARY");
+
+        const actionRow = new MessageActionRow().addComponents(deleteMessage);
+
+        if (!args?.groups) {
+            await message.reply({
+                content: "Invalid format. Please use the following format: `;ban <userId> <reason/proof>`",
+                components: [actionRow]
+            });
+            return;
+        }
+
+        const { userId } = args.groups;
+        const user = await message.client.users.fetch(userId).catch(async () => {});
+
+        if (!user) {
+            await message.reply({
+                content: "Unable to resolve the user ID, please double check it",
+                components: [actionRow]
+            });
+            return;
+        }
+
+        const member = await message.guild?.members.fetch(user);
+
+        if (member && RoleUtils.hasAnyRole(member, [
+            RoleUtils.roles.trialModerator,
+            RoleUtils.roles.moderator,
+            RoleUtils.roles.seniorModerator,
+            RoleUtils.roles.manager,
+            RoleUtils.roles.bot
+        ])) {
+            await message.reply({
+                content: "The user ID belongs to a staff member, please double check it",
+                components: [actionRow]
+            });
+            return;
         }
     }
 }
