@@ -11,6 +11,7 @@ import {
     MessageActionRow, MessageEmbed, MessageSelectMenu, MessageAttachment
 } from "discord.js";
 import RoleUtils from "../utils/RoleUtils";
+import BanRequest from "../utils/BanRequest";
 
 module.exports = class MessageCreateEventListener extends EventListener {
     constructor(client: Bot) {
@@ -184,5 +185,7 @@ module.exports = class MessageCreateEventListener extends EventListener {
                 }
             })
         }
+
+        if (message.channel.id === Properties.channels.banRequestsQueue) await BanRequest.validate(message);
     }
 }
