@@ -47,6 +47,8 @@ export default class AlertMaintainer {
 
         this.checkModAlerts();
         setInterval(this.checkModAlerts.bind(this), AlertMaintainer.updateInterval);
+        this.checkBanRequests();
+        setInterval(this.checkBanRequests.bind(this), AlertMaintainer.updateInterval);
     };
 
     public async register(notice: AlertNotice) {
@@ -101,6 +103,30 @@ export default class AlertMaintainer {
                 );
             }
         );
+    };
+
+    public async checkBanRequests() {
+        console.log(`<AlertMaintainer> Checking ban-requests at ${new Date().toTimeString()}`);
+        const banRequestChannel = this.client.channels.cache.get(Properties.channels.banRequestsQueue) as TextChannel;
+        if (!banRequestChannel) return;
+
+        this.fetchMessages(banRequestChannel).then(messages => {
+            let bansWitouthReaction = messages.filter(message => message.reactions.cache.size == 0)
+
+            const seniorChannel = this.client.channels.cache.get(Properties.channels.moderators) as TextChannel;
+            if (!seniorChannel) return;
+
+            console.log(" ok")
+            if(bansWitouthReaction.size > 0) {
+                console.log(" ok")
+                const embed = EmbedBuilds.getBansNoReactionEmbed(bansWitouthReaction);
+                seniorChannel.send({
+                    content: '@here, pending ban requests',
+                    embeds: [embed]
+                });
+            }
+
+        }).catch(console.error);
     };
 
     public async fetchMessages(channel: TextChannel | null) {
