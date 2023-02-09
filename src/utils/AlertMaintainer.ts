@@ -111,7 +111,11 @@ export default class AlertMaintainer {
         if (!banRequestChannel) return;
 
         this.fetchMessages(banRequestChannel).then(messages => {
-            let bansWitouthReaction = messages.filter(message => message.reactions.cache.size == 0)
+            const banRequestsOlderThan2Hours = messages.filter(
+                (alertMessage) => Date.now() - alertMessage.createdTimestamp >= 7200e3
+            );
+
+            let bansWitouthReaction = banRequestsOlderThan2Hours.filter(message => message.reactions.cache.size == 0)
 
             const seniorChannel = this.client.channels.cache.get(Properties.channels.seniorModerators) as TextChannel;
             if (!seniorChannel) return;
@@ -119,7 +123,7 @@ export default class AlertMaintainer {
             if(bansWitouthReaction.size > 0) {
                 const embed = EmbedBuilds.getBansNoReactionEmbed(bansWitouthReaction);
                 seniorChannel.send({
-                    content: '@here, pending ban requests',
+                    content: '@here pending ban requests',
                     embeds: [embed]
                 });
             }
