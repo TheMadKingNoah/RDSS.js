@@ -1,4 +1,4 @@
-import { Activity, Guild, GuildBan, GuildMember, MessageEmbed, Role, TextChannel, User, VoiceState } from "discord.js";
+import { Activity, Guild, GuildBan, GuildMember, MessageEmbed, Role, TextChannel, User, VoiceState, Message, Collection  } from "discord.js";
 import Properties from "./Properties";
 
 export default class EmbedBuilds {
@@ -124,6 +124,30 @@ export default class EmbedBuilds {
             .setFooter({
                 text: `This message appears whenever there are alerts that are over ${intervalText}`
             })
+    }
+
+    public static getBansNoReactionEmbed(banRequestWitouthReaction: Collection<string, Message<boolean>>): MessageEmbed {
+        let embed = new MessageEmbed()
+            .setColor(0x748bd8)
+            .setTitle("Ban Requests")
+            .setDescription(
+              `There are pending ban requests`
+                + `\n\nPlease remember to monitor ban requests frequently in order to avoid`
+                + ` an accumulation of requests in the channel`
+                + `\n\n Bans witouth reaction:`
+            )
+
+            banRequestWitouthReaction.forEach( message => {
+                embed.addField(' ',
+                    message.url
+                  )
+            })
+
+            embed.setFooter({
+                text: `This message appears whenever there are alerts that are over 2 hours`
+            })
+
+            return embed
     }
 
     public static getSpotifyPartyInviteDeletedEmbed(activity: Activity, member:GuildMember){
