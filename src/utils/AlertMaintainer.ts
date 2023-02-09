@@ -113,12 +113,10 @@ export default class AlertMaintainer {
         this.fetchMessages(banRequestChannel).then(messages => {
             let bansWitouthReaction = messages.filter(message => message.reactions.cache.size == 0)
 
-            const seniorChannel = this.client.channels.cache.get(Properties.channels.moderators) as TextChannel;
+            const seniorChannel = this.client.channels.cache.get(Properties.channels.seniorModerators) as TextChannel;
             if (!seniorChannel) return;
 
-            console.log(" ok")
             if(bansWitouthReaction.size > 0) {
-                console.log(" ok")
                 const embed = EmbedBuilds.getBansNoReactionEmbed(bansWitouthReaction);
                 seniorChannel.send({
                     content: '@here, pending ban requests',
