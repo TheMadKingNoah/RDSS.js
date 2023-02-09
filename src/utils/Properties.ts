@@ -12,6 +12,7 @@ export default class Properties {
         alerts: "785821764839669791",
         commands: "150250250471342080",
         moderators: "150255535927721984",
+        seniorModerators: "678849276402466849",
         banRequestsQueue: "592580861543841802",
         messageLogs: "1024534308762947594",
         mediaLogs: "1028104917170258030",
