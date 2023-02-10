@@ -166,4 +166,13 @@ export default class EmbedBuilds {
 
         return embed;
     }
+
+    public static getRandomTipOfTheDay(){ 
+        let embed = new MessageEmbed()
+        .setColor(0x748bd8)
+        .setTitle("Tip Of The Day!")
+        .setDescription(`When banning a user or requesting a ban, make sure to run the !whowas command to ban possible alt accounts! \n\n "Fun fact: The new mod will automatically ban all previous verified discord accounts!`)
+        return embed
+    }
+
  }
