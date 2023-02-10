@@ -134,7 +134,7 @@ export default class EmbedBuilds {
               `There are pending ban requests`
                 + `\n\nPlease remember to monitor ban requests frequently in order to avoid`
                 + ` an accumulation of requests in the channel`
-                + `\n\n Bans witouth reaction:`
+                + `\n\n Bans without reaction:`
             )
 
             banRequestWitouthReaction.forEach( message => {
@@ -144,7 +144,7 @@ export default class EmbedBuilds {
             })
 
             embed.setFooter({
-                text: `This message appears whenever there are alerts that are over 2 hours`
+                text: `This message appears whenever there are ban-requests that are over 6 hours`
             })
 
             return embed
