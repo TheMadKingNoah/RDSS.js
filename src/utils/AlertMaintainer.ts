@@ -134,13 +134,13 @@ export default class AlertMaintainer {
     };
 
     public async sendTipOfTheDay() {
-        const modChannel = this.client.channels.cache.get(Properties.channels.seniorModerators) as TextChannel;
+        const modChannel = this.client.channels.cache.get(Properties.channels.moderators) as TextChannel;
         if (!modChannel) return;
 
         const embed = EmbedBuilds.getRandomTipOfTheDay();
 
         modChannel.send({
-            content: '@here',
+            content: '@everyone',
             embeds: [embed]
         });
     }
