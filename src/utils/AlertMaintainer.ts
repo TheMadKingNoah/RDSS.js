@@ -50,7 +50,7 @@ export default class AlertMaintainer {
         this.checkBanRequests();
         setInterval(this.checkBanRequests.bind(this), AlertMaintainer.updateInterval);
         this.sendTipOfTheDay();
-        setInterval(this.sendTipOfTheDay.bind(this), 86400e3);
+        setInterval(this.sendTipOfTheDay.bind(this), 21600e3);
     };
 
     public async register(notice: AlertNotice) {
@@ -140,7 +140,6 @@ export default class AlertMaintainer {
         const embed = EmbedBuilds.getRandomTipOfTheDay();
 
         modChannel.send({
-            content: '@everyone',
             embeds: [embed]
         });
     }
