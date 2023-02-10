@@ -167,12 +167,21 @@ export default class EmbedBuilds {
         return embed;
     }
 
+    public static tipOfTheDayArray = [
+        `When banning a user or requesting a ban, make sure to run the !whowas command to ban possible alt accounts! \n\n "Fun fact: The new mod will automatically ban all previous verified discord accounts!`,
+        `Do not use images as evidence send in an external discord server \n\n Images are a child entity of a message, meaning that when the message and/or channel is deleted, the image will no longer be accessible, making infractions lose their evidence.`,
+        `Do not click any suspiscious links and/or download files from other users. \n\n As a moderator you are a vulnarable target for hackers. Make sure to keep your information safe by not clicking suspiscious links and/or downloading files sned by other users.`
+        
+     ]
+
     public static getRandomTipOfTheDay(){ 
         let embed = new MessageEmbed()
         .setColor(0x748bd8)
         .setTitle("Tip Of The Day!")
-        .setDescription(`When banning a user or requesting a ban, make sure to run the !whowas command to ban possible alt accounts! \n\n "Fun fact: The new mod will automatically ban all previous verified discord accounts!`)
+        .setDescription(this.tipOfTheDayArray[Math.floor(Math.random()*this.tipOfTheDayArray.length)])
         return embed
     }
+
+  
 
  }
