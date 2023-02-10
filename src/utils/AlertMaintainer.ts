@@ -49,6 +49,8 @@ export default class AlertMaintainer {
         setInterval(this.checkModAlerts.bind(this), AlertMaintainer.updateInterval);
         this.checkBanRequests();
         setInterval(this.checkBanRequests.bind(this), AlertMaintainer.updateInterval);
+        this.sendTipOfTheDay();
+        setInterval(this.sendTipOfTheDay.bind(this), 86400e3);
     };
 
     public async register(notice: AlertNotice) {
@@ -130,6 +132,18 @@ export default class AlertMaintainer {
 
         }).catch(console.error);
     };
+
+    public async sendTipOfTheDay() {
+        const modChannel = this.client.channels.cache.get(Properties.channels.seniorModerators) as TextChannel;
+        if (!modChannel) return;
+
+        const embed = EmbedBuilds.getRandomTipOfTheDay();
+
+        modChannel.send({
+            content: '@here',
+            embeds: [embed]
+        });
+    }
 
     public async fetchMessages(channel: TextChannel | null) {
         channel = (channel != null) ? channel : this.client.channels.cache.get(Properties.channels.alerts) as TextChannel;
