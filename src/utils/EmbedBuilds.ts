@@ -169,7 +169,7 @@ export default class EmbedBuilds {
 
     public static tipOfTheDayArray = [
         "When banning a user or requesting a ban, make sure to run the \`!whowas\` command to see if the user has any alternate accounts!\n\n> Fun fact: The upcoming verification bot will automatically ban all associated Discord accounts!",
-        "Do not use images sent in an external discord server as evidence.\n\nImages are a child entity of a message, meaning that if the message no longer exists, the image will no longer be accessible, therefore the infraction evidence could no longer be viewed.",
+        "Do not use images sent in an external discord server as evidence.\n\nImages are a child entity of a message, meaning that if the message no longer exists, the image will no longer be accessible, therefore the infraction evidence can no longer be viewed.",
         "Do not click any suspicious links and/or download files from other users. As a moderator, you are a vulnerable target for hackers, meaning you have to be extra cautious when clicking/downloading anything.",
         "Are you a Windows user? Did you know you can paste multiple items from your clipboard history with the `Windows + V` shortcut?\n\nThis can be useful when gathering multiple pieces of evidence",
         "You should never assume that everyone knows how Discord works or how your server operates. If you come across a case where a user asks seemingly “ridiculous”, questions, don’t immediately assume they are a troll. Instead, explain the functionality of both Discord and the server you're moderating, while keeping a friendly and inviting tone, and avoiding any lingo/abbreviations to reduce any potential confusion.",
