@@ -168,19 +168,19 @@ export default class EmbedBuilds {
     }
 
     public static tipOfTheDayArray = [
-        `When banning a user or requesting a ban, make sure to run the !whowas command to ban possible alt accounts! \n\n "Fun fact: The new mod will automatically ban all previous verified discord accounts!`,
-        `Do not use images as evidence send in an external discord server \n\n Images are a child entity of a message, meaning that when the message and/or channel is deleted, the image will no longer be accessible, making infractions lose their evidence.`,
-        `Do not click any suspiscious links and/or download files from other users. \n\n As a moderator you are a vulnarable target for hackers. Make sure to keep your information safe by not clicking suspiscious links and/or downloading files sned by other users.`,
-        'Are you a Windows user? Did you know you can copy and paste multiple text by clicking (Windows Key + V)? \n\n This can be usefull when gathering multiple evidence',
-        `You should never assume that everyone knows how Discord works, or how your server operates. If there is the case that you come across a user who has multiple, seemingly “ridiculous” questions, don’t immediately assume they are a troll. There are many ways to get confused by things that may seem natural to superusers of the platform. Take your time to explain certain parts or functions of both Discord and the server you're moderating while keeping a friendly and inviting tone.\n\n Users that are new to a community they aren’t experienced with may not know terms that are everyday words for active members. Abbreviations like LFG (looking for groups) in gaming communities, GFX (graphic effects) in art servers, and much more. When communicating with an inexperienced or intimidated user, ensure that you don’t sound rude because they are unfamiliar with the lingo. Try to guide them around the server without using confusing abbreviations and be patient as it may be their first time in those types of servers.`,
-        `Teamwork makes the dream work and it is important to maintain a healthy, communicative, and respectful relationship with your moderation team to ensure easy moderation of your community.`,
-        `When dealing with moderation issues, seeking help from fellow staff members always seems like optimal assistance. Getting another person’s opinion on a topic may help you to see things from a different angle, or reinforce your judgement. Taking everyone’s perspective into account can help you master even the most difficult problems and it takes weight off your shoulders to let other people know about your concern. You are part of a team, and do not have to act alone.`,
+        "When banning a user or requesting a ban, make sure to run the \`!whowas\` command to see if the user has any alternate accounts!\n\n> Fun fact: The upcoming verification bot will automatically ban all associated Discord accounts!",
+        "Do not use images sent in an external discord server as evidence.\n\nImages are a child entity of a message, meaning that if the message no longer exists, the image will no longer be accessible, therefore the infraction evidence could no longer be viewed.",
+        "Do not click any suspicious links and/or download files from other users. As a moderator, you are a vulnerable target for hackers, meaning you have to be extra cautious when clicking/downloading anything.",
+        "Are you a Windows user? Did you know you can paste multiple items from your clipboard history with the `Windows + V` shortcut?\n\nThis can be useful when gathering multiple pieces of evidence",
+        "You should never assume that everyone knows how Discord works or how your server operates. If you come across a case where a user asks seemingly “ridiculous”, questions, don’t immediately assume they are a troll. Instead, explain the functionality of both Discord and the server you're moderating, while keeping a friendly and inviting tone, and avoiding any lingo/abbreviations to reduce any potential confusion.",
+        "Teamwork makes the dream work. It is important to maintain a healthy, communicative, and respectful relationship with your moderation team to ensure trouble-free moderation of your community.",
+        "When dealing with moderation issues, seeking help from fellow staff members always seems like the optimal assistance. Getting another person’s opinion on a topic may help you to see things from a different angle, or reinforce your judgment. Taking everyone’s perspective into account can help you master even the most difficult problems. Letting someone know about your concerns can take the weight off your shoulders. You are part of a team; you do not have to act alone.",
      ]
 
     public static getRandomTipOfTheDay(){ 
         let embed = new MessageEmbed()
         .setColor(0x748bd8)
-        .setTitle("Tip Of The Day!")
+        .setTitle("Tip of the Day!")
         .setDescription(this.tipOfTheDayArray[Math.floor(Math.random()*this.tipOfTheDayArray.length)])
         return embed
     }
