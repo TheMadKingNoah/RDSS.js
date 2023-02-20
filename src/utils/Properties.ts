@@ -15,6 +15,7 @@ export default class Properties {
         seniorModerators: "678849276402466849",
         banRequestsQueue: "592580861543841802",
         messageLogs: "1024534308762947594",
+        commandLogs : "366629978101514241",
         mediaLogs: "1028104917170258030",
         voiceLogs: "366624876544655360",
         modCastText: "933975893599211570",
@@ -23,7 +24,7 @@ export default class Properties {
         muteRequestQueue: "912280762760454174",
         trialLogs: "1034134657261908038",
         creations: "150077608602632192",
-        avatars: "779975211063443456"
+        avatars: "779975211063443456",
     }
 
     public static categories = {
