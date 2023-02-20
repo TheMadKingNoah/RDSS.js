@@ -23,7 +23,7 @@ export default class ClearModAlertButton extends Button {
       ModAlert.deleteModAlert(messageId, modAlertMessage, null);
 
        if(!interaction.member) return;
-        interaction.client.channels.fetch(Properties.channels.trialLogs).then(channel => {
+        interaction.client.channels.fetch(Properties.channels.commandLogs).then(channel => {
             (channel as TextChannel).send(`${interaction.member} approved a mod-alert: \n\n \`\`\`${modAlertMessage.content}\`\`\``)
         })
     }
