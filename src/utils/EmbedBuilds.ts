@@ -180,7 +180,7 @@ export default class EmbedBuilds {
     public static getRandomTipOfTheDay(){ 
         let embed = new MessageEmbed()
         .setColor(0x748bd8)
-        .setTitle("Tip Of The Day!")
+        .setTitle("Tip of the Day!")
         .setDescription(this.tipOfTheDayArray[Math.floor(Math.random()*this.tipOfTheDayArray.length)])
         return embed
     }
