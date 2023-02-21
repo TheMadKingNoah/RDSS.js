@@ -50,7 +50,7 @@ export default class AlertMaintainer {
         this.checkBanRequests();
         setInterval(this.checkBanRequests.bind(this), AlertMaintainer.updateInterval);
         this.sendTipOfTheDay();
-        setInterval(this.sendTipOfTheDay.bind(this), 86.400e3);
+        setInterval(this.sendTipOfTheDay.bind(this), 86400e3);
     };
 
     public async register(notice: AlertNotice) {
