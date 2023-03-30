@@ -1,9 +1,9 @@
-import { Activity, Guild, GuildBan, GuildMember, MessageEmbed, Role, TextChannel, User, VoiceState, Message, Collection  } from "discord.js";
+import { Activity, Guild, GuildBan, GuildMember, EmbedBuilder, Role, TextChannel, User, VoiceState, Message, Collection  } from "discord.js";
 import Properties from "./Properties";
 
 export default class EmbedBuilds {
-    public static getOnVoiceChannelJoinEmbed(newState: VoiceState): MessageEmbed {
-        return new MessageEmbed()
+    public static getOnVoiceChannelJoinEmbed(newState: VoiceState): EmbedBuilder {
+        return new EmbedBuilder()
             .setColor(0x2ecc71)
             .setAuthor({
                 name: `${newState.member?.user.tag} (${newState.member?.nickname})`,
@@ -15,8 +15,8 @@ export default class EmbedBuilds {
             .setTimestamp();
     }
 
-    public static getOnVoiceChannelChangeEmbed(oldState: VoiceState, newState: VoiceState): MessageEmbed {
-        return new MessageEmbed()
+    public static getOnVoiceChannelChangeEmbed(oldState: VoiceState, newState: VoiceState): EmbedBuilder {
+        return new EmbedBuilder()
             .setColor(0x7289da)
             .setAuthor({
                 name: `${newState.member?.user.tag} (${newState.member?.nickname})`,
@@ -38,8 +38,8 @@ export default class EmbedBuilds {
             .setTimestamp();
     }
 
-    public static getOnVoiceChannelLeaveEmbed(oldState: VoiceState): MessageEmbed {
-        return new MessageEmbed()
+    public static getOnVoiceChannelLeaveEmbed(oldState: VoiceState): EmbedBuilder {
+        return new EmbedBuilder()
             .setColor(0xe74c3c)
             .setAuthor({
                 name: `${oldState.member?.user.tag} (${oldState.member?.nickname})`,
@@ -51,8 +51,8 @@ export default class EmbedBuilds {
             .setTimestamp();
     }
 
-    public static getUserInfoEmbed(user: User, member:GuildMember|null, isBanned:GuildBan|null): MessageEmbed {
-        const embed = new MessageEmbed()
+    public static getUserInfoEmbed(user: User, member:GuildMember|null, isBanned:GuildBan|null): EmbedBuilder {
+        const embed = new EmbedBuilder()
 
         const avatar = member ? member.displayAvatarURL() : user.displayAvatarURL();
         embed.setAuthor({
@@ -70,9 +70,9 @@ export default class EmbedBuilds {
             }
 
             let roles = "";
-            
+
             member.roles.cache.sort((a,b)=>b.position-a.position).forEach(element => {
-                if (element.name != "@everyone"){ 
+                if (element.name != "@everyone"){
                     roles += `<@&${element.id}> `;
                 }
             });
@@ -81,14 +81,18 @@ export default class EmbedBuilds {
                 roles = "**None**"
             }
 
-            embed.addField("**Roles**", roles, true,)
-            
+            embed.addFields([{
+                name: "**Roles**",
+                value: roles,
+                inline: true
+            }]);
+
             if(member.joinedTimestamp){
-                embed.addField(
-                    "**Joined at**",
-                    `<t:${Math.trunc(member.joinedTimestamp/1000)}:F>\n (<t:${Math.trunc(member.joinedTimestamp/1000)}:R>)`,
-                    true
-                )
+                embed.addFields([{
+                    name: "**Joined at**",
+                    value: `<t:${Math.trunc(member.joinedTimestamp / 1000)}:F>\n (<t:${Math.trunc(member.joinedTimestamp / 1000)}:R>)`,
+                    inline: true
+                }]);
             }
         } else {
             if(isBanned !== null){
@@ -97,23 +101,23 @@ export default class EmbedBuilds {
             } else {
                 embed.setDescription("This user is not in this Guild!")
                 embed.setColor(0xFF0000)
-            }               
+            }
         }
 
-        embed.addField(
-            "**Created at**",
-            `<t:${Math.trunc(user.createdTimestamp/1000)}:F>\n (<t:${Math.trunc(user.createdTimestamp/1000)}:R>)`,
-            true
-        )
+        embed.addFields([{
+            name: "**Created at**",
+            value: `<t:${Math.trunc(user.createdTimestamp / 1000)}:F>\n (<t:${Math.trunc(user.createdTimestamp / 1000)}:R>)`,
+            inline: true
+        }]);
 
-        embed.setFooter({text:`ID: ${user.id}`})
+        embed.setFooter({text:`ID: ${user.id}`});
 
         return embed;
 
     }
 
-    public static getPendingAlertsEmbed(modAlertsChannel: TextChannel, intervalText: string): MessageEmbed {
-        return new MessageEmbed()
+    public static getPendingAlertsEmbed(modAlertsChannel: TextChannel, intervalText: string): EmbedBuilder {
+        return new EmbedBuilder()
             .setColor(0x748bd8)
             .setTitle("Moderation Alerts")
             .setDescription(
@@ -126,41 +130,42 @@ export default class EmbedBuilds {
             })
     }
 
-    public static getBansNoReactionEmbed(banRequestWitouthReaction: Collection<string, Message<boolean>>): MessageEmbed {
-        let embed = new MessageEmbed()
+    public static getBanNoReactionEmbed(message: Message<boolean>): EmbedBuilder {
+        return new EmbedBuilder()
             .setColor(0x748bd8)
             .setTitle("Ban Requests")
+            .setFields([{ name: 'Oldest Request', value: message.url }])
             .setDescription(
               `There are pending ban requests`
                 + `\n\nPlease remember to monitor ban requests frequently in order to avoid`
                 + ` an accumulation of requests in the channel`
                 + `\n\n Bans without reaction:`
             )
-
-            banRequestWitouthReaction.forEach( message => {
-                embed.addField(' ',
-                    message.url
-                  )
-            })
-
-            embed.setFooter({
+            .setFooter({
                 text: `This message appears whenever there are ban-requests that are over 6 hours`
-            })
-
-            return embed
+            });
     }
 
     public static getSpotifyPartyInviteDeletedEmbed(activity: Activity, member:GuildMember){
-        let embed = new MessageEmbed();
+        let embed = new EmbedBuilder();
 
         embed.setTitle("Spotify Party invite deleted")
-        if(activity.assets !== null && activity.assets.largeImage !== null) {  
+        if(activity.assets !== null && activity.assets.largeImage !== null) {
             let imageUrl = activity.assets.largeImage.replace('spotify:','');
             embed.setThumbnail(`https://i.scdn.co/image/${imageUrl}`)
         }
 
-        if(activity.state) {embed.addField('**Artist**', activity.state, false)}
-        if(activity.details) {embed.addField('**Title**', activity.details, false )};
+        if(activity.state) embed.addFields([{
+            name: '**Artist**',
+            value: activity.state,
+            inline: false
+        }]);
+
+        if(activity.details) embed.addFields([{
+            name: '**Title**',
+            value: activity.details,
+            inline: false
+        }]);
 
         embed.setFooter({text:`Spotify Party Invite by: ${member.id}`})
 
@@ -177,8 +182,8 @@ export default class EmbedBuilds {
         `When dealing with moderation issues, seeking help from fellow staff members always seems like optimal assistance. Getting another person’s opinion on a topic may help you to see things from a different angle, or reinforce your judgement. Taking everyone’s perspective into account can help you master even the most difficult problems and it takes weight off your shoulders to let other people know about your concern. You are part of a team, and do not have to act alone.`,
      ]
 
-    public static getRandomTipOfTheDay(){ 
-        let embed = new MessageEmbed()
+    public static getRandomTipOfTheDay(){
+        let embed = new EmbedBuilder()
         .setColor(0x748bd8)
         .setTitle("Tip of the Day!")
         .setDescription(this.tipOfTheDayArray[Math.floor(Math.random()*this.tipOfTheDayArray.length)])

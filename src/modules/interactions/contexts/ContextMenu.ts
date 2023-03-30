@@ -1,14 +1,13 @@
-import { ApplicationCommandOptionData, ApplicationCommandType, MessageApplicationCommandData } from "discord.js";
+import { ApplicationCommandType, MessageApplicationCommandData } from "discord.js";
 
 import ContextMenuHandler from "./Manager";
 import Bot from "../../../Bot";
-import { ApplicationCommandTypes } from "discord.js/typings/enums";
 
 export default class ContextMenu {
       client: Bot;
       manager: ContextMenuHandler;
       name: string;
-      type: ApplicationCommandTypes|string;
+      type: ApplicationCommandType | string;
 
       constructor(client: Bot, data: MessageApplicationCommandData) {
             this.client = client;
@@ -22,7 +21,7 @@ export default class ContextMenu {
       build(): MessageApplicationCommandData {
             return {
                   name: this.name,
-                  type: ApplicationCommandTypes.MESSAGE
+                  type: ApplicationCommandType.Message
             }
       }
 }

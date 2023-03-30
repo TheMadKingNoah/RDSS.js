@@ -4,11 +4,10 @@ import Properties from "./Properties";
 
 import {
     ButtonInteraction,
-    MessageAttachment,
     GuildMember,
     TextChannel,
     Message,
-    User
+    User, AttachmentBuilder
 } from "discord.js";
 
 export default class QuickMute {
@@ -44,7 +43,10 @@ export default class QuickMute {
         if (member.nickname) memberTitle = `${member.nickname}_${authorId}`;
 
         const currentDate = new Date().toISOString();
-        const evidenceFile = new MessageAttachment(Buffer.from(messageEvidence), `Evidence_against_${memberTitle}_on_${currentDate}}.txt`)
+        const evidenceFile = new AttachmentBuilder(Buffer.from(messageEvidence), {
+            name: `Evidence_against_${memberTitle}_on_${currentDate}}.txt`
+        });
+
         const messagePreview = messageEvidence.substring(0, 25) + "...";
 
         const messageLogs = await commandsChannel.guild.channels.fetch(Properties.channels.messageLogs) as TextChannel;
@@ -105,7 +107,10 @@ export default class QuickMute {
             channel.bulkDelete(messagesToBePurged).catch(console.error)
 
             const currentTime = new Date().toISOString();
-            const evidenceFile = new MessageAttachment(Buffer.from(evidence), `Evidence_against_${member.id}_on_${currentTime}}.txt`);
+            const evidenceFile = new AttachmentBuilder(Buffer.from(evidence), {
+                name: `Evidence_against_${member.id}_on_${currentTime}}.txt`
+            });
+
             const messageLogs = await channel.guild.channels.fetch(Properties.channels.messageLogs) as TextChannel;
 
 

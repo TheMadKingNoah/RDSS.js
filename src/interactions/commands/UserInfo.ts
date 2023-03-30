@@ -14,7 +14,7 @@ export default class UserInfoCommand extends Command {
                 {
                       name: "user",
                       description: "The user to view information about.",
-                      type: "USER",
+                      type: ApplicationCommandOptionType.User,
                       required: true
                 }
           ]

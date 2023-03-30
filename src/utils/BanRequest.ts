@@ -4,8 +4,8 @@ import {
     GuildMember,
     TextChannel,
     Message,
-    MessageButton,
-    MessageActionRow
+    ButtonBuilder,
+    ActionRowBuilder, ButtonStyle
 } from "discord.js";
 import RoleUtils from "./RoleUtils";
 
@@ -71,17 +71,17 @@ export default class BanRequest {
         const re = new RegExp("^;ban (?<userId>\\d{17,19}) \\S+", "gmi");
         const args = re.exec(message.content);
 
-        const deleteMessage = new MessageButton()
+        const deleteMessage = new ButtonBuilder()
             .setCustomId("deleteMessage")
             .setEmoji("🗑️")
-            .setStyle("SECONDARY");
+            .setStyle(ButtonStyle.Secondary);
 
-        const actionRow = new MessageActionRow().addComponents(deleteMessage);
+        const actionRow = new ActionRowBuilder().addComponents(deleteMessage);
 
         if (!args?.groups) {
             await message.reply({
                 content: "Invalid format. Please use the following format: `;ban <userId> <reason/proof>`",
-                components: [actionRow]
+                components: [actionRow as ActionRowBuilder<ButtonBuilder>]
             });
             return;
         }
@@ -92,7 +92,7 @@ export default class BanRequest {
         if (!user) {
             await message.reply({
                 content: "Unable to resolve the user ID, please double check it",
-                components: [actionRow]
+                components: [actionRow as ActionRowBuilder<ButtonBuilder>]
             });
             return;
         }
@@ -108,7 +108,7 @@ export default class BanRequest {
         ])) {
             await message.reply({
                 content: "The user ID belongs to a staff member, please double check it",
-                components: [actionRow]
+                components: [actionRow as ActionRowBuilder<ButtonBuilder>]
             });
             return;
         }

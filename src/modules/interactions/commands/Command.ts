@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionData, ChatInputApplicationCommandData, IntegrationExpireBehaviors } from "discord.js";
+import { ApplicationCommandOptionData, ChatInputApplicationCommandData } from "discord.js";
 
 import CommandHandler from "./Manager";
 import Bot from "../../../Bot";

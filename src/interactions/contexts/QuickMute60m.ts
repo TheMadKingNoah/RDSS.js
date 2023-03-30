@@ -1,7 +1,14 @@
 
 import Bot from "../../Bot";
 
-import { GuildMember, Message, MessageContextMenuInteraction, TextChannel, User } from "discord.js";
+import {
+    ApplicationCommandType,
+    GuildMember,
+    Message,
+    MessageContextMenuCommandInteraction,
+    TextChannel,
+    User
+} from "discord.js";
 import ContextMenu from "../../modules/interactions/contexts/ContextMenu";
 import QuickMute from "../../utils/QuickMute";
 import Properties from "../../utils/Properties";
@@ -12,11 +19,11 @@ export default class QuickMute30mCommand extends ContextMenu {
     constructor(client: Bot) {
         super(client, {
             name: "Quickmute 60m",
-            type: "MESSAGE",
+            type: ApplicationCommandType.Message,
         });
     }
 
-    async execute(interaction: MessageContextMenuInteraction) {
+    async execute(interaction: MessageContextMenuCommandInteraction) {
         const commandsChannel = await interaction.guild?.channels.fetch(Properties.channels.commands) as TextChannel;
 
         if (!RoleUtils.hasAnyRole(interaction.member as GuildMember, [
