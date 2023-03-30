@@ -1,36 +1,37 @@
 export default class Properties {
     public static emojis = {
-        alert: "1030962434237812737",
-        approve: "998006595332096030",
-        reject: "998006596376477777",
-        quickMute30: "1030962435944886373",
-        quickMute60: "1030962437408702484",
-        sweep: "998006599710949416"
+        alert: "625429388229345280",
+        approve: "762388343253106688",
+        reject: "764268551473070080",
+        quickMute30: "760204798984454175",
+        quickMute60: "452813334429827072",
+        sweep: "783030737552670801"
     }
 
     public static channels = {
-        alerts: "998003633205563552",
-        commands: "998003692215214172",
-        moderators: "1048351386817003580",
-        seniorModerators: "1053286875999240192",
-        banRequestsQueue: "998003733914976388",
-        messageLogs: "998003762805346374",
-        mediaLogs: "1048347572131090602",
-        voiceLogs: "998003789074284574",
-        modCastText: "998003814042972311",
-        winnerQueue: "1028368336448401419",
-        trialModerators: "1048351418098139196",
-        muteRequestQueue: "1091029188766605324",
-        trialLogs: "1091029249730814012",
-        creations: "1091029296820260886",
-        avatars: "1091029332291489912"
+        alerts: "785821764839669791",
+        commands: "150250250471342080",
+        moderators: "150255535927721984",
+        seniorModerators: "678849276402466849",
+        banRequestsQueue: "592580861543841802",
+        messageLogs: "1024534308762947594",
+        commandLogs : "366629978101514241",
+        mediaLogs: "1028104917170258030",
+        voiceLogs: "366624876544655360",
+        modCastText: "933975893599211570",
+        winnerQueue: "963136283633389668",
+        trialModerators: "678671353473269799",
+        muteRequestQueue: "912280762760454174",
+        trialLogs: "1034134657261908038",
+        creations: "150077608602632192",
+        avatars: "779975211063443456",
     }
 
     public static categories = {
-        internalChannels: "998003620081586297"
+        internalChannels: "360904621524385792"
     }
 
     public static modAlertCooldown: number = 5;
     public static membersOnStage = new Map();
-    public static guildId = "997590641825546410";
+    public static guildId = "150074202727251969";
 }
