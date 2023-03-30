@@ -2,12 +2,13 @@ import Properties from "./Properties";
 import RoleUtils from "./RoleUtils";
 
 import {
-    MessageActionRow,
-    MessageButton,
+    ActionRowBuilder,
+    ButtonBuilder,
     TextChannel,
     Message,
     User,
-    GuildMember
+    GuildMember,
+    ButtonStyle, ActionRow,
 } from "discord.js";
 
 export default class ModAlert {
@@ -47,25 +48,25 @@ export default class ModAlert {
             potentialWallPost = "\n:warning: **Warning:** Potential wall-post! :warning: (`" + (messageContent.match(/\n/g) || '').length + " lines detected!`)"
         }
 
-        const actionRow = new MessageActionRow()
+        const actionRow = new ActionRowBuilder()
             .addComponents(
-                new MessageButton()
+                new ButtonBuilder()
                     .setCustomId('ClearModAlert')
                     .setLabel('OK')
-                    .setStyle('SUCCESS'),
+                    .setStyle(ButtonStyle.Success),
             );
 
         if (messageContent.length > 0) {
             actionRow.addComponents(
-                new MessageButton()
+                new ButtonBuilder()
                     .setCustomId("qm30")
                     .setLabel("30m")
-                    .setStyle("PRIMARY"),
+                    .setStyle(ButtonStyle.Primary),
 
-                new MessageButton()
+                new ButtonBuilder()
                     .setCustomId("qm60")
                     .setLabel("60m")
-                    .setStyle("DANGER"),
+                    .setStyle(ButtonStyle.Danger),
             )
 
             const content = messageContent.replace(/\r?\n|\r/g, " ");
@@ -73,15 +74,15 @@ export default class ModAlert {
         }
 
         actionRow.addComponents(
-            new MessageButton()
+            new ButtonBuilder()
                 .setCustomId("Infractions")
                 .setLabel("Infractions")
-                .setStyle("SECONDARY"),
+                .setStyle(ButtonStyle.Secondary),
 
-                new MessageButton()
+                new ButtonBuilder()
                 .setCustomId("Userinfo")
                 .setLabel("User Info")
-                .setStyle("SECONDARY"),
+                .setStyle(ButtonStyle.Secondary),
         );
 
         modAlertChannel.send({
@@ -94,7 +95,7 @@ export default class ModAlert {
                 + potentialWallPost
                 + hasAttachments
                 + `\n(Access the jump URL to take action. Once finished, react to this message with one of the buttons)`,
-            components: [actionRow]
+            components: [actionRow as ActionRowBuilder<ButtonBuilder>]
         }).then(alertMessage => {
             console.log(`New mod alert: ${message.id}`);
             this.existingModAlerts.set(message.id, message.content);
@@ -107,23 +108,26 @@ export default class ModAlert {
             limit: 100,
         }).then((messages) => {
             messages.forEach(element => {
-                const fetchedMessageId: string = element.content.split("/")[6].replace(/\D/g, '');
+                const fetchedMessageId: string = element.content.split("/")[6]?.replace(/\D/g, '');
                 if(fetchedMessageId == message.id){
-                    const actionRow = new MessageActionRow()
+                    const actionRow = new ActionRowBuilder()
                     .addComponents(
-                        new MessageButton()
+                        new ButtonBuilder()
                             .setCustomId('ClearModAlert')
                             .setLabel('OK')
-                            .setStyle('SUCCESS'),
+                            .setStyle(ButtonStyle.Success),
                     );
                     actionRow.addComponents(
-                        new MessageButton()
+                        new ButtonBuilder()
                             .setCustomId("Infractions")
                             .setLabel("Infractions")
-                            .setStyle("SECONDARY"),
+                            .setStyle(ButtonStyle.Secondary),
                     );
 
-                    element.edit({content: element.content + `\n\n **This mod alert is being handled by <@${member.id}>.**`, components: [actionRow]})
+                    element.edit({
+                        content: element.content + `\n\n **This mod alert is being handled by <@${member.id}>.**`,
+                        components: [actionRow as ActionRowBuilder<ButtonBuilder>]
+                    })
                 }
             });
         }).then(e => {})

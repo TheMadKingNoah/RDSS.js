@@ -1,7 +1,7 @@
 import Button from "../../modules/interactions/buttons/Button";
 import Bot from "../../Bot";
 
-import { ButtonInteraction } from "discord.js";
+import { ButtonInteraction, ComponentType } from "discord.js";
 
 export default class RemoveWinnerRequestNoteButton extends Button {
     constructor(client: Bot) {
@@ -13,7 +13,7 @@ export default class RemoveWinnerRequestNoteButton extends Button {
     async execute(interaction: ButtonInteraction) {
         interaction.message.embeds[0].fields?.pop();
 
-        if (interaction.message.components?.[0]?.components[0].type !== "SELECT_MENU")
+        if (interaction.message.components?.[0]?.components[0].type !== ComponentType.SelectMenu)
             interaction.message.components?.pop();
         else
             interaction.message.components[0].components.pop();

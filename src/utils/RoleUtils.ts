@@ -2,15 +2,15 @@ import { GuildMember } from "discord.js";
 
 export default class RoleUtils {
     public static roles = {
-        bot: "150075195971862528",
-        trialModerator: "218513797659230209",
-        moderator: "150093661231775744",
-        seniorModerator: "234520161720205312",
-        manager: "150074509393788929",
-        gameChampion: "933135286022590505",
-        triviaMaster: "919245464455495690",
-        publicSectorPm: "922614306720317470",
-        eventWinner: "945294961987973121"
+        bot: "998008260839874651",
+        trialModerator: "998008285372362792",
+        moderator: "998008300698341416",
+        seniorModerator: "998008318364758147",
+        manager: "998008333103534130",
+        gameChampion: "1028003452749631588",
+        triviaMaster: "1038194520677957652",
+        publicSectorPm: "1028067158506356736",
+        eventWinner: "1028237313458831430"
     }
 
     public static temporaryWinnerRoles = [

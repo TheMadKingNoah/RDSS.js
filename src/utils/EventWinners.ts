@@ -1,7 +1,7 @@
 import Bot from "../Bot";
 import RoleUtils from "./RoleUtils";
 
-import {Collection, GuildMember, TextChannel, MessageButton, MessageActionRow} from "discord.js";
+import { Collection, GuildMember, TextChannel, ButtonBuilder, ActionRowBuilder, ButtonStyle } from "discord.js";
 import Properties from "./Properties";
 
 export default class EventWinners {
@@ -52,22 +52,22 @@ export default class EventWinners {
                     const winnerIds = winnerList.match(/(?<=`)\d{17,19}(?=`)/g) as string[];
 
                     setTimeout(() => {
-                        const removedRoles = new MessageButton()
+                        const removedRoles = new ButtonBuilder()
                             .setLabel("Automatically Removed Roles")
-                            .setStyle("LINK")
+                            .setStyle(ButtonStyle.Link)
                             .setURL("https://discord.com/")
                             .setDisabled(true)
 
-                        const deleteMessage = new MessageButton()
+                        const deleteMessage = new ButtonBuilder()
                             .setCustomId("deleteMessage")
                             .setLabel("Delete")
-                            .setStyle("DANGER")
+                            .setStyle(ButtonStyle.Danger)
 
-                        const actionRow = new MessageActionRow().setComponents(removedRoles, deleteMessage);
+                        const actionRow = new ActionRowBuilder().setComponents(removedRoles, deleteMessage);
 
                         message.edit({
                             embeds: message.embeds,
-                            components: [actionRow]
+                            components: [actionRow as ActionRowBuilder<ButtonBuilder>]
                         })
                     }, remainingTime * 1000);
 

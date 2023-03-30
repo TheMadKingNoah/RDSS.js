@@ -1,9 +1,8 @@
-import Properties from "../utils/Properties";
-import EmbedBuilds from "../utils/EmbedBuilds";
-import EventListener from "../modules/events/Event";
+import { ChannelType, PermissionsBitField, StageChannel, TextChannel, VoiceChannel, VoiceState } from "discord.js";
 import Bot from "../Bot";
-
-import {StageChannel, TextChannel, VoiceChannel, VoiceState} from "discord.js";
+import EventListener from "../modules/events/Event";
+import EmbedBuilds from "../utils/EmbedBuilds";
+import Properties from "../utils/Properties";
 
 module.exports = class VoiceStateUpdateEventListener extends EventListener {
     constructor(client: Bot) {
@@ -29,7 +28,7 @@ module.exports = class VoiceStateUpdateEventListener extends EventListener {
             }
         }
 
-        if (newState.channel?.type != "GUILD_STAGE_VOICE") {
+        if (newState.channel?.type != ChannelType.GuildStageVoice) {
             if (Properties.membersOnStage.has(newState.member?.id)) {
                 Properties.membersOnStage.delete(newState.member?.id)
             }
@@ -39,18 +38,18 @@ module.exports = class VoiceStateUpdateEventListener extends EventListener {
             const modCastText = await this.client.channels.fetch(Properties.channels.modCastText) as TextChannel;
             if (!modCastText) return;
 
-            if (!modCastText.permissionsFor(modCastText.guild.roles.everyone).has(["SEND_MESSAGES"])) {
+            if (!modCastText.permissionsFor(modCastText.guild.roles.everyone).has([PermissionsBitField.Flags.SendMessages])) {
                 modCastText.permissionOverwrites.create(modCastText.guild.roles.everyone, {
-                    SEND_MESSAGES: true
+                    SendMessages: true
                 }).catch(console.error);
             }
         } else {
             const modCastText = await this.client.channels.fetch(Properties.channels.modCastText) as TextChannel;
             if (!modCastText) return;
 
-            if (modCastText.permissionsFor(modCastText.guild.roles.everyone).has(["SEND_MESSAGES"])) {
+            if (modCastText.permissionsFor(modCastText.guild.roles.everyone).has([PermissionsBitField.Flags.SendMessages])) {
                 modCastText.permissionOverwrites.create(modCastText.guild.roles.everyone, {
-                    SEND_MESSAGES: false
+                    SendMessages: false
                 }).catch(console.error);
             }
         }
@@ -58,10 +57,10 @@ module.exports = class VoiceStateUpdateEventListener extends EventListener {
         if (voiceLogsChannel) {
             if (
                 (newVoiceChannel && !oldVoiceChannel) ||
-                (newVoiceChannel && oldVoiceChannel.type == "GUILD_STAGE_VOICE")
+                (newVoiceChannel && oldVoiceChannel.type == ChannelType.GuildStageVoice)
             ) {
                 if (!newState.member) return;
-                if (newVoiceChannel.type != "GUILD_VOICE") return;
+                if (newVoiceChannel.type != ChannelType.GuildVoice) return;
 
                 voiceLogsChannel.send({
                     embeds: [EmbedBuilds.getOnVoiceChannelJoinEmbed(newState)]
@@ -70,7 +69,7 @@ module.exports = class VoiceStateUpdateEventListener extends EventListener {
 
             if (newVoiceChannel && oldVoiceChannel) {
                 if (!newState.member || !oldState.member) return;
-                if (newVoiceChannel.type != "GUILD_VOICE" || oldVoiceChannel.type != "GUILD_VOICE") return;
+                if (newVoiceChannel.type != ChannelType.GuildVoice || oldVoiceChannel.type != ChannelType.GuildVoice) return;
                 if (newVoiceChannel.id === oldVoiceChannel.id) return;
 
                 voiceLogsChannel.send({
@@ -80,7 +79,7 @@ module.exports = class VoiceStateUpdateEventListener extends EventListener {
 
             if (!newVoiceChannel && oldVoiceChannel) {
                 if (!oldState.member) return;
-                if (oldVoiceChannel.type != "GUILD_VOICE") return;
+                if (oldVoiceChannel.type != ChannelType.GuildVoice) return;
 
                 voiceLogsChannel.send({
                     embeds: [EmbedBuilds.getOnVoiceChannelLeaveEmbed(oldState)]

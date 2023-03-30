@@ -1,13 +1,13 @@
-import {CachedManager, Client, MessageManager, Options, ReactionManager} from "discord.js";
+import { Client, IntentsBitField, Options, Partials } from "discord.js";
+
+import "dotenv/config";
+import EventHandler from "./modules/events/Manager";
+import ButtonHandler from "./modules/interactions/buttons/Manager";
 
 import CommandHandler from "./modules/interactions/commands/Manager";
 import ContextMenuHandler from "./modules/interactions/contexts/Manager";
-import ButtonHandler from "./modules/interactions/buttons/Manager";
 import SelectMenuHandler from "./modules/interactions/select_menus/Manager";
-import EventHandler from "./modules/events/Manager";
 import AlertMaintainer from "./utils/AlertMaintainer";
-
-import "dotenv/config";
 import EventWinners from "./utils/EventWinners";
 
 process.on("unhandledRejection", (error: Error) => {
@@ -31,20 +31,19 @@ export default class Bot extends Client {
     constructor() {
         super({
             intents: [
-                "GUILDS",
-                'GUILD_MESSAGE_REACTIONS',
-                "GUILD_MEMBERS",
-                "GUILD_VOICE_STATES",
-                "GUILD_MESSAGES",
-                // "GUILD_PRESENCES"
+                IntentsBitField.Flags.Guilds,
+                IntentsBitField.Flags.GuildMessageReactions,
+                IntentsBitField.Flags.GuildMembers,
+                IntentsBitField.Flags.GuildVoiceStates,
+                IntentsBitField.Flags.GuildMessages,
             ],
             partials: [
-                "MESSAGE",
-                "CHANNEL",
-                "REACTION",
+                Partials.Message,
+                Partials.Reaction,
+                Partials.Channel,
             ],
             makeCache: Options.cacheWithLimits({
-                ...Options.defaultMakeCacheSettings,
+                ...Options.DefaultMakeCacheSettings,
                 // ReactionManager: 0,
                 // GuildMemberManager: 0,
             })

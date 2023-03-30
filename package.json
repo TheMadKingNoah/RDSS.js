@@ -6,9 +6,8 @@
     "dependencies": {
         "@discordjs/rest": "^0.5.0",
         "@types/debug": "^4.1.7",
-        "debug": "^4.3.4",
         "discord-buttons": "^4.0.0-deprecated",
-        "discord.js": "^13.8.1",
+        "discord.js": "^14.8.0",
         "dotenv": "^16.0.1"
     },
     "devDependencies": {

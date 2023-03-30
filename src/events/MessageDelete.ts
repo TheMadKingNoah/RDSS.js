@@ -1,4 +1,4 @@
-import { Activity, Channel, GuildMember, Message, Options, TextChannel, ThreadChannel, User } from "discord.js";
+import { Channel, Message, TextChannel, ThreadChannel, AuditLogEvent } from "discord.js";
 import EventListener from "../modules/events/Event";
 import Bot from "../Bot";
 import RoleUtils from "../utils/RoleUtils";
@@ -18,7 +18,7 @@ module.exports = class MessageDeleteEventListener extends EventListener {
         if(message.guild){
             const fetchedLogs = await message.guild.fetchAuditLogs({
                 limit: 1,
-                type: "MESSAGE_DELETE",
+                type: AuditLogEvent.MessageDelete,
             });
 
             // Since there's only 1 audit log entry in this collection, grab the first one

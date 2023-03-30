@@ -7,8 +7,14 @@ import {
     GuildMember,
     Message,
     User,
-    MessageButton,
-    MessageActionRow, MessageEmbed, MessageSelectMenu, MessageAttachment
+    ButtonBuilder,
+    ActionRowBuilder,
+    EmbedBuilder,
+    SelectMenuBuilder,
+    ButtonStyle,
+    Attachment,
+    ButtonComponent,
+    ActionRow
 } from "discord.js";
 import RoleUtils from "../utils/RoleUtils";
 import BanRequest from "../utils/BanRequest";
@@ -42,15 +48,17 @@ module.exports = class MessageCreateEventListener extends EventListener {
                 else {
                     referencedMessage.embeds[0].fields.push({ name: `Note (By ${message.author.tag})`, value: note, inline: false });
 
-                    const removeNote = new MessageButton()
+                    const removeNote = new ButtonBuilder()
                         .setCustomId("removeWinnerRequestNote")
                         .setLabel("Remove Note")
-                        .setStyle("SECONDARY")
+                        .setStyle(ButtonStyle.Secondary)
 
-                    if (!referencedMessage.content || !referencedMessage.components[0])
-                        referencedMessage.components.push(new MessageActionRow().setComponents(removeNote));
-                    else
-                        referencedMessage.components[0].components.push(removeNote);
+                    if (!referencedMessage.content || !referencedMessage.components[0]) {
+                        const actionRow = new ActionRowBuilder().setComponents([removeNote]);
+                        referencedMessage.components.push(actionRow.data as ActionRow<ButtonComponent>);
+                    } else {
+                        referencedMessage.components[0].components.push(removeNote.data as ButtonComponent);
+                    }
                 }
 
                 referencedMessage.edit({
@@ -71,16 +79,16 @@ module.exports = class MessageCreateEventListener extends EventListener {
             if (mentions?.size === 0 || !mentions) {
                 if (message.author.bot) return;
 
-                const deleteMessage = new MessageButton()
+                const deleteMessage = new ButtonBuilder()
                     .setCustomId("deleteMessage")
                     .setLabel("Delete Reply")
-                    .setStyle("DANGER");
+                    .setStyle(ButtonStyle.Danger);
 
-                const actionRow = new MessageActionRow().setComponents(deleteMessage);
+                const actionRow = new ActionRowBuilder().setComponents(deleteMessage);
 
                 message.reply({
                     content: "There are no mentions in your message!",
-                    components: [actionRow]
+                    components: [actionRow as ActionRowBuilder<ButtonBuilder>]
                 }).catch(console.error);
                 return;
             }
@@ -104,16 +112,16 @@ module.exports = class MessageCreateEventListener extends EventListener {
                 winnerRoleList.push(winnerRole);
             });
 
-            const roleOptions = new MessageSelectMenu()
+            const roleOptions = new SelectMenuBuilder()
                 .setCustomId("selectWinnerRole")
                 .setPlaceholder("Select a role to award...")
                 .setOptions(winnerRoleList);
 
-            const actionRow = new MessageActionRow().setComponents(roleOptions);
+            const actionRow = new ActionRowBuilder().setComponents(roleOptions);
 
-            const embed = new MessageEmbed()
+            const embed = new EmbedBuilder()
                 .setAuthor({
-                    name: `Requested by ${message.author.tag} (${message.member?.nickname})`,
+                    name: `Requested by ${message.author.tag} (${message.member?.displayName})`,
                     iconURL: message.author.displayAvatarURL()
                 })
                 .setFields([{
@@ -126,7 +134,7 @@ module.exports = class MessageCreateEventListener extends EventListener {
             if (message.author.id === this.client.user?.id) {
                 const [roleId, messageUrl] = message.content.split(" | ");
 
-                embed.fields.push({
+                embed.data.fields?.push({
                     name: `Note (By ${this.client.user?.tag})`,
                     value: `Members that were unable to receive the <@&${roleId}> role in [another request](${messageUrl}).`,
                     inline: false
@@ -135,7 +143,7 @@ module.exports = class MessageCreateEventListener extends EventListener {
 
             winnerQueue.send({
                 embeds: [embed],
-                components: [actionRow]
+                components: [actionRow as ActionRowBuilder<ButtonBuilder>]
             }).catch(console.error);
 
             message.delete().catch(console.error);
@@ -146,15 +154,16 @@ module.exports = class MessageCreateEventListener extends EventListener {
             let logChannel = message.guild?.channels.cache.get(Properties.channels.mediaLogs) as TextChannel;
 
             if(message.attachments.size > 0){
-                let messageAttachments:MessageAttachment[] = [];
+                const attachments: Attachment[] = [];
+
                 message.attachments.forEach(media => {
                     console.log(media)
-                    messageAttachments.push(new MessageAttachment(media.attachment));
+                    attachments.push(media);
                 });
 
                 logChannel.send({content:`<t:${Math.trunc(message.createdTimestamp/1000)}:F> :park: ${message.author.username}#${message.author.discriminator} (\`${message.author.id}\`)`,  
-                files:messageAttachments,
-                allowedMentions:undefined
+                files: attachments,
+                allowedMentions: undefined
             }).then(mediaLogMessage => {
                     let evidenceLinks = "";
                     mediaLogMessage.attachments.forEach( element => {
@@ -177,7 +186,7 @@ module.exports = class MessageCreateEventListener extends EventListener {
                 .catch(() => {});
         }
 
-        if(message.activity !== null && message.activity.partyId.includes("spotify")){
+        if(message.activity?.partyId?.includes("spotify")){
             if (message.guild === null) return;
             message.guild.members.fetch(message.author.id).then(member => {
                 if (!RoleUtils.hasAnyRole(member, [RoleUtils.roles.trialModerator, RoleUtils.roles.moderator, RoleUtils.roles.seniorModerator, RoleUtils.roles.manager])) {

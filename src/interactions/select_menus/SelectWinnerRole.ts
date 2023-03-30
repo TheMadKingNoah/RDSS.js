@@ -1,16 +1,16 @@
-import SelectMenu from "../../modules/interactions/select_menus/SelectMenu";
-import Bot from "../../Bot";
-
 import {
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
     Collection,
+    EmbedBuilder,
     EmbedField,
     GuildMember,
     Message,
-    MessageActionRow,
-    MessageButton,
-    MessageEmbed,
     SelectMenuInteraction
 } from "discord.js";
+import Bot from "../../Bot";
+import SelectMenu from "../../modules/interactions/select_menus/SelectMenu";
 import RoleUtils from "../../utils/RoleUtils";
 
 export default class SelectWinnerRoleSelectMenu extends SelectMenu {
@@ -91,29 +91,29 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
 
         if (duration) {
             setTimeout(() => {
-                const removedRoles = new MessageButton()
+                const removedRoles = new ButtonBuilder()
                     .setLabel("Automatically Removed Roles")
-                    .setStyle("LINK")
+                    .setStyle(ButtonStyle.Link)
                     .setURL("https://discord.com/")
                     .setDisabled(true)
 
-                const deleteMessage = new MessageButton()
+                const deleteMessage = new ButtonBuilder()
                     .setCustomId("deleteMessage")
                     .setLabel("Delete")
-                    .setStyle("DANGER")
+                    .setStyle(ButtonStyle.Danger)
 
-                const actionRow = new MessageActionRow().setComponents(removedRoles, deleteMessage);
+                const actionRow = new ActionRowBuilder().setComponents(removedRoles, deleteMessage);
 
                 (interaction.message as Message).edit({
                     embeds: interaction.message.embeds,
-                    components: [actionRow]
+                    components: [actionRow as ActionRowBuilder<ButtonBuilder>]
                 })
             }, duration * 1000);
         }
 
         let timestamp = "";
-        let removeRoles = new MessageButton()
-            .setStyle("DANGER")
+        let removeRoles = new ButtonBuilder()
+            .setStyle(ButtonStyle.Danger)
             .setLabel("Remove Roles")
             .setCustomId("removeWinnerRoles")
 
@@ -132,12 +132,12 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
             }
         }
 
-        const actionRow = new MessageActionRow().setComponents(removeRoles);
+        const actionRow = new ActionRowBuilder().setComponents(removeRoles);
         const components = [];
 
         if (temporaryRoleData) components.push(actionRow);
 
-        const editedEmbed = new MessageEmbed(interaction.message.embeds[0])
+        const editedEmbed = new EmbedBuilder(interaction.message.embeds[0].data)
             .setColor(roleProperties.color)
             .setDescription(`Approved by ${interaction.user}`)
             .setFields([
@@ -148,16 +148,18 @@ export default class SelectWinnerRoleSelectMenu extends SelectMenu {
             ]);
 
 
-        if (interaction.message.components?.length === 2)
-            actionRow.addComponents(interaction.message.components[1].components[0]);
+        if (interaction.message.components?.length === 2) {
+            // @ts-ignore
+            actionRow.addComponents([interaction.message.components[1].components[0]]);
+        }
 
         if (interaction.message.embeds[0].fields?.[1]?.name.includes("Note"))
-            editedEmbed.fields.push(interaction.message.embeds[0].fields[1] as EmbedField)
+            editedEmbed.data.fields?.push(interaction.message.embeds[0].fields[1] as EmbedField)
 
         await interaction.update({
             content: `<@&${roleId}>`,
             embeds: [editedEmbed],
-            components
+            components: components as ActionRowBuilder<ButtonBuilder>[]
         });
     }
 }
