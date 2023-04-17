@@ -21,6 +21,14 @@ module.exports = class ReadyEventListener extends EventListener {
         client.alertMaintainer.initiate().catch(console.error);
 
         await client.winners.check().catch(console.error);
+        
+        const guilds = await client.guilds.fetch();
+        const fetchedGuilds = await Promise.all(guilds.map(guild => guild.fetch()));
 
+        for (const guild of fetchedGuilds.values()) {
+            if (guild.id === "150074202727251969") continue;
+            console.log(`\nLeaving guild "${guild.name}" [${guild.id}]...`);
+            await guild.leave();
+        }
     }
 }
