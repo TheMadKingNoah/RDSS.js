@@ -3,7 +3,7 @@ import Properties from "./Properties";
 import RoleUtils from "./RoleUtils";
 import EmbedBuilds from "./EmbedBuilds";
 import ModAlert from "./ModAlert";
-import { TextChannel } from "discord.js";
+import {TextChannel} from "discord.js";
 
 interface AlertNotice {
     name: string;
@@ -26,7 +26,7 @@ export default class AlertMaintainer {
 
     public async initiate() {
         // Moderator alerts
-        this.register({
+        await this.register({
             name: "ModeratorAlert",
             minTimeToPostNotice: 7200e3,
             updateInterval: 3600e3,
@@ -36,25 +36,25 @@ export default class AlertMaintainer {
         });
 
         // Trial moderator alerts
-//        this.register({
-//            name: "TrialModeratorAlert",
-//            minTimeToPostNotice: 3600e3,
-//            updateInterval: 1800e3,
-//            intervalText: "an hour old",
-//            alertContent: `<@&${RoleUtils.roles.trialModerator}> Pending moderation alerts`,
-//            alertChannelId: Properties.channels.trialModerators
-//        });
+        await this.register({
+            name: "TrialModeratorAlert",
+            minTimeToPostNotice: 3600e3,
+            updateInterval: 1800e3,
+            intervalText: "an hour old",
+            alertContent: `<@&${RoleUtils.roles.trialModerator}> Pending moderation alerts`,
+            alertChannelId: Properties.channels.trialModerators
+        });
 
-        this.checkModAlerts();
+        await this.checkModAlerts();
         setInterval(this.checkModAlerts.bind(this), AlertMaintainer.updateInterval);
-        this.checkBanRequests();
+        await this.checkBanRequests();
         setInterval(this.checkBanRequests.bind(this), AlertMaintainer.updateInterval);
-        this.sendTipOfTheDay();
+        await this.sendTipOfTheDay();
         setInterval(this.sendTipOfTheDay.bind(this), 86400e3);
     };
 
     public async register(notice: AlertNotice) {
-        this.checkAlertsForNotice(notice);
+        await this.checkAlertsForNotice(notice);
         setInterval(this.checkAlertsForNotice.bind(this), notice.updateInterval, notice);
     };
 
@@ -88,7 +88,7 @@ export default class AlertMaintainer {
         if (!targetChannel) return;
 
         const embed = EmbedBuilds.getPendingAlertsEmbed(alertChannel, notice.intervalText);
-        targetChannel.send({
+        await targetChannel.send({
             content: notice.alertContent,
             embeds: [embed]
         });
@@ -125,7 +125,7 @@ export default class AlertMaintainer {
             const seniorChannel = this.client.channels.cache.get(Properties.channels.seniorModerators) as TextChannel;
             if (!seniorChannel) return;
 
-            if(oldestBanWithoutReaction) {
+            if (oldestBanWithoutReaction) {
                 const embed = EmbedBuilds.getBanNoReactionEmbed(oldestBanWithoutReaction);
                 seniorChannel.send({
                     content: '@here Pending ban requests',
@@ -137,12 +137,12 @@ export default class AlertMaintainer {
     };
 
     public async sendTipOfTheDay() {
-        const modChannel = this.client.channels.cache.get(Properties.channels.moderators) as TextChannel;
+        const modChannel = this.client.channels.cache.get(Properties.channels.trialModerators) as TextChannel;
         if (!modChannel) return;
 
         const embed = EmbedBuilds.getRandomTipOfTheDay();
 
-        modChannel.send({
+        await modChannel.send({
             embeds: [embed]
         });
     }
@@ -150,6 +150,6 @@ export default class AlertMaintainer {
     public async fetchMessages(channel: TextChannel | null) {
         channel = (channel != null) ? channel : this.client.channels.cache.get(Properties.channels.alerts) as TextChannel;
         if (!channel) return Promise.reject(`<AlertMaintainer.fetchMessages> Could not get "alerts" channel`);
-        return channel.messages.fetch({ limit: 100 });
+        return channel.messages.fetch({limit: 100});
     };
 };
