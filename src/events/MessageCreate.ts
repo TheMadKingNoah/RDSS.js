@@ -3,21 +3,21 @@ import EventListener from "../modules/events/Event";
 import Bot from "../Bot";
 
 import {
-    TextChannel,
+    ActionRow,
+    ActionRowBuilder,
+    Attachment,
+    ButtonBuilder,
+    ButtonComponent,
+    ButtonStyle,
+    EmbedBuilder,
     GuildMember,
     Message,
-    User,
-    ButtonBuilder,
-    ActionRowBuilder,
-    EmbedBuilder,
     SelectMenuBuilder,
-    ButtonStyle,
-    Attachment,
-    ButtonComponent,
-    ActionRow
+    TextChannel,
+    User
 } from "discord.js";
 import RoleUtils from "../utils/RoleUtils";
-import BanRequest from "../utils/BanRequest";
+import Requests, {RequestType} from "../utils/Requests";
 
 module.exports = class MessageCreateEventListener extends EventListener {
     constructor(client: Bot) {
@@ -195,6 +195,7 @@ module.exports = class MessageCreateEventListener extends EventListener {
             })
         }
 
-        if (message.channel.id === Properties.channels.banRequestsQueue) await BanRequest.validate(message);
+        if (message.channel.id === Properties.channels.banRequestsQueue) await Requests.validateRequest(message, RequestType.Ban);
+        if (message.channel.id === Properties.channels.muteRequestQueue) await Requests.validateRequest(message, RequestType.Mute);
     }
 }

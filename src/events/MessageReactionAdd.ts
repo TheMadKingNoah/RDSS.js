@@ -2,18 +2,11 @@ import RoleUtils from "../utils/RoleUtils";
 import ModAlert from "../utils/ModAlert";
 import Properties from "../utils/Properties";
 import QuickMute from "../utils/QuickMute";
-import BanRequest from "../utils/BanRequest";
-import MuteRequest from "../utils/MuteRequest";
+import Requests, {RequestType} from "../utils/Requests";
 import EventListener from "../modules/events/Event";
 import Bot from "../Bot";
 
-import {
-    MessageReaction,
-    TextChannel,
-    GuildMember,
-    Message,
-    User
-} from "discord.js";
+import {GuildMember, Message, MessageReaction, TextChannel, User} from "discord.js";
 
 module.exports = class MessageReactionAddEventListener extends EventListener {
     constructor(client: Bot) {
@@ -88,50 +81,43 @@ module.exports = class MessageReactionAddEventListener extends EventListener {
         }
 
 
-        // Approve mute/ban request
-        if (reaction.emoji.id == Properties.emojis.approve) {
-            if (message.channel.id === Properties.channels.banRequestsQueue) {
-                if (!RoleUtils.hasAnyRole(reactee, [
-                    RoleUtils.roles.seniorModerator,
-                    RoleUtils.roles.manager
-                ])) return;
-
-                const commandsChannel = await message.guild?.channels.fetch(Properties.channels.commands) as TextChannel;
-                if (!commandsChannel) return;
-
-                BanRequest.approveBanRequest(message, commandsChannel, reactee) 
-            } 
-
-            if (message.channel.id === Properties.channels.muteRequestQueue){
-                if (!RoleUtils.hasAnyRole(reactee, [
-                    RoleUtils.roles.moderator,
-                    RoleUtils.roles.seniorModerator,
-                    RoleUtils.roles.manager
-                ])) return;
-
-                const commandsChannel = await message.guild?.channels.fetch(Properties.channels.commands) as TextChannel;
-                if (!commandsChannel) return;
-
-                MuteRequest.approveMuteRequest(message, commandsChannel, reactee)
-            } 
-
-            return;
-        }
-
-
-        // Reject ban request
-        if (reaction.emoji.id == Properties.emojis.reject) {
-            if (message.channel.id != Properties.channels.banRequestsQueue) return;
+        // Approve/Reject mute/ban request
+        if (reaction.emoji.id === Properties.emojis.approve || reaction.emoji.id === Properties.emojis.reject) {
+            if (
+                message.channel.id !== Properties.channels.banRequestsQueue &&
+                message.channel.id !== Properties.channels.muteRequestQueue
+            ) return;
 
             if (!RoleUtils.hasAnyRole(reactee, [
+                RoleUtils.roles.moderator,
                 RoleUtils.roles.seniorModerator,
                 RoleUtils.roles.manager
             ])) return;
 
+            if (
+                message.channel.id === Properties.channels.banRequestsQueue &&
+                !RoleUtils.hasRole(reactee, RoleUtils.roles.seniorModerator)
+            ) return;
+
             const commandsChannel = await message.guild?.channels.fetch(Properties.channels.commands) as TextChannel;
             if (!commandsChannel) return;
 
-            BanRequest.rejectBanRequest(message, commandsChannel, reactee)
+            if (message.channel.id === Properties.channels.banRequestsQueue) {
+                if (reaction.emoji.id === Properties.emojis.reject) {
+                    await Requests.rejectRequest(message, commandsChannel, reactee, RequestType.Ban);
+                    return;
+                }
+
+                await Requests.approveRequest(message, commandsChannel, reactee, RequestType.Ban);
+                return;
+            }
+
+            if (reaction.emoji.id === Properties.emojis.reject) {
+                await Requests.rejectRequest(message, commandsChannel, reactee, RequestType.Mute);
+                return;
+            }
+
+            await Requests.approveRequest(message, commandsChannel, reactee, RequestType.Mute);
         }
     }
 }
