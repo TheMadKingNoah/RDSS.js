@@ -40,7 +40,7 @@ export default class QuickMute30mCommand extends ContextMenu {
 
         if (!commandsChannel) return;
 
-        QuickMute.quickMuteUser(
+        await QuickMute.quickMuteUser(
             interaction.user, 
             interaction.targetMessage.author.id, 
             "30m", interaction.targetMessage.content, 
@@ -51,7 +51,7 @@ export default class QuickMute30mCommand extends ContextMenu {
         await QuickMute.purgeMessagesFromUserInChannel(
             interaction.channel as TextChannel, 
             interaction.targetMessage.member as GuildMember, 
-            interaction.user as User
+            interaction.member as GuildMember
         );
 
         const modAlertChannel = await interaction.guild?.channels.fetch(Properties.channels.alerts) as TextChannel;

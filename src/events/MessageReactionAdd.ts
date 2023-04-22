@@ -58,7 +58,7 @@ module.exports = class MessageReactionAddEventListener extends EventListener {
             if (reaction.emoji.id == Properties.emojis.quickMute60) duration = "60m";
 
             await QuickMute.quickMuteUser(user, message.author.id, duration, message.content, commandsChannel, message);
-            await QuickMute.purgeMessagesFromUserInChannel((channel as TextChannel), (member as GuildMember), user);
+            await QuickMute.purgeMessagesFromUserInChannel((channel as TextChannel), (member as GuildMember), reactee);
 
             const modAlertChannel = await message.guild?.channels.fetch(Properties.channels.alerts) as TextChannel;
             if (!modAlertChannel) return;
@@ -77,7 +77,7 @@ module.exports = class MessageReactionAddEventListener extends EventListener {
             ])) return;
 
             if (!message.member) return;
-            await QuickMute.purgeMessagesFromUserInChannel((message.channel as TextChannel), message.member, user)
+            await QuickMute.purgeMessagesFromUserInChannel((message.channel as TextChannel), message.member, reactee);
         }
 
 

@@ -5,7 +5,8 @@ export default class Properties {
         reject: "764268551473070080",
         quickMute30: "760204798984454175",
         quickMute60: "452813334429827072",
-        sweep: "783030737552670801"
+        sweep: "783030737552670801",
+        checkmark: "765068298004987904"
     }
 
     public static channels = {
@@ -22,9 +23,12 @@ export default class Properties {
         winnerQueue: "963136283633389668",
         trialModerators: "678671353473269799",
         muteRequestQueue: "912280762760454174",
-        trialLogs: "1034134657261908038",
         creations: "150077608602632192",
         avatars: "779975211063443456",
+    }
+
+    public static threads = {
+        trialLogs: "1098806257390977074"
     }
 
     public static categories = {
