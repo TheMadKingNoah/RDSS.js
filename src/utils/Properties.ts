@@ -25,7 +25,8 @@ export default class Properties {
         muteRequestQueue: "912280762760454174",
         creations: "150077608602632192",
         avatars: "779975211063443456",
-        info: "701702989785858118"
+        info: "701702989785858118",
+        verifyLogs: "546528119281156106"
     }
 
     public static threads = {
