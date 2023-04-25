@@ -2,17 +2,13 @@ import RoleUtils from "../utils/RoleUtils";
 import ModAlert from "./ModAlert";
 import Properties from "./Properties";
 
-import {
-    ButtonInteraction,
-    GuildMember,
-    TextChannel,
-    Message,
-    User, AttachmentBuilder
-} from "discord.js";
+import {AttachmentBuilder, ButtonInteraction, GuildMember, Message, TextChannel, ThreadChannel, User} from "discord.js";
 
 export default class QuickMute {
     public static async quickMuteUser(moderator: User, authorId: string, duration: string, messageEvidence: string, commandsChannel: TextChannel, message: Message | null) {
-        const member = await commandsChannel.guild.members.fetch(authorId).catch(() => {console.log("Member has left the server")});
+        const member = await commandsChannel.guild.members.fetch(authorId).catch(() => {
+            console.log("Member has left the server")
+        });
 
         if (!member) {
             if (message) message.delete().catch(console.error);
@@ -74,37 +70,38 @@ export default class QuickMute {
         }).catch(console.error)
     }
 
-    public static async purgeMessagesFromUserInChannel(channel: TextChannel, member: GuildMember, moderator: User) {
+    public static async purgeMessagesFromUserInChannel(channel: TextChannel, member: GuildMember, moderator: GuildMember) {
         const commandsChannel = await channel.guild.channels.fetch(Properties.channels.commands) as TextChannel;
 
-        if (RoleUtils.hasAnyRole(member, [
-            RoleUtils.roles.bot,
-            RoleUtils.roles.moderator,
-            RoleUtils.roles.seniorModerator,
-            RoleUtils.roles.manager
-        ])) {
-            await commandsChannel.send(`${moderator} Oops! You can't Sweep another moderator. (Nice try though)`);
-            return;
-        }
+        try {
+            if (RoleUtils.hasAnyRole(member, [
+                RoleUtils.roles.bot,
+                RoleUtils.roles.trialModerator,
+                RoleUtils.roles.moderator,
+                RoleUtils.roles.seniorModerator,
+                RoleUtils.roles.manager
+            ])) {
+                await commandsChannel.send(`${moderator} Oops! You can't Sweep another moderator. (Nice try though)`);
+                return;
+            }
 
-        let messagesToBePurged: Message[] = [];
-        let evidence = `Messages by ${member.user.tag} (${member.id}) purged in #${channel.name} (${channel.id})\n\n`;
-        let messageCount = 0;
+            let messagesToBePurged: Message[] = [];
+            let evidence = `Messages by ${member.user.tag} (${member.id}) purged in #${channel.name} (${channel.id})\n\n`;
 
-        channel.messages.fetch({
-            limit: 100,
-        }).then(messages => {
+            const messages = await channel.messages.fetch({limit: 100})
+
             messages.forEach(message => {
                 if (message.author.id == member.id) {
                     messagesToBePurged.push(message);
-                    messageCount++;
                     evidence += `[${message.createdAt.toLocaleString("en-US")}] ${message.content}\n`;
                 }
-            })
-        }).then(async () => {
+            });
+
+            const messageCount = messagesToBePurged.length;
             if (messageCount == 0) return;
-            evidence = `${messageCount} ` + evidence;
-            channel.bulkDelete(messagesToBePurged).catch(console.error)
+
+            evidence = `${messageCount} ${evidence}`;
+            await channel.bulkDelete(messagesToBePurged);
 
             const currentTime = new Date().toISOString();
             const evidenceFile = new AttachmentBuilder(Buffer.from(evidence), {
@@ -113,18 +110,25 @@ export default class QuickMute {
 
             const messageLogs = await channel.guild.channels.fetch(Properties.channels.messageLogs) as TextChannel;
 
+            const log = await messageLogs.send({files: [evidenceFile]});
+            const attachment = log.attachments.first();
 
-            messageLogs.send({
-                files: [evidenceFile]
-            }).then(message => {
-                const attachment = message.attachments.first();
-                if (attachment?.url) {
-                    commandsChannel.send(`${moderator} - You swept messages by ${member} (${member.id})`
-                        + `\n> <:sweep:${Properties.emojis.sweep}> ${messageCount} messages deleted in ${channel}`
-                        + `\n\n**Message Evidence:** ${attachment.url}`)
-                }
-            }).catch(console.error);
-        }).catch(console.error);
+            if (attachment?.url) {
+                await commandsChannel.send(`${moderator} - You swept messages by ${member} (${member.id})`
+                    + `\n> <:sweep:${Properties.emojis.sweep}> ${messageCount} messages deleted in ${channel}`
+                    + `\n\n**Message Evidence:** ${attachment.url}`)
+            }
+
+            if (RoleUtils.hasRole(moderator, RoleUtils.roles.trialModerator)) {
+                const logThreadParent = await channel.guild.channels.fetch(Properties.channels.moderators) as TextChannel;
+                const logThread = await logThreadParent.threads.fetch(Properties.threads.trialLogs) as ThreadChannel;
+
+                await logThread.send(`<:sweep:${Properties.emojis.sweep}> **${moderator.user.tag}** (\`${moderator.id}\`) has swept \`${messageCount}\` messages by **${member.user.tag}** (\`${member.id}\`) in ${channel} (\`#${channel.name}\`)\n${log.url}`);
+            }
+        } catch (error) {
+            console.error(error);
+            await commandsChannel.send(`${moderator} An error has occurred while trying to purge the messages! Please contact a member of infrastructure if this keeps happening`);
+        }
     }
 
     public static async quickMuteFromButton(interaction: ButtonInteraction, duration: string) {
@@ -160,4 +164,3 @@ export default class QuickMute {
         }).catch(console.error);
     }
 }
-
