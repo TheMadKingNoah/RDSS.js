@@ -3,7 +3,7 @@ import { GuildMember } from "discord.js";
 export default class RoleUtils {
     public static roles = {
         bot: "150075195971862528",
-        trialModerator: "889313376478593045",
+        trialModerator: "218513797659230209",
         moderator: "150093661231775744",
         seniorModerator: "234520161720205312",
         manager: "150074509393788929",
