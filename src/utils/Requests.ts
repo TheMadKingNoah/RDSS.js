@@ -52,7 +52,7 @@ export default class Requests {
     public static async validateRequest(message: Message, reqType: RequestType) {
         if (
             message.member &&
-            !RoleUtils.hasRole(message.member, RoleUtils.roles.moderator)
+            !RoleUtils.hasAnyRole(message.member, [RoleUtils.roles.moderator, RoleUtils.roles.trialModerator])
         ) return;
 
         const re = new RegExp(`^;${reqType}\\s+(?<userId>\\d{17,19})\\s+\\S+`, "gmi");
