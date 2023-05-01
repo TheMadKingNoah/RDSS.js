@@ -39,7 +39,8 @@ export default class Requests {
             if (reqArgs[2].match(/^\d{1,2}[mhd]$/gi) && reqType === RequestType.Mute) sliceSize = 3;
 
             let targetUserId = reqArgs[1];
-            let rejectionNotice = `${message.author} <:reject:${Properties.emojis.reject}> Your ${reqType} request against <@${targetUserId}> (${targetUserId}) has been rejected by ${moderator}${reqType === RequestType.Ban ? " and the user has been unmuted" : ""}.\n\nYour ${reqType} request evidence: ${reqArgs.slice(sliceSize)}`;
+            const evidence = reqArgs.slice(sliceSize).join(" ");
+            let rejectionNotice = `${message.author} <:reject:${Properties.emojis.reject}> Your ${reqType} request against <@${targetUserId}> (${targetUserId}) has been rejected by ${moderator}${reqType === RequestType.Ban ? " and the user has been unmuted" : ""}.\n\nYour ${reqType} request evidence: ${evidence}`;
 
             if (reqType === RequestType.Ban) await commandChannel.send(`;unmute ${targetUserId}`);
             await commandChannel.send(rejectionNotice);
@@ -51,7 +52,7 @@ export default class Requests {
     public static async validateRequest(message: Message, reqType: RequestType) {
         if (
             message.member &&
-            !RoleUtils.hasRole(message.member, RoleUtils.roles.moderator)
+            !RoleUtils.hasAnyRole(message.member, [RoleUtils.roles.moderator, RoleUtils.roles.trialModerator])
         ) return;
 
         const re = new RegExp(`^;${reqType}\\s+(?<userId>\\d{17,19})\\s+\\S+`, "gmi");
