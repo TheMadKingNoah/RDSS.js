@@ -177,13 +177,17 @@ module.exports = class MessageCreateEventListener extends EventListener {
             }
         }
 
-        if(message.channel.id === Properties.channels.creations || message.channel.id === Properties.channels.avatars) {
+        if(message.channel.id in Properties.channelAutoReactions) {
             if (message.author.bot) return;
+            const reactions = Properties.channelAutoReactions[message.channel.id];
+            if (reactions.length === 0) return;
 
-            message.react("275832913025564682")
-                .then(() => message.react("♥️"))
-                .then(() => message.react("😎"))
-                .catch(() => {});
+            let promise = message.react(reactions[0]);
+            for (let i = 1; i < reactions.length; i++) {
+                promise = promise.then(() => message.react(reactions[i]));
+            }
+
+            promise.catch(() => {});
         }
 
         if(message.activity?.partyId?.includes("spotify")){

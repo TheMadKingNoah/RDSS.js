@@ -23,10 +23,14 @@ export default class Properties {
         winnerQueue: "963136283633389668",
         trialModerators: "678671353473269799",
         muteRequestQueue: "912280762760454174",
-        creations: "150077608602632192",
-        avatars: "779975211063443456",
         info: "701702989785858118",
         verifyLogs: "546528119281156106"
+    }
+    
+    public static channelAutoReactions: { [channelId: string]: Array<string> } = {
+        "150077608602632192": ["275832913025564682", "♥️", "😎"],   // creations
+        "779975211063443456": ["275832913025564682", "♥️", "😎"],   // avatars
+        "1105206250381262848": ["🌴", "😎", "⭐"]                 // summer-banner-contest
     }
 
     public static threads = {
