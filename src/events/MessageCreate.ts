@@ -38,6 +38,10 @@ module.exports = class MessageCreateEventListener extends EventListener {
                 const note = message.content;
                 const hasNote = referencedMessage.embeds[0].fields[1]?.name.includes("Note");
 
+                let actionRow = referencedMessage.components[0]
+                    ? ActionRowBuilder.from(referencedMessage.components[0])
+                    : new ActionRowBuilder();
+
                 if (hasNote) {
                     referencedMessage.embeds[0].fields[1] = {
                         name: `Note (By ${message.author.tag})`,
@@ -53,17 +57,12 @@ module.exports = class MessageCreateEventListener extends EventListener {
                         .setLabel("Remove Note")
                         .setStyle(ButtonStyle.Secondary)
 
-                    if (!referencedMessage.content || !referencedMessage.components[0]) {
-                        const actionRow = new ActionRowBuilder().setComponents([removeNote]);
-                        referencedMessage.components.push(actionRow.data as ActionRow<ButtonComponent>);
-                    } else {
-                        referencedMessage.components[0].components.push(removeNote.data as ButtonComponent);
-                    }
+                    actionRow = actionRow.addComponents(removeNote);
                 }
 
                 referencedMessage.edit({
                     embeds: referencedMessage.embeds,
-                    components: referencedMessage.components
+                    components: [actionRow as ActionRowBuilder<ButtonBuilder>]
                 })
                     .then(() => message.delete().catch(e => e))
                     .catch(console.error);
@@ -74,9 +73,9 @@ module.exports = class MessageCreateEventListener extends EventListener {
             const winnerQueue = await message.guild?.channels.fetch(Properties.channels.winnerQueue) as TextChannel;
             if (!winnerQueue) return;
 
-            const mentions = await message.guild?.members.fetch({ user: message.mentions.users?.map((user: User) => user.id) })
+            const members = await message.guild?.members.fetch({ user: message.content.match(/\b\d{17,19}\b/g) || [] });
 
-            if (mentions?.size === 0 || !mentions) {
+            if (members?.size === 0 || !members) {
                 if (message.author.bot) return;
 
                 const deleteMessage = new ButtonBuilder()
@@ -87,13 +86,13 @@ module.exports = class MessageCreateEventListener extends EventListener {
                 const actionRow = new ActionRowBuilder().setComponents(deleteMessage);
 
                 message.reply({
-                    content: "There are no mentions in your message!",
+                    content: "There are no members in your message!",
                     components: [actionRow as ActionRowBuilder<ButtonBuilder>]
                 }).catch(console.error);
                 return;
             }
 
-            const memberList = mentions?.map((member: GuildMember) => `${member} (\`${member.id}\`)`).join("\n");
+            const memberList = members?.map((member: GuildMember) => `${member} (\`${member.id}\`)`).join("\n");
             let winnerRoles = await message.guild?.roles.fetch();
 
             if (!winnerRoles) return;
