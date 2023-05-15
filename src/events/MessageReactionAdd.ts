@@ -80,7 +80,6 @@ module.exports = class MessageReactionAddEventListener extends EventListener {
             await QuickMute.purgeMessagesFromUserInChannel((message.channel as TextChannel), message.member, reactee);
         }
 
-console.log("uwu")
         // Approve/Reject mute/ban request
         if (reaction.emoji.id === Properties.emojis.approve || reaction.emoji.id === Properties.emojis.reject) {
 console.log("uwu")
@@ -94,7 +93,7 @@ console.log("uwu")
                 RoleUtils.roles.seniorModerator,
                 RoleUtils.roles.manager
             ])) return;
-
+console.log("owo")
             if (
                 message.channel.id === Properties.channels.banRequestsQueue &&
                 !RoleUtils.hasRole(reactee, RoleUtils.roles.seniorModerator)
