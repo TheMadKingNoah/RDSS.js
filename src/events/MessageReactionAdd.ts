@@ -85,11 +85,10 @@ console.log("uwu")
         if (reaction.emoji.id === Properties.emojis.approve || reaction.emoji.id === Properties.emojis.reject) {
 console.log("uwu")
             if (
-console.log("uwu")
                 message.channel.id !== Properties.channels.banRequestsQueue &&
                 message.channel.id !== Properties.channels.muteRequestQueue
             ) return;
-
+console.log("uwu")
             if (!RoleUtils.hasAnyRole(reactee, [
                 RoleUtils.roles.moderator,
                 RoleUtils.roles.seniorModerator,
