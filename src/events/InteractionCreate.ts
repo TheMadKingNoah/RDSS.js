@@ -14,7 +14,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
     async execute(interaction: Interaction) {
         if (interaction.isCommand()) this.client.commands.handle(interaction).catch(console.error);
 
-        if (interaction.isSelectMenu()) this.client.select_menus.handle(interaction).catch(console.error);
+        if (interaction.isStringSelectMenu()) this.client.select_menus.handle(interaction).catch(console.error);
 
         if (interaction.isContextMenuCommand()) this.client.contexts.handle(interaction).catch(console.error);
 
