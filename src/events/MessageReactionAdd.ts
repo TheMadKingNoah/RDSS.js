@@ -80,23 +80,26 @@ module.exports = class MessageReactionAddEventListener extends EventListener {
             await QuickMute.purgeMessagesFromUserInChannel((message.channel as TextChannel), message.member, reactee);
         }
 
-        // Approve/Reject mute/ban request
+        // Approve/Reject mute/ban request :3
         if (reaction.emoji.id === Properties.emojis.approve || reaction.emoji.id === Properties.emojis.reject) {
-console.log("uwu")
+
             if (
                 message.channel.id !== Properties.channels.banRequestsQueue &&
                 message.channel.id !== Properties.channels.muteRequestQueue
             ) return;
-console.log("uwu")
+
             if (!RoleUtils.hasAnyRole(reactee, [
                 RoleUtils.roles.moderator,
                 RoleUtils.roles.seniorModerator,
                 RoleUtils.roles.manager
             ])) return;
-console.log("owo")
+
             if (
                 message.channel.id === Properties.channels.banRequestsQueue &&
-                !RoleUtils.hasRole(reactee, RoleUtils.roles.seniorModerator)
+                !RoleUtils.hasAnyRole(reactee, [
+                    RoleUtils.roles.seniorModerator,
+                    RoleUtils.roles.manager
+                ])
             ) return;
 
             const commandsChannel = await message.guild?.channels.fetch(Properties.channels.commands) as TextChannel;
