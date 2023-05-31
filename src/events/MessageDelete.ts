@@ -44,11 +44,11 @@ module.exports = class MessageDeleteEventListener extends EventListener {
             }
 
             // Trial phase
-            if (RoleUtils.hasRole(moderator, RoleUtils.roles.trialModerator)) {
-                const parentLogChannel = await message.guild?.channels.fetch(Properties.channels.moderators) as TextChannel;
-                const logChannel = await parentLogChannel.threads.fetch(Properties.threads.trialLogs) as ThreadChannel;
-                logChannel.send(`:wastebasket: **${moderator.user.tag}** (\`${moderator.id}\`) has deleted a message by **${message.author.tag}** (\`${message.author.id}\`):\n\`\`\`${message.content}\`\`\``);
-            }
+//             if (RoleUtils.hasRole(moderator, RoleUtils.roles.trialModerator)) {
+//                 const parentLogChannel = await message.guild?.channels.fetch(Properties.channels.moderators) as TextChannel;
+//                 const logChannel = await parentLogChannel.threads.fetch(Properties.threads.trialLogs) as ThreadChannel;
+//                 logChannel.send(`:wastebasket: **${moderator.user.tag}** (\`${moderator.id}\`) has deleted a message by **${message.author.tag}** (\`${message.author.id}\`):\n\`\`\`${message.content}\`\`\``);
+//             }
         }
 
         if (message.content.length === 0 && message.stickers.size > 0) {
