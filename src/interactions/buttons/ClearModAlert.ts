@@ -26,11 +26,11 @@ export default class ClearModAlertButton extends Button {
 
         const logContent = `<:checkmark:${Properties.emojis.checkmark}> **${interaction.user.tag}** (\`${interaction.user.id}\`) has resolved a mod-alert:\n\`\`\`${modAlertMessage.content}\`\`\``;
 
-        if (RoleUtils.hasRole(interaction.member as GuildMember, RoleUtils.roles.trialModerator)) {
-            const parentLogChannel = await interaction.guild?.channels.fetch(Properties.channels.moderators) as TextChannel;
-            const logChannel = await parentLogChannel.threads.fetch(Properties.threads.trialLogs) as ThreadChannel;
-            await logChannel.send(logContent);
-        }
+//         if (RoleUtils.hasRole(interaction.member as GuildMember, RoleUtils.roles.trialModerator)) {
+//             const parentLogChannel = await interaction.guild?.channels.fetch(Properties.channels.moderators) as TextChannel;
+//             const logChannel = await parentLogChannel.threads.fetch(Properties.threads.trialLogs) as ThreadChannel;
+//             await logChannel.send(logContent);
+//         }
 
         const commandLogs = await interaction.client.channels.fetch(Properties.channels.commandLogs) as TextChannel;
         await commandLogs.send(logContent);
