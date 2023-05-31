@@ -119,12 +119,12 @@ export default class QuickMute {
                     + `\n\n**Message Evidence:** ${attachment.url}`)
             }
 
-            if (RoleUtils.hasRole(moderator, RoleUtils.roles.trialModerator)) {
-                const logThreadParent = await channel.guild.channels.fetch(Properties.channels.moderators) as TextChannel;
-                const logThread = await logThreadParent.threads.fetch(Properties.threads.trialLogs) as ThreadChannel;
+//             if (RoleUtils.hasRole(moderator, RoleUtils.roles.trialModerator)) {
+//                 const logThreadParent = await channel.guild.channels.fetch(Properties.channels.moderators) as TextChannel;
+//                 const logThread = await logThreadParent.threads.fetch(Properties.threads.trialLogs) as ThreadChannel;
 
-                await logThread.send(`<:sweep:${Properties.emojis.sweep}> **${moderator.user.tag}** (\`${moderator.id}\`) has swept \`${messageCount}\` messages by **${member.user.tag}** (\`${member.id}\`) in ${channel} (\`#${channel.name}\`)\n${log.url}`);
-            }
+//                 await logThread.send(`<:sweep:${Properties.emojis.sweep}> **${moderator.user.tag}** (\`${moderator.id}\`) has swept \`${messageCount}\` messages by **${member.user.tag}** (\`${member.id}\`) in ${channel} (\`#${channel.name}\`)\n${log.url}`);
+//             }
         } catch (error) {
             console.error(error);
             await commandsChannel.send(`${moderator} An error has occurred while trying to purge the messages! Please contact a member of infrastructure if this keeps happening`);
