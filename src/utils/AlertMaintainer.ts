@@ -36,14 +36,14 @@ export default class AlertMaintainer {
         });
 
         // Trial moderator alerts
-        await this.register({
-            name: "TrialModeratorAlert",
-            minTimeToPostNotice: 3600e3,
-            updateInterval: 1800e3,
-            intervalText: "an hour old",
-            alertContent: `<@&${RoleUtils.roles.trialModerator}> Pending moderation alerts`,
-            alertChannelId: Properties.channels.trialModerators
-        });
+//         await this.register({
+//             name: "TrialModeratorAlert",
+//             minTimeToPostNotice: 3600e3,
+//             updateInterval: 1800e3,
+//             intervalText: "an hour old",
+//             alertContent: `<@&${RoleUtils.roles.trialModerator}> Pending moderation alerts`,
+//             alertChannelId: Properties.channels.trialModerators
+//         });
 
         await this.checkModAlerts();
         setInterval(this.checkModAlerts.bind(this), AlertMaintainer.updateInterval);
