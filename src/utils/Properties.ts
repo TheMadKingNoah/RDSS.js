@@ -30,7 +30,7 @@ export default class Properties {
     public static channelAutoReactions: { [channelId: string]: Array<string> } = {
         "150077608602632192": ["275832913025564682", "♥️", "😎"],   // creations
         "779975211063443456": ["275832913025564682", "♥️", "😎"],   // avatars
-        "1105206250381262848": ["🌴", "😎", "⭐"]                 // summer-banner-contest
+        "1129484475030581309": ["⭐", "1030206813909561404", "🏖️"] // summer-avatar-contest
     }
 
     public static threads = {
