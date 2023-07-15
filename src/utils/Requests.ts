@@ -8,7 +8,6 @@ export default class Requests {
         try {
             let insertPos = 2;
             const reqArgs = message.content
-                .replace(/(?!_(\w|\d|-)+\.(png|jpe?g|gifv?|webm|wav|mp[34]|ogg|mov|txt)+)[*|~`_>]/gi, "")
                 .replace(/\s+/, " ")
                 .split(" ");
 
