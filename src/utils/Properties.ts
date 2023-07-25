@@ -34,7 +34,7 @@ export default class Properties {
     }
 
     public static threads = {
-        trialLogs: "1098806257390977074"
+        trialLogs: "1133083040579604520"
     }
 
     public static categories = {
