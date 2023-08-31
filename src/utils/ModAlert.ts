@@ -8,14 +8,17 @@ import {
     Message,
     User,
     GuildMember,
-    ButtonStyle, ActionRow,
+    ButtonStyle
 } from "discord.js";
 
 export default class ModAlert {
     public static existingModAlerts = new Map();
     public static lastModAlert = new Date();
 
-    public static createModAlert(message: Message, user: User) {
+    public static createModAlert(message: Message<true>, user: User) {
+        // Ignore messages from excluding categories
+        if (message.channel.parentId === Properties.categories.feed || message.channel.parentId === Properties.categories.info) return;
+
         const timeSinceLastAlert = (new Date().getTime() - this.lastModAlert.getTime()) / 1000;
         if (timeSinceLastAlert < Properties.modAlertCooldown) return;
 
@@ -95,7 +98,10 @@ export default class ModAlert {
                 + potentialWallPost
                 + hasAttachments
                 + `\n(Access the jump URL to take action. Once finished, react to this message with one of the buttons)`,
-            components: [actionRow as ActionRowBuilder<ButtonBuilder>]
+            components: [actionRow as ActionRowBuilder<ButtonBuilder>],
+            allowedMentions: {
+                parse: ["roles"]
+            }
         }).then(alertMessage => {
             console.log(`New mod alert: ${message.id}`);
             this.existingModAlerts.set(message.id, message.content);
@@ -155,4 +161,3 @@ export default class ModAlert {
         if (modAlertMessage) modAlertMessage.delete().catch(console.error);
     }
 }
-
