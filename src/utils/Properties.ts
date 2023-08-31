@@ -38,7 +38,8 @@ export default class Properties {
     }
 
     public static categories = {
-        internalChannels: "1132788405445599472",
+        internalChannels: "360904621524385792",
+        internalCommands: "1132788405445599472",
         feed: "721914280878014524",
         info: "612589198834270228"
     }
