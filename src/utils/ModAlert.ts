@@ -16,7 +16,7 @@ export default class ModAlert {
     public static lastModAlert = new Date();
 
     public static createModAlert(message: Message<true>, user: User) {
-        // Ignore messages from excluding categories
+        // Ignore messages from excluded categories
         if (message.channel.parentId === Properties.categories.feed || message.channel.parentId === Properties.categories.info) return;
 
         const timeSinceLastAlert = (new Date().getTime() - this.lastModAlert.getTime()) / 1000;
