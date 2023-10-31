@@ -19,10 +19,10 @@ module.exports = class MessageReactionAddEventListener extends EventListener {
     async execute(reaction: MessageReaction, user: User) {
         if (!reaction.message.guild) return;
 
-        let message!: Message;
+        let message!: Message<true>;
 
         await reaction.message.fetch()
-            .then(m => message = m)
+            .then(m => message = m as Message<true>)
             .catch(console.error);
 
         if (!message) return;
