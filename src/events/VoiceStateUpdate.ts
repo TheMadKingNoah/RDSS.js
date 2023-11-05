@@ -13,10 +13,10 @@ module.exports = class VoiceStateUpdateEventListener extends EventListener {
     }
 
     async execute(oldState: VoiceState, newState: VoiceState) {
-        const voiceLogsChannel = await this.client.channels.fetch(Properties.channels.voiceLogs) as TextChannel;
+        // const voiceLogsChannel = await this.client.channels.fetch(Properties.channels.voiceLogs) as TextChannel;
 
-        const newVoiceChannel = newState.channel as VoiceChannel | StageChannel
-        const oldVoiceChannel = oldState.channel as VoiceChannel | StageChannel
+        // const newVoiceChannel = newState.channel as VoiceChannel | StageChannel
+        // const oldVoiceChannel = oldState.channel as VoiceChannel | StageChannel
 
         if (!newState.suppress) {
             if (!Properties.membersOnStage.has(newState.member?.id)) {
@@ -54,37 +54,37 @@ module.exports = class VoiceStateUpdateEventListener extends EventListener {
             }
         }
 
-        if (voiceLogsChannel) {
-            if (
-                (newVoiceChannel && !oldVoiceChannel) ||
-                (newVoiceChannel && oldVoiceChannel.type == ChannelType.GuildStageVoice)
-            ) {
-                if (!newState.member) return;
-                if (newVoiceChannel.type != ChannelType.GuildVoice) return;
+        // if (voiceLogsChannel) {
+        //     if (
+        //         (newVoiceChannel && !oldVoiceChannel) ||
+        //         (newVoiceChannel && oldVoiceChannel.type == ChannelType.GuildStageVoice)
+        //     ) {
+        //         if (!newState.member) return;
+        //         if (newVoiceChannel.type != ChannelType.GuildVoice) return;
 
-                voiceLogsChannel.send({
-                    embeds: [EmbedBuilds.getOnVoiceChannelJoinEmbed(newState)]
-                }).catch(console.error);
-            }
+        //         voiceLogsChannel.send({
+        //             embeds: [EmbedBuilds.getOnVoiceChannelJoinEmbed(newState)]
+        //         }).catch(console.error);
+        //     }
 
-            if (newVoiceChannel && oldVoiceChannel) {
-                if (!newState.member || !oldState.member) return;
-                if (newVoiceChannel.type != ChannelType.GuildVoice || oldVoiceChannel.type != ChannelType.GuildVoice) return;
-                if (newVoiceChannel.id === oldVoiceChannel.id) return;
+        //     if (newVoiceChannel && oldVoiceChannel) {
+        //         if (!newState.member || !oldState.member) return;
+        //         if (newVoiceChannel.type != ChannelType.GuildVoice || oldVoiceChannel.type != ChannelType.GuildVoice) return;
+        //         if (newVoiceChannel.id === oldVoiceChannel.id) return;
 
-                voiceLogsChannel.send({
-                    embeds: [EmbedBuilds.getOnVoiceChannelChangeEmbed(oldState, newState)]
-                }).catch(console.error);
-            }
+        //         voiceLogsChannel.send({
+        //             embeds: [EmbedBuilds.getOnVoiceChannelChangeEmbed(oldState, newState)]
+        //         }).catch(console.error);
+        //     }
 
-            if (!newVoiceChannel && oldVoiceChannel) {
-                if (!oldState.member) return;
-                if (oldVoiceChannel.type != ChannelType.GuildVoice) return;
+        //     if (!newVoiceChannel && oldVoiceChannel) {
+        //         if (!oldState.member) return;
+        //         if (oldVoiceChannel.type != ChannelType.GuildVoice) return;
 
-                voiceLogsChannel.send({
-                    embeds: [EmbedBuilds.getOnVoiceChannelLeaveEmbed(oldState)]
-                }).catch(console.error);
-            }
-        }
+        //         voiceLogsChannel.send({
+        //             embeds: [EmbedBuilds.getOnVoiceChannelLeaveEmbed(oldState)]
+        //         }).catch(console.error);
+        //     }
+        // }
     }
 }
