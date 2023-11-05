@@ -148,33 +148,33 @@ module.exports = class MessageCreateEventListener extends EventListener {
             message.delete().catch(console.error);
         }
 
-        if(message.channel.id === Properties.channels.commands){
-            if (message.author.bot) return;
-            let logChannel = message.guild?.channels.cache.get(Properties.channels.mediaLogs) as TextChannel;
+        // if(message.channel.id === Properties.channels.commands){
+        //     if (message.author.bot) return;
+        //     let logChannel = message.guild?.channels.cache.get(Properties.channels.mediaLogs) as TextChannel;
 
-            if(message.attachments.size > 0){
-                const attachments: Attachment[] = [];
+        //     if(message.attachments.size > 0){
+        //         const attachments: Attachment[] = [];
 
-                message.attachments.forEach(media => {
-                    console.log(media)
-                    attachments.push(media);
-                });
+        //         message.attachments.forEach(media => {
+        //             console.log(media)
+        //             attachments.push(media);
+        //         });
 
-                logChannel.send({content:`<t:${Math.trunc(message.createdTimestamp/1000)}:F> :park: ${message.author.username}#${message.author.discriminator} (\`${message.author.id}\`)`,  
-                files: attachments,
-                allowedMentions: undefined
-            }).then(mediaLogMessage => {
-                    let evidenceLinks = "";
-                    mediaLogMessage.attachments.forEach( element => {
-                        evidenceLinks += element.url + "\n"
-                    })
+        //         logChannel.send({content:`<t:${Math.trunc(message.createdTimestamp/1000)}:F> :park: ${message.author.username}#${message.author.discriminator} (\`${message.author.id}\`)`,  
+        //         files: attachments,
+        //         allowedMentions: undefined
+        //     }).then(mediaLogMessage => {
+        //             let evidenceLinks = "";
+        //             mediaLogMessage.attachments.forEach( element => {
+        //                 evidenceLinks += element.url + "\n"
+        //             })
 
-                    message.channel.send(`${message.author} Your media links: \n ${evidenceLinks}`)
+        //             message.channel.send(`${message.author} Your media links: \n ${evidenceLinks}`)
 
-                    message.delete();
-                })
-            }
-        }
+        //             message.delete();
+        //         })
+        //     }
+        // }
 
         if(message.channel.id in Properties.channelAutoReactions) {
             if (message.author.bot) return;
