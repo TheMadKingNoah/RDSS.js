@@ -109,15 +109,11 @@ export default class QuickMute {
             });
 
             const messageLogs = await channel.guild.channels.fetch(Properties.channels.messageLogs) as TextChannel;
-
             const log = await messageLogs.send({files: [evidenceFile]});
-            const attachment = log.attachments.first();
 
-            if (attachment?.url) {
-                await commandsChannel.send(`${moderator} - You swept messages by ${member} (${member.id})`
-                    + `\n> <:sweep:${Properties.emojis.sweep}> ${messageCount} messages deleted in ${channel}`
-                    + `\n\n**Message Evidence:** ${attachment.url}`)
-            }
+            await commandsChannel.send(`${moderator} - You swept messages by ${member} (${member.id})`
+                + `\n> <:sweep:${Properties.emojis.sweep}> ${messageCount} messages deleted in ${channel}`
+                + `\n\n**Message Evidence:** ${log.url}`);
 
             if (RoleUtils.hasRole(moderator, RoleUtils.roles.trialModerator)) {
                 const logThreadParent = await channel.guild.channels.fetch(Properties.channels.moderators) as TextChannel;
