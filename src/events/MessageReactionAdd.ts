@@ -28,10 +28,11 @@ module.exports = class MessageReactionAddEventListener extends EventListener {
         if (!message) return;
 
         // Mod alert handler
-        if (reaction.emoji.id == Properties.emojis.alert) {
-            if (message.channel.id == Properties.channels.alerts) return;
-            if (ModAlert.existingModAlerts.has(message.id)) return;
-
+        if (
+            reaction.emoji.id == Properties.emojis.alert && 
+            !message.author.bot &&
+            !ModAlert.existingModAlerts.has(message.id)
+        ) {
             ModAlert.createModAlert(message, user);
         }
 

@@ -12,6 +12,7 @@ export default class Properties {
     public static channels = {
         alerts: "785821764839669791",
         commands: "150250250471342080",
+        iaCommands: "1124920213314482277",
         moderators: "150255535927721984",
         seniorModerators: "678849276402466849",
         banRequestsQueue: "592580861543841802",
